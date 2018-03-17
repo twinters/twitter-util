@@ -2,6 +2,7 @@ group 'be.thomaswinters'
 version '0.0.1-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'maven'
 
 sourceCompatibility = 1.8
 
@@ -11,4 +12,10 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'org.twitter4j:twitter4j-core:4.0.3'
+    compile 'com.google.guava:guava:11.0.2'
+    compile 'org.apache.commons:commons-lang3:3.5'
+    compile group: 'com.beust', name: 'jcommander', version: '1.72'
+
 }
+

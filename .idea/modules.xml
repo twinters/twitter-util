@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/twitter-utils.iml" filepath="$PROJECT_DIR$/.idea/modules/twitter-utils.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/twitter-utils_main.iml" filepath="$PROJECT_DIR$/.idea/modules/twitter-utils_main.iml" group="twitter-utils" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/twitter-utils_test.iml" filepath="$PROJECT_DIR$/.idea/modules/twitter-utils_test.iml" group="twitter-utils" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/twitter-util.iml" filepath="$PROJECT_DIR$/.idea/modules/twitter-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/twitter-util_main.iml" filepath="$PROJECT_DIR$/.idea/modules/twitter-util_main.iml" group="twitter-util" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/twitter-util_test.iml" filepath="$PROJECT_DIR$/.idea/modules/twitter-util_test.iml" group="twitter-util" />
     </modules>
   </component>
 </project>

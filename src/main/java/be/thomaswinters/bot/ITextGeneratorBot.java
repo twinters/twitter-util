@@ -1,5 +1,7 @@
 package be.thomaswinters.bot;
 
+import java.util.Optional;
+
 public interface ITextGeneratorBot {
-    String generate();
+    Optional<String> generateText();
 }

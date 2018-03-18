@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * Twitterbot with its own properties instead of the singleton
  */
-public abstract class TwitterBot {
+public class TwitterBot {
 
 
     public static final int MAX_TWEET_LENGTH = 280;
@@ -43,6 +43,10 @@ public abstract class TwitterBot {
 
     public TwitterBot(File propertiesFile, ITextGeneratorBot textGeneratorBot) throws IOException {
         this(getProperties(propertiesFile), textGeneratorBot);
+    }
+
+    public TwitterBot(ITextGeneratorBot textGeneratorBot, ITwitterChatBot twitterChatBot) throws IOException {
+        this(TwitterFactory.getSingleton(), textGeneratorBot, twitterChatBot);
     }
 
     public TwitterBot(ITextGeneratorBot textGeneratorBot) throws IOException {
@@ -103,8 +107,12 @@ public abstract class TwitterBot {
     //region Execute
 
 
+    public Optional<String> prepareNewTweet() {
+        return textGeneratorBot.generateText();
+    }
+
     public Optional<Status> postNewTweet() {
-        Optional<String> text = textGeneratorBot.generateText();
+        Optional<String> text = prepareNewTweet();
 
         if (text.isPresent()) {
             Twitter twitter = getTwitterConnection();

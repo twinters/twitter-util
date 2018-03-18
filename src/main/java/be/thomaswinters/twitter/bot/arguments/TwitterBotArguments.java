@@ -10,6 +10,13 @@ public class TwitterBotArguments {
     @Parameter(names = "-infinity")
     protected boolean infinity = false;
 
+    @Parameter(names = "-debug")
+    protected boolean debug = false;
+
+
+    @Parameter(names = "-amountOfTimes")
+    protected int amountOfTimes = 1;
+
 
     public PostingMode getPostingMode() {
         return postingMode;
@@ -17,5 +24,13 @@ public class TwitterBotArguments {
 
     public boolean isInfinity() {
         return infinity;
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public int getAmountOfTimes() {
+        return amountOfTimes;
     }
 }

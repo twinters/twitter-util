@@ -1,7 +1,7 @@
 package be.thomaswinters.twitter.util;
 
 import be.thomaswinters.twitter.bot.IReplyingTwitterBot;
-import be.thomaswinters.twitter.bot.ITwitterBot;
+import be.thomaswinters.twitter.bot.TwitterBot;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -13,13 +13,13 @@ import java.util.Optional;
 import java.util.OptionalLong;
 
 public class InfinityTweeter {
-    private final Optional<ITwitterBot> postingBot;
+    private final Optional<TwitterBot> postingBot;
     private final Optional<IReplyingTwitterBot> replyingBot;
     private final int minutesOfPostingSleep;
     private final int minutesOfReplyingSleep;
     private boolean isTerminated = false;
 
-    public InfinityTweeter(Optional<? extends ITwitterBot> postBot, Optional<? extends IReplyingTwitterBot> replyBot,
+    public InfinityTweeter(Optional<? extends TwitterBot> postBot, Optional<? extends IReplyingTwitterBot> replyBot,
                            int minutesOfPostingSleep, int minutesOfReplyingSleep) {
         if (postBot == null || replyBot == null || minutesOfPostingSleep == 0 || minutesOfReplyingSleep == 0) {
             throw new IllegalArgumentException("Null values in infinity tweeter");
@@ -32,16 +32,16 @@ public class InfinityTweeter {
 
     }
 
-    public InfinityTweeter(Optional<? extends ITwitterBot> bot, Optional<? extends IReplyingTwitterBot> replyBot,
+    public InfinityTweeter(Optional<? extends TwitterBot> bot, Optional<? extends IReplyingTwitterBot> replyBot,
                            int minutesOfPostingSleep) {
         this(bot, replyBot, minutesOfPostingSleep, 5);
     }
 
-    public InfinityTweeter(Optional<? extends ITwitterBot> bot, IReplyingTwitterBot replyBot, int minutesOfSleep) {
+    public InfinityTweeter(Optional<? extends TwitterBot> bot, IReplyingTwitterBot replyBot, int minutesOfSleep) {
         this(bot, Optional.of(replyBot), minutesOfSleep);
     }
 
-    public InfinityTweeter(ITwitterBot bot, int minutesOfSleep) {
+    public InfinityTweeter(TwitterBot bot, int minutesOfSleep) {
         this(Optional.of(bot), Optional.empty(), minutesOfSleep);
     }
 
@@ -62,7 +62,7 @@ public class InfinityTweeter {
                 System.out.println("Preparing new tweet...");
                 Optional<Status> status = Optional.empty();
                 try {
-                    status = postingBot.get().execute(sinceId);
+                    status = postingBot.get().execute();
                     if (status.isPresent()) {
                         sinceId = Math.max(sinceId, status.get().getId());
                     }

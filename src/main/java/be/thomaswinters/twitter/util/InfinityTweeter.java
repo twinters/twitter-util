@@ -62,7 +62,7 @@ public class InfinityTweeter {
                 System.out.println("Preparing new tweet...");
                 Optional<Status> status = Optional.empty();
                 try {
-                    status = postingBot.get().execute();
+                    status = postingBot.get().postNewTweet();
                     if (status.isPresent()) {
                         sinceId = Math.max(sinceId, status.get().getId());
                     }

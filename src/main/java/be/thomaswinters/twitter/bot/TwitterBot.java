@@ -37,7 +37,7 @@ public abstract class TwitterBot implements IReplyingTwitterBot {
         this(TwitterFactory.getSingleton(), textGeneratorBot);
     }
 
-    private static Twitter getProperties(File propertiesFile) throws IOException {
+    public static Twitter getProperties(File propertiesFile) throws IOException {
         FileInputStream fis = new FileInputStream(propertiesFile);
 
         Properties properties = new Properties();
@@ -93,10 +93,29 @@ public abstract class TwitterBot implements IReplyingTwitterBot {
     //region Execute
     public void execute(TwitterBotArguments arguments) throws TwitterException {
         if (arguments.getPostingMode().equals(PostingMode.POST)) {
-            execute();
+            postNewTweet();
         } else if (arguments.getPostingMode().equals(PostingMode.REPLY)) {
             replyToAllUnrepliedMentions();
         }
+    }
+
+
+    public Optional<Status> postNewTweet() {
+        Optional<String> text = textGeneratorBot.generateText();
+
+        if (text.isPresent()) {
+            Twitter twitter = getTwitterConnection();
+            StatusUpdate update = new StatusUpdate(text.get());
+
+            try {
+                Status status = twitter.updateStatus(update);
+                return Optional.of(status);
+            } catch (TwitterException e) {
+                e.printStackTrace();
+            }
+        }
+        return Optional.empty();
+
     }
     //endregion
 
@@ -114,23 +133,4 @@ public abstract class TwitterBot implements IReplyingTwitterBot {
         return text.length() <= MAX_TWEET_LENGTH;
     }
 
-    public Optional<Status> execute() {
-        Optional<String> text = textGeneratorBot.generateText();
-
-        if (text.isPresent()) {
-            Twitter twitter = getTwitterConnection();
-            StatusUpdate update = new StatusUpdate(text.get());
-
-            try {
-                Status status = twitter.updateStatus(update);
-                return Optional.of(status);
-            } catch (TwitterException e) {
-                e.printStackTrace();
-                return Optional.empty();
-            }
-
-        }
-        return Optional.empty();
-
-    }
 }

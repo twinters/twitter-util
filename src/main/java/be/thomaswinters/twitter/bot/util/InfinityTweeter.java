@@ -1,4 +1,4 @@
-package be.thomaswinters.twitter.util;
+package be.thomaswinters.twitter.bot.util;
 
 import be.thomaswinters.twitter.bot.TwitterBot;
 import twitter4j.ResponseList;
@@ -12,32 +12,28 @@ import java.util.Optional;
 import java.util.OptionalLong;
 
 public class InfinityTweeter {
-    private final Optional<TwitterBot> bot;
+    private final TwitterBot bot;
     private final int minutesOfPostingSleep;
     private final int minutesOfReplyingSleep;
     private boolean isTerminated = false;
 
-    public InfinityTweeter(Optional<? extends TwitterBot> postBot,
+    public InfinityTweeter(TwitterBot bot,
                            int minutesOfPostingSleep, int minutesOfReplyingSleep) {
-        if (postBot == null || minutesOfPostingSleep == 0 || minutesOfReplyingSleep == 0) {
+        if (bot == null || minutesOfPostingSleep == 0 || minutesOfReplyingSleep == 0) {
             throw new IllegalArgumentException("Null values in infinity tweeter");
         }
 
-        this.bot = postBot.map(e -> e);
+        this.bot = bot;
         this.minutesOfPostingSleep = minutesOfPostingSleep;
         this.minutesOfReplyingSleep = minutesOfReplyingSleep;
 
     }
 
-    public InfinityTweeter(Optional<? extends TwitterBot> bot,
+    public InfinityTweeter(TwitterBot bot,
                            int minutesOfPostingSleep) {
         this(bot, minutesOfPostingSleep, 5);
     }
 
-
-    public InfinityTweeter(TwitterBot bot, int minutesOfSleep) {
-        this(Optional.of(bot), minutesOfSleep);
-    }
 
     public void terminate() {
         this.isTerminated = true;
@@ -52,42 +48,40 @@ public class InfinityTweeter {
             LocalDateTime nextPostDate = LocalDateTime.now().plusMinutes(minutesOfPostingSleep);
 
             // TWEET
-            if (bot.isPresent()) {
-                System.out.println("Preparing new tweet...");
-                Optional<Status> status = Optional.empty();
-                try {
-                    status = bot.get().postNewTweet();
-                    if (status.isPresent()) {
-                        sinceId = Math.max(sinceId, status.get().getId());
-                    }
-                } catch (Exception e) {
-                    System.out.println("ERROR:" + e.getMessage());
-                }
-
-                // Check for status
+            System.out.println("Preparing new tweet...");
+            Optional<Status> status = Optional.empty();
+            try {
+                status = bot.postNewTweet();
                 if (status.isPresent()) {
-                    System.out.println("\nI posted a tweet! --> " + status.get().getText());
+                    sinceId = Math.max(sinceId, status.get().getId());
                 }
-
-
-                System.out.println("Listening for replies...");
-
-                // Check for new messages every minute
-                while (!bot.isPresent()
-                        || nextPostDate.isAfter(LocalDateTime.now().plusMinutes(minutesOfReplyingSleep))) {
-                    LocalDateTime nextReplyDate = LocalDateTime.now().plusMinutes(minutesOfReplyingSleep);
-                    bot.get().replyToAllUnrepliedMentions();
-
-                    long timeToNextReply = ChronoUnit.SECONDS.between(LocalDateTime.now(), nextReplyDate);
-                    if (timeToNextReply > 0) {
-                        Thread.sleep(timeToNextReply * 1000);
-                    }
-                }
-
+            } catch (Exception e) {
+                System.out.println("ERROR:" + e.getMessage());
             }
+
+            // Check for status
+            if (status.isPresent()) {
+                System.out.println("\nI posted a tweet! --> " + status.get().getText());
+            }
+
+
+            System.out.println("Listening for replies...");
+
+            // Check for new messages every minute
+            while (nextPostDate.isAfter(LocalDateTime.now().plusMinutes(minutesOfReplyingSleep))) {
+                LocalDateTime nextReplyDate = LocalDateTime.now().plusMinutes(minutesOfReplyingSleep);
+                bot.replyToAllUnrepliedMentions();
+
+                long timeToNextReply = ChronoUnit.SECONDS.between(LocalDateTime.now(), nextReplyDate);
+                if (timeToNextReply > 0) {
+                    Thread.sleep(timeToNextReply * 1000);
+                }
+            }
+
             Thread.sleep(ChronoUnit.SECONDS.between(LocalDateTime.now(), nextPostDate) * 1000);
 
         }
+
     }
 
     public static long findLastStatusUpdate(Twitter twitter) throws IllegalStateException, TwitterException {

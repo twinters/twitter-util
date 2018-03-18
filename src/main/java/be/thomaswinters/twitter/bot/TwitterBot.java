@@ -2,8 +2,6 @@ package be.thomaswinters.twitter.bot;
 
 import be.thomaswinters.bot.ITextGeneratorBot;
 import be.thomaswinters.bot.bots.TextGeneratorChatBotAdaptor;
-import be.thomaswinters.twitter.bot.arguments.PostingMode;
-import be.thomaswinters.twitter.bot.arguments.TwitterBotArguments;
 import be.thomaswinters.twitter.bot.chatbot.ITwitterChatBot;
 import be.thomaswinters.twitter.bot.chatbot.TwitterChatBotAdaptor;
 import twitter4j.*;
@@ -103,13 +101,6 @@ public abstract class TwitterBot {
     }
 
     //region Execute
-    public void execute(TwitterBotArguments arguments) throws TwitterException {
-        if (arguments.getPostingMode().equals(PostingMode.POST)) {
-            postNewTweet();
-        } else if (arguments.getPostingMode().equals(PostingMode.REPLY)) {
-            replyToAllUnrepliedMentions();
-        }
-    }
 
 
     public Optional<Status> postNewTweet() {

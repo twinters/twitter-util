@@ -9,10 +9,10 @@ import java.util.Optional;
 /**
  * Bot using the capabilities of the text genertor bot to reply to people (without using the chat messages)
  */
-public class TextGeneratorChatBot implements IChatBot {
+public class TextGeneratorChatBotAdaptor implements IChatBot {
     private final ITextGeneratorBot bot;
 
-    public TextGeneratorChatBot(ITextGeneratorBot bot) {
+    public TextGeneratorChatBotAdaptor(ITextGeneratorBot bot) {
         this.bot = bot;
     }
 

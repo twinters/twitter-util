@@ -1,63 +1,38 @@
 package be.thomaswinters.twitter.bot;
 
-import be.thomaswinters.bot.ITextGeneratorBot;
-import be.thomaswinters.bot.bots.TextGeneratorChatBotAdaptor;
-import be.thomaswinters.twitter.bot.chatbot.ITwitterChatBot;
-import be.thomaswinters.twitter.bot.chatbot.TwitterChatBotAdaptor;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Twitterbot with its own properties instead of the singleton
  */
-public class TwitterBot {
+public abstract class TwitterBot {
 
 
     public static final int MAX_TWEET_LENGTH = 280;
-
-    private final ITextGeneratorBot textGeneratorBot;
-    private final ITwitterChatBot twitterChatBot;
     private final Twitter twitterConnection;
 
     //region Constructor
-    public TwitterBot(Twitter twitterConnection, ITextGeneratorBot textGeneratorBot, ITwitterChatBot twitterChatBot) {
+    public TwitterBot(Twitter twitterConnection) {
         this.twitterConnection = twitterConnection;
-        this.textGeneratorBot = textGeneratorBot;
-        this.twitterChatBot = twitterChatBot;
     }
 
-    public TwitterBot(Twitter twitterConnection, ITextGeneratorBot textGeneratorBot) throws IOException {
-        this(twitterConnection, textGeneratorBot, new TwitterChatBotAdaptor(twitterConnection, new TextGeneratorChatBotAdaptor(textGeneratorBot)));
+    public TwitterBot(URL propertiesFile) throws IOException {
+        this(getProperties(propertiesFile));
     }
 
-
-    public TwitterBot(File propertiesFile, ITextGeneratorBot textGeneratorBot, ITwitterChatBot twitterChatBot) throws IOException {
-        this(getProperties(propertiesFile), textGeneratorBot, twitterChatBot);
-    }
-
-    public TwitterBot(File propertiesFile, ITextGeneratorBot textGeneratorBot) throws IOException {
-        this(getProperties(propertiesFile), textGeneratorBot);
-    }
-
-    public TwitterBot(ITextGeneratorBot textGeneratorBot, ITwitterChatBot twitterChatBot) throws IOException {
-        this(TwitterFactory.getSingleton(), textGeneratorBot, twitterChatBot);
-    }
-
-    public TwitterBot(ITextGeneratorBot textGeneratorBot) throws IOException {
-        this(TwitterFactory.getSingleton(), textGeneratorBot);
-    }
-
-    public static Twitter getProperties(File propertiesFile) throws IOException {
-        FileInputStream fis = new FileInputStream(propertiesFile);
+    public static Twitter getProperties(URL propertiesFile) throws IOException {
 
         Properties properties = new Properties();
-        properties.load(fis);
+        InputStream stream = propertiesFile.openStream();
+        properties.load(stream);
+        stream.close();
 
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setOAuthConsumerKey(properties.getProperty("oauth.consumerKey"));
@@ -107,9 +82,7 @@ public class TwitterBot {
     //region Execute
 
 
-    public Optional<String> prepareNewTweet() {
-        return textGeneratorBot.generateText();
-    }
+    public abstract Optional<String> prepareNewTweet();
 
     public Optional<Status> postNewTweet() {
         Optional<String> text = prepareNewTweet();
@@ -244,10 +217,7 @@ public class TwitterBot {
 
     }
 
-    private Optional<String> createReplyTo(Status mentionTweet) {
-        return twitterChatBot.generateReply(mentionTweet);
-
-    }
+    public abstract Optional<String> createReplyTo(Status mentionTweet);
 
     //endregion
 

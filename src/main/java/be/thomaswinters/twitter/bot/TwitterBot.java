@@ -92,6 +92,7 @@ public abstract class TwitterBot {
             StatusUpdate update = new StatusUpdate(text.get());
 
             try {
+                System.out.println("POSTING: " + text.get());
                 Status status = twitter.updateStatus(update);
                 return Optional.of(status);
             } catch (TwitterException e) {

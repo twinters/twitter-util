@@ -1,5 +1,6 @@
 package be.thomaswinters.twitter;
 
+import be.thomaswinters.bot.IChatBot;
 import be.thomaswinters.bot.ITextGeneratorBot;
 import be.thomaswinters.bot.bots.TextGeneratorChatBotAdaptor;
 import be.thomaswinters.twitter.bot.TwitterBot;
@@ -18,6 +19,10 @@ public class GeneratorTwitterBot extends TwitterBot {
         super(twitterConnection);
         this.textGeneratorBot = textGeneratorBot;
         this.twitterChatBot = twitterChatBot;
+    }
+
+    public GeneratorTwitterBot(Twitter twitterConnection, ITextGeneratorBot textGeneratorBot, IChatBot chatBot) {
+        this(twitterConnection, textGeneratorBot, new TwitterChatBotAdaptor(twitterConnection, chatBot));
     }
 
     public GeneratorTwitterBot(Twitter twitterConnection, ITextGeneratorBot textGeneratorBot) {

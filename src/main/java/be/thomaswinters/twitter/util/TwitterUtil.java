@@ -22,4 +22,8 @@ public class TwitterUtil {
 
         return originalStatus;
     }
+
+    public static boolean isTwitterWord(String word) {
+        return word.startsWith("@") || word.startsWith("#") || word.startsWith("http://") || word.startsWith("https://");
+    }
 }

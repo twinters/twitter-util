@@ -203,11 +203,13 @@ public abstract class TwitterBot {
         // Check if this is a direct reply
         Optional<String> replyText = createReplyTo(mentionTweet);
         if (replyText.isPresent()) {
-            String replyTextMention = replyText.get();
-            StatusUpdate replyStatus = new StatusUpdate(replyTextMention);
+            String replyTextWithMention = replyText
+                    .map(reply -> "@" + mentionTweet.getUser().getScreenName() + " " + reply)
+                    .get();
+            StatusUpdate replyStatus = new StatusUpdate(replyTextWithMention);
             replyStatus.inReplyToStatusId(mentionTweet.getId());
             try {
-                System.out.println(">> MENTION: " + mentionTweet.getText() + "\n>> MY REPLY:" + replyTextMention);
+                System.out.println(">> MENTION: " + mentionTweet.getText() + "\n>> MY REPLY:" + replyTextWithMention);
                 Status newStatus = twitter.updateStatus(replyStatus);
                 return Optional.of(newStatus);
             } catch (TwitterException e) {

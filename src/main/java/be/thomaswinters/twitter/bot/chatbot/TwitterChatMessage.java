@@ -18,7 +18,7 @@ public class TwitterChatMessage implements IChatMessage {
     }
 
     @Override
-    public String getMessage(String message) {
+    public String getMessage() {
         return tweet.getText();
     }
 

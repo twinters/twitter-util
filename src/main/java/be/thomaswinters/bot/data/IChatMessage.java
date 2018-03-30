@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface IChatMessage {
 
-    String getMessage(String message);
+    String getMessage();
 
     Optional<IChatMessage> getPrevious();
 

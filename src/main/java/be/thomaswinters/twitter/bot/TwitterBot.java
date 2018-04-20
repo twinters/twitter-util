@@ -1,17 +1,17 @@
 package be.thomaswinters.twitter.bot;
 
 import be.thomaswinters.twitter.bot.util.TwitterLoginUtils;
-import be.thomaswinters.twitter.util.TwitterUtil;
 import twitter4j.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.OptionalLong;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Twitterbot with its own properties instead of the singleton
- */
+
 public abstract class TwitterBot {
 
     private final Twitter twitterConnection;
@@ -26,26 +26,10 @@ public abstract class TwitterBot {
     }
     //endregion
 
+    //region twitterConnection
     public Twitter getTwitterConnection() {
         return twitterConnection;
     }
-
-    //region Execute
-    public Optional<Status> postNewTweet() {
-        Optional<String> text = prepareNewTweet();
-        if (text.isPresent()) {
-            try {
-                System.out.println("POSTING: " + text.get());
-                Status status = twitterConnection.updateStatus(text.get());
-                return Optional.of(status);
-            } catch (TwitterException e) {
-                e.printStackTrace();
-            }
-
-        }
-        return Optional.empty();
-    }
-    //endregion
 
     protected Status tweet(String status) throws TwitterException {
         return twitterConnection.updateStatus(status);
@@ -54,56 +38,52 @@ public abstract class TwitterBot {
     protected Status reply(String status, Status toTweet) throws TwitterException {
         StatusUpdate reply = new StatusUpdate("@" + toTweet.getUser().getScreenName() + " " + status);
         reply.inReplyToStatusId(toTweet.getId());
-        return getTwitterConnection().updateStatus(reply);
+        return twitterConnection.updateStatus(reply);
     }
+    //endregion
+
+    //region post new tweet
+    public Optional<Status> postNewTweet() {
+        Optional<String> text = prepareNewTweet();
+        if (text.isPresent()) {
+            try {
+                System.out.println("POSTING: " + text.get());
+                return Optional.of(twitterConnection.updateStatus(text.get()));
+            } catch (TwitterException e) {
+                e.printStackTrace();
+            }
+        }
+        return Optional.empty();
+    }
+    //endregion
 
 
     //region Reply
-
     public void replyToAllUnrepliedMentions() throws TwitterException {
-        // Acquire mentions
-        List<Status> unansweredTweets = getUnansweredTweets();
-        unansweredTweets.sort(new Comparator<Status>() {
+        getUnansweredTweets()
+                .stream()
+                // Sort from lowest to highest such that older tweets are replied to first: more stable!
+                .sorted((e, f) -> Long.signum(e.getId() - f.getId()))
+                .forEachOrdered(
+                        mentionTweet -> {
+                            System.out.println("Preparing reply to tweet:\n" + mentionTweet.getText() + "\n");
+                            try {
+                                replyTo(mentionTweet);
+                            } catch (TwitterException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                );
 
-            @Override
-            public int compare(Status arg0, Status arg1) {
-                return Long.signum(arg0.getId() - arg1.getId());
-            }
-
-        });
-
-        if (unansweredTweets.isEmpty()) {
-            return;
-        }
-
-
-        // Reply to all statuses
-        for (Status mentionTweet : unansweredTweets) {
-            if (repliesToAllMentionTweets()
-                    || TwitterUtil.isDirectReplyToCurrentUser(twitterConnection, mentionTweet)
-                    ) {
-                try {
-                    System.out.println("Preparing reply to tweet:\n" + mentionTweet.getText() + "\n");
-                    replyTo(mentionTweet);
-                } catch (TwitterException e) {
-                    System.out.println("Too many replies exception? " + e);
-                    break;
-                }
-            } else {
-                System.out.println("I'm just mentioned in the following tweet. I'm not going to reply.\n"
-                        + mentionTweet.getText() + "\n\n");
-            }
-
-        }
     }
 
     private List<Status> getUnansweredTweets() throws IllegalStateException, TwitterException {
         String user = twitterConnection.getScreenName();
 
         ResponseList<Status> timeline = twitterConnection.getUserTimeline(user);
-        OptionalLong minTimeline = timeline.stream().mapToLong(e -> e.getId()).min();
+        OptionalLong minTimeline = timeline.stream().mapToLong(Status::getId).min();
 
-        Set<Long> recentlyRepliedTo = timeline.stream().map(e -> e.getInReplyToStatusId()).filter(e -> e > 0)
+        Set<Long> recentlyRepliedTo = timeline.stream().map(Status::getInReplyToStatusId).filter(e -> e > 0)
                 .collect(Collectors.toSet());
 
         Paging paging = new Paging(1, Integer.max(20, recentlyRepliedTo.size()));
@@ -150,10 +130,6 @@ public abstract class TwitterBot {
 
     }
 
-
-    public boolean repliesToAllMentionTweets() {
-        return true;
-    }
 
     public abstract Optional<String> createReplyTo(Status mentionTweet);
 

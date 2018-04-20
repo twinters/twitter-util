@@ -8,7 +8,6 @@
         <option value="reformat" />
         <option value="missingOverrideAnnotation" />
         <option value="useBlocks" />
-        <option value="unnecessarySemicolon" />
       </set>
     </option>
   </component>

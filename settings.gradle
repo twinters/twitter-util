@@ -1,2 +1,4 @@
+include ':generator-util'
+project(':generator-util').projectDir = new File(settingsDir, '../generator-util')
 rootProject.name = 'twitter-util'
 

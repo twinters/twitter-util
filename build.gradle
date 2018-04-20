@@ -17,5 +17,7 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.5'
     compile group: 'com.beust', name: 'jcommander', version: '1.72'
 
+    compile project(':generator-util')
+
 }
 

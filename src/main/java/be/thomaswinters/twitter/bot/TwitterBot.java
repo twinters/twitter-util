@@ -5,11 +5,11 @@ import twitter4j.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public abstract class TwitterBot {
@@ -27,7 +27,7 @@ public abstract class TwitterBot {
     //endregion
 
     //region twitterConnection
-    public Twitter getTwitterConnection() {
+    protected Twitter getTwitterConnection() {
         return twitterConnection;
     }
 
@@ -61,79 +61,54 @@ public abstract class TwitterBot {
     //region Reply
     public void replyToAllUnrepliedMentions() throws TwitterException {
         getUnansweredTweets()
-                .stream()
                 // Sort from lowest to highest such that older tweets are replied to first: more stable!
                 .sorted((e, f) -> Long.signum(e.getId() - f.getId()))
-                .forEachOrdered(
-                        mentionTweet -> {
-                            System.out.println("Preparing reply to tweet:\n" + mentionTweet.getText() + "\n");
-                            try {
-                                replyTo(mentionTweet);
-                            } catch (TwitterException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                );
-
+                // Reply to all mentions
+                .forEachOrdered(this::replyToStatus);
     }
 
-    private List<Status> getUnansweredTweets() throws IllegalStateException, TwitterException {
-        String user = twitterConnection.getScreenName();
-
-        ResponseList<Status> timeline = twitterConnection.getUserTimeline(user);
+    private Stream<Status> getUnansweredTweets() throws IllegalStateException, TwitterException {
+        ResponseList<Status> timeline = twitterConnection.getUserTimeline(twitterConnection.getScreenName());
         OptionalLong minTimeline = timeline.stream().mapToLong(Status::getId).min();
 
-        Set<Long> recentlyRepliedTo = timeline.stream().map(Status::getInReplyToStatusId).filter(e -> e > 0)
+        Set<Long> recentlyRepliedTo = timeline
+                .stream()
+                .map(Status::getInReplyToStatusId)
+                .filter(e -> e > 0)
                 .collect(Collectors.toSet());
 
         Paging paging = new Paging(1, Integer.max(20, recentlyRepliedTo.size()));
-        List<Status> unansweredMentions = twitterConnection.getMentionsTimeline(paging).stream()
-                .filter(e -> !recentlyRepliedTo.contains(e.getId())).collect(Collectors.toList());
+        Stream<Status> unansweredMentions =
+                twitterConnection
+                        .getMentionsTimeline(paging)
+                        .stream()
+                        .filter(e -> !recentlyRepliedTo.contains(e.getId()));
 
         // Make the mentions at least as recent as the least recent recent reply
         if (minTimeline.isPresent()) {
-            unansweredMentions = unansweredMentions.stream().filter(e -> e.getId() > minTimeline.getAsLong())
-                    .collect(Collectors.toList());
+            unansweredMentions = unansweredMentions
+                    .filter(e -> e.getId() > minTimeline.getAsLong());
         }
-
-        // Print all unanswered mentions
-        if (!unansweredMentions.isEmpty()) {
-            System.out.println("Unanswered mentions: " + unansweredMentions.size() + "\n"
-                    + unansweredMentions.stream().map(e -> ">> " + e.getText()).collect(Collectors.joining("\n"))
-                    + "\n");
-        }
-
         return unansweredMentions;
-
     }
 
-    public Optional<Status> replyTo(Status mentionTweet) throws TwitterException {
-        Twitter twitter = getTwitterConnection();
-
+    private Optional<Status> replyToStatus(Status mentionTweet) {
         // Check if this is a direct reply
         Optional<String> replyText = createReplyTo(mentionTweet);
         if (replyText.isPresent()) {
-            String replyTextWithMention = replyText
-                    .map(reply -> "@" + mentionTweet.getUser().getScreenName() + " " + reply)
-                    .get();
-            StatusUpdate replyStatus = new StatusUpdate(replyTextWithMention);
-            replyStatus.inReplyToStatusId(mentionTweet.getId());
             try {
-                System.out.println(">> MENTION: " + mentionTweet.getText() + "\n>> MY REPLY:" + replyTextWithMention);
-                Status newStatus = twitter.updateStatus(replyStatus);
-                return Optional.of(newStatus);
-            } catch (TwitterException e) {
-                e.printStackTrace();
+                return Optional.of(reply(replyText.get(), mentionTweet));
+            } catch (TwitterException twitEx) {
+                twitEx.printStackTrace();
             }
         }
         return Optional.empty();
-
     }
+    //endregion
 
-
+    //region Abstract functions
     public abstract Optional<String> createReplyTo(Status mentionTweet);
 
     public abstract Optional<String> prepareNewTweet();
     //endregion
-
 }

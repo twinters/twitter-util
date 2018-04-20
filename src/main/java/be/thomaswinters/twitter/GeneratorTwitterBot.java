@@ -2,7 +2,7 @@ package be.thomaswinters.twitter;
 
 import be.thomaswinters.bot.IChatBot;
 import be.thomaswinters.bot.bots.TextGeneratorChatBotAdaptor;
-import be.thomaswinters.text.generator.ITextGenerator;
+import be.thomaswinters.generator.generators.IGenerator;
 import be.thomaswinters.twitter.bot.TwitterBot;
 import be.thomaswinters.twitter.bot.chatbot.ITwitterChatBot;
 import be.thomaswinters.twitter.bot.chatbot.TwitterChatBotAdaptor;
@@ -12,20 +12,20 @@ import twitter4j.Twitter;
 import java.util.Optional;
 
 public class GeneratorTwitterBot extends TwitterBot {
-    private final ITextGenerator textGeneratorBot;
+    private final IGenerator<String> textGeneratorBot;
     private final ITwitterChatBot twitterChatBot;
 
-    public GeneratorTwitterBot(Twitter twitterConnection, ITextGenerator textGeneratorBot, ITwitterChatBot twitterChatBot) {
+    public GeneratorTwitterBot(Twitter twitterConnection, IGenerator<String> textGeneratorBot, ITwitterChatBot twitterChatBot) {
         super(twitterConnection);
         this.textGeneratorBot = textGeneratorBot;
         this.twitterChatBot = twitterChatBot;
     }
 
-    public GeneratorTwitterBot(Twitter twitterConnection, ITextGenerator textGeneratorBot, IChatBot chatBot) {
+    public GeneratorTwitterBot(Twitter twitterConnection, IGenerator<String> textGeneratorBot, IChatBot chatBot) {
         this(twitterConnection, textGeneratorBot, new TwitterChatBotAdaptor(twitterConnection, chatBot));
     }
 
-    public GeneratorTwitterBot(Twitter twitterConnection, ITextGenerator textGeneratorBot) {
+    public GeneratorTwitterBot(Twitter twitterConnection, IGenerator<String> textGeneratorBot) {
         this(twitterConnection, textGeneratorBot, new TwitterChatBotAdaptor(twitterConnection, new TextGeneratorChatBotAdaptor(textGeneratorBot)));
     }
 
@@ -37,6 +37,6 @@ public class GeneratorTwitterBot extends TwitterBot {
 
     @Override
     public Optional<String> prepareNewTweet() {
-        return textGeneratorBot.generateText();
+        return textGeneratorBot.generate();
     }
 }

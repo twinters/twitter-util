@@ -97,6 +97,7 @@ public abstract class TwitterBot {
         Optional<String> replyText = createReplyTo(mentionTweet);
         if (replyText.isPresent()) {
             try {
+                System.out.println("REPLYING TO: " + mentionTweet.getText() + "\nREPLY: " + replyText.get() + "\n");
                 return Optional.of(reply(replyText.get(), mentionTweet));
             } catch (TwitterException twitEx) {
                 twitEx.printStackTrace();

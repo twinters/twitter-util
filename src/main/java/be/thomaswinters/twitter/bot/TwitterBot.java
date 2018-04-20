@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
  */
 public abstract class TwitterBot {
 
-
-    public static final int MAX_TWEET_LENGTH = 280;
     private final Twitter twitterConnection;
 
     //region Constructor
@@ -26,38 +24,7 @@ public abstract class TwitterBot {
         this(TwitterLoginUtils.getProperties(propertiesFile));
     }
 
-
     //endregion
-
-
-//    public Optional<Status> execute() throws TwitterException {
-//
-//        // Use as execute
-//        return execute(getLastRealTweet());
-//    }
-
-    public long getLastTweet() throws TwitterException {
-        Twitter twitter = getTwitterConnection();
-        ResponseList<Status> timeline = twitter.getUserTimeline(twitter.getScreenName());
-        return timeline.stream().mapToLong(e -> e.getId()).max().orElse(0l);
-    }
-
-
-    /**
-     * Returns most recent tweet, excluding replies and retweets
-     *
-     * @return
-     * @throws TwitterException
-     */
-    public long getLastRealTweet() throws TwitterException {
-        Twitter twitter = getTwitterConnection();
-        ResponseList<Status> timeline = twitter.getUserTimeline(twitter.getScreenName());
-        return timeline.stream().filter(e -> !e.getText().startsWith("@") && !e.getText().startsWith("RT : ")).mapToLong(e -> e.getId()).max().orElse(0l);
-    }
-
-    public boolean isValidTweet(String text) {
-        return text.length() <= 140;
-    }
 
     public Twitter getTwitterConnection() {
         return twitterConnection;
@@ -98,16 +65,11 @@ public abstract class TwitterBot {
         return getTwitterConnection().updateStatus(reply);
     }
 
-    public static boolean isValidLength(String text) {
-        return text.length() <= MAX_TWEET_LENGTH;
-    }
-
 
     //region Reply
 
     public void replyToAllUnrepliedMentions() throws TwitterException {
         // Acquire mentions
-        Twitter twitter = getTwitterConnection();
         List<Status> unansweredTweets = getUnansweredTweets();
         unansweredTweets.sort(new Comparator<Status>() {
 
@@ -123,8 +85,8 @@ public abstract class TwitterBot {
         }
 
         // Get your screenname
-        String screenName = twitter.getScreenName();
-        long userId = twitter.getId();
+        String screenName = twitterConnection.getScreenName();
+        long userId = twitterConnection.getId();
 
         // Reply to all statuses
         for (Status mentionTweet : unansweredTweets) {
@@ -146,7 +108,7 @@ public abstract class TwitterBot {
         }
     }
 
-    public List<Status> getUnansweredTweets() throws IllegalStateException, TwitterException {
+    private List<Status> getUnansweredTweets() throws IllegalStateException, TwitterException {
         Twitter twitter = getTwitterConnection();
         String user = twitter.getScreenName();
 
@@ -177,10 +139,6 @@ public abstract class TwitterBot {
 
     }
 
-    public boolean repliesToAllMentionTweets() {
-        return true;
-    }
-
     public Optional<Status> replyTo(Status mentionTweet) throws TwitterException {
         Twitter twitter = getTwitterConnection();
 
@@ -202,6 +160,11 @@ public abstract class TwitterBot {
         }
         return Optional.empty();
 
+    }
+
+
+    public boolean repliesToAllMentionTweets() {
+        return true;
     }
 
     public abstract Optional<String> createReplyTo(Status mentionTweet);

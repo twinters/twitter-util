@@ -1,6 +1,7 @@
 package be.thomaswinters.twitter.bot;
 
 import be.thomaswinters.twitter.bot.util.TwitterLoginUtils;
+import be.thomaswinters.twitter.util.TwitterUtil;
 import twitter4j.*;
 
 import java.io.IOException;
@@ -23,7 +24,6 @@ public abstract class TwitterBot {
     public TwitterBot(URL propertiesFile) throws IOException {
         this(TwitterLoginUtils.getProperties(propertiesFile));
     }
-
     //endregion
 
     public Twitter getTwitterConnection() {
@@ -31,32 +31,24 @@ public abstract class TwitterBot {
     }
 
     //region Execute
-
-
-    public abstract Optional<String> prepareNewTweet();
-
     public Optional<Status> postNewTweet() {
         Optional<String> text = prepareNewTweet();
-
         if (text.isPresent()) {
-            Twitter twitter = getTwitterConnection();
-            StatusUpdate update = new StatusUpdate(text.get());
-
             try {
                 System.out.println("POSTING: " + text.get());
-                Status status = twitter.updateStatus(update);
+                Status status = twitterConnection.updateStatus(text.get());
                 return Optional.of(status);
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
+
         }
         return Optional.empty();
-
     }
     //endregion
 
     protected Status tweet(String status) throws TwitterException {
-        return getTwitterConnection().updateStatus(status);
+        return twitterConnection.updateStatus(status);
     }
 
     protected Status reply(String status, Status toTweet) throws TwitterException {
@@ -84,15 +76,12 @@ public abstract class TwitterBot {
             return;
         }
 
-        // Get your screenname
-        String screenName = twitterConnection.getScreenName();
-        long userId = twitterConnection.getId();
 
         // Reply to all statuses
         for (Status mentionTweet : unansweredTweets) {
             if (repliesToAllMentionTweets()
-                    || mentionTweet.getText().toLowerCase().startsWith("@" + screenName.toLowerCase())
-                    || mentionTweet.getInReplyToUserId() == userId) {
+                    || TwitterUtil.isDirectReplyToCurrentUser(twitterConnection, mentionTweet)
+                    ) {
                 try {
                     System.out.println("Preparing reply to tweet:\n" + mentionTweet.getText() + "\n");
                     replyTo(mentionTweet);
@@ -109,17 +98,16 @@ public abstract class TwitterBot {
     }
 
     private List<Status> getUnansweredTweets() throws IllegalStateException, TwitterException {
-        Twitter twitter = getTwitterConnection();
-        String user = twitter.getScreenName();
+        String user = twitterConnection.getScreenName();
 
-        ResponseList<Status> timeline = twitter.getUserTimeline(user);
+        ResponseList<Status> timeline = twitterConnection.getUserTimeline(user);
         OptionalLong minTimeline = timeline.stream().mapToLong(e -> e.getId()).min();
 
         Set<Long> recentlyRepliedTo = timeline.stream().map(e -> e.getInReplyToStatusId()).filter(e -> e > 0)
                 .collect(Collectors.toSet());
 
         Paging paging = new Paging(1, Integer.max(20, recentlyRepliedTo.size()));
-        List<Status> unansweredMentions = twitter.getMentionsTimeline(paging).stream()
+        List<Status> unansweredMentions = twitterConnection.getMentionsTimeline(paging).stream()
                 .filter(e -> !recentlyRepliedTo.contains(e.getId())).collect(Collectors.toList());
 
         // Make the mentions at least as recent as the least recent recent reply
@@ -169,6 +157,7 @@ public abstract class TwitterBot {
 
     public abstract Optional<String> createReplyTo(Status mentionTweet);
 
+    public abstract Optional<String> prepareNewTweet();
     //endregion
 
 }

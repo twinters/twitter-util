@@ -1,9 +1,6 @@
 package be.thomaswinters.twitter.util;
 
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
+import twitter4j.*;
 
 public class TwitterUtil {
 
@@ -61,4 +58,17 @@ public class TwitterUtil {
         return text.length() <= MAX_TWEET_LENGTH;
     }
 
+    public static boolean isDirectReplyToCurrentUser(Twitter twitterConnection, Status mentionTweet) throws TwitterException {
+        return isDirectReplyToUser(twitterConnection.getId(), twitterConnection.getScreenName(), mentionTweet);
+    }
+
+    public static boolean isDirectReplyToUser(User user, Status mentionTweet) {
+        return isDirectReplyToUser(user.getId(), user.getScreenName(), mentionTweet);
+
+    }
+
+    public static boolean isDirectReplyToUser(long userId, String screenName, Status mentionTweet) {
+        return mentionTweet.getText().toLowerCase().startsWith("@" + screenName.toLowerCase())
+                || mentionTweet.getInReplyToUserId() == userId;
+    }
 }

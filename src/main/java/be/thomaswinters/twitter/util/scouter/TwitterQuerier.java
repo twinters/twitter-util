@@ -2,46 +2,42 @@ package be.thomaswinters.twitter.util.scouter;
 
 import twitter4j.*;
 
-import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class WordScouter implements ITweetScouter {
+public class TwitterQuerier implements ITweetRetriever {
 
     private static final boolean SHOW_REJECTION_REASONS = false;
 
-    private static final Twitter TWITTER = TwitterFactory.getSingleton();
+    private final Twitter twitter;
 
     private final String word;
     private final Optional<String> language;
     private final Query.ResultType queryType;
     private final boolean allowURLs;
 
-    public WordScouter(Optional<String> language, Query.ResultType queryType, String word, boolean allowURLS) {
+    public TwitterQuerier(Twitter twitter, Optional<String> language, Query.ResultType queryType, String word, boolean allowURLS) {
+        this.twitter = twitter;
         this.word = word.toLowerCase();
         this.language = language;
         this.queryType = queryType;
         this.allowURLs = allowURLS;
     }
 
-    public WordScouter(Query.ResultType queryType, String word) {
-        this(Optional.empty(), queryType, word, false);
+    public TwitterQuerier(Twitter twitter, Query.ResultType queryType, String word) {
+        this(twitter, Optional.empty(), queryType, word, false);
     }
 
-    public WordScouter(String language, String word) {
-        this(Optional.of(language), Query.MIXED, word, false);
+    public TwitterQuerier(Twitter twitter, String language, String word) {
+        this(twitter, Optional.of(language), Query.MIXED, word, false);
     }
 
-    public WordScouter(String word) {
-        this(Optional.empty(), Query.MIXED, word, false);
+    public TwitterQuerier(Twitter twitter, String word) {
+        this(twitter, Optional.empty(), Query.MIXED, word, false);
     }
 
     @Override
-    public Collection<Status> scout(long sinceId) throws TwitterException {
-
-        // access the twitter API using your twitter4j.properties file
-        Twitter twitter = TwitterFactory.getSingleton();
+    public Stream<Status> retrieve(long sinceId) {
 
         // create a new search
         Query query = new Query(word);
@@ -53,14 +49,20 @@ public class WordScouter implements ITweetScouter {
 
         // get the results from that search
         query.setResultType(queryType);
-        QueryResult result = twitter.search(query);
+        QueryResult result = null;
+        try {
+            result = twitter.search(query);
+        } catch (TwitterException e) {
+            throw new RuntimeException(e);
+        }
 
-        Set<Status> goodTweets = result.getTweets().stream()
+        return result.getTweets().stream()
                 // Map to original tweet
-                .map(e -> e.isRetweet() ? e.getRetweetedStatus() : e).distinct()
+                .map(e -> e.isRetweet() ? e.getRetweetedStatus() : e)
+                .distinct()
                 // Check if recent enough
-                .filter(e -> e.getId() > sinceId).filter(e -> isOkay(e)).collect(Collectors.toSet());
-        return goodTweets;
+                .filter(e -> e.getId() > sinceId)
+                .filter(this::isOkay);
     }
 
     private boolean isOkay(Status tweet) {
@@ -103,7 +105,7 @@ public class WordScouter implements ITweetScouter {
         }
 
         try {
-            if (tweet.getUser().getScreenName().equals(TWITTER.getScreenName())) {
+            if (tweet.getUser().getScreenName().equals(twitter.getScreenName())) {
                 if (SHOW_REJECTION_REASONS) {
                     System.out.println("Bad tweet (Posted by me): " + tweet.getText());
                 }

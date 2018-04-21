@@ -1,33 +1,28 @@
 package be.thomaswinters.twitter.util.scouter;
 
+import twitter4j.*;
+
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import twitter4j.Paging;
-import twitter4j.Status;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-
-public class UserScouter implements ITweetScouter {
+public class TwitterUserTweetRetriever implements ITweetRetriever {
 
     private final String user;
     private final boolean allowRetweets;
     private final boolean allowReplies;
 
-    public UserScouter(String user, boolean allowRetweets, boolean allowReplies) {
+    public TwitterUserTweetRetriever(String user, boolean allowRetweets, boolean allowReplies) {
         this.user = user;
         this.allowRetweets = allowRetweets;
         this.allowReplies = allowReplies;
     }
 
-    public UserScouter(String user) {
+    public TwitterUserTweetRetriever(String user) {
         this(user, false, false);
     }
 
-    public UserScouter() throws IllegalStateException, TwitterException {
+    public TwitterUserTweetRetriever() throws IllegalStateException, TwitterException {
         this(getOwnUsername());
     }
 
@@ -36,7 +31,7 @@ public class UserScouter implements ITweetScouter {
     }
 
     @Override
-    public Collection<Status> scout(long sinceId) throws TwitterException {
+    public Stream<Status> retrieve(long sinceId) {
         Twitter twitter = new TwitterFactory().getInstance();
 
         int pageno = 1;
@@ -56,8 +51,9 @@ public class UserScouter implements ITweetScouter {
         }
 
         System.out.println("Total: " + statuses.size());
-        return statuses.stream().filter(e -> allowReplies || e.getInReplyToStatusId() <= 0)
-                .filter(e -> allowRetweets || !e.isRetweet()).collect(Collectors.toList());
+        return statuses.stream()
+                .filter(e -> allowReplies || e.getInReplyToStatusId() <= 0)
+                .filter(e -> allowRetweets || !e.isRetweet());
     }
 
 }

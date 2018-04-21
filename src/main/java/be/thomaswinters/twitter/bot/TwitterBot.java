@@ -5,9 +5,8 @@ import twitter4j.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
-import java.util.OptionalLong;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,6 +14,7 @@ import java.util.stream.Stream;
 public abstract class TwitterBot {
 
     private final Twitter twitterConnection;
+    private final Collection<Consumer<Status>> postListeners = new ArrayList<>();
 
     //region Constructor
     public TwitterBot(Twitter twitterConnection) {
@@ -32,13 +32,17 @@ public abstract class TwitterBot {
     }
 
     protected Status tweet(String status) throws TwitterException {
-        return twitterConnection.updateStatus(status);
+        Status post = twitterConnection.updateStatus(status);
+        notifyNewPostListeners(post);
+        return post;
     }
 
-    protected Status reply(String status, Status toTweet) throws TwitterException {
-        StatusUpdate reply = new StatusUpdate("@" + toTweet.getUser().getScreenName() + " " + status);
+    protected Status reply(String replyText, Status toTweet) throws TwitterException {
+        StatusUpdate reply = new StatusUpdate("@" + toTweet.getUser().getScreenName() + " " + replyText);
         reply.inReplyToStatusId(toTweet.getId());
-        return twitterConnection.updateStatus(reply);
+        Status post = twitterConnection.updateStatus(reply);
+        notifyNewPostListeners(post);
+        return post;
     }
     //endregion
 
@@ -92,7 +96,7 @@ public abstract class TwitterBot {
         return unansweredMentions;
     }
 
-    private Optional<Status> replyToStatus(Status mentionTweet) {
+    protected Optional<Status> replyToStatus(Status mentionTweet) {
         // Check if this is a direct reply
         Optional<String> replyText = createReplyTo(mentionTweet);
         if (replyText.isPresent()) {
@@ -104,6 +108,17 @@ public abstract class TwitterBot {
             }
         }
         return Optional.empty();
+    }
+    //endregion
+
+    //region Listeners
+
+    public void addPostListener(Consumer<Status> listener) {
+        this.postListeners.add(listener);
+    }
+
+    private void notifyNewPostListeners(Status post) {
+        postListeners.forEach(f -> f.accept(post));
     }
     //endregion
 

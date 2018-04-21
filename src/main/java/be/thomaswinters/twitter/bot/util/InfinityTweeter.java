@@ -60,9 +60,7 @@ public class InfinityTweeter {
             }
 
             // Check for status
-            if (status.isPresent()) {
-                System.out.println("\nI posted a tweet! --> " + status.get().getText());
-            }
+            status.ifPresent(status1 -> System.out.println("\nI posted a tweet! --> " + status1.getText()));
 
 
             System.out.println("Listening for replies...");

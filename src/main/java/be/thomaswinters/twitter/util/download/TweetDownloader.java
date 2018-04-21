@@ -20,7 +20,7 @@ public class TweetDownloader {
     }
 
     private void downloadTo(File file) throws IOException, TwitterException {
-        Stream<Status> tweets = scouter.retriever();
+        Stream<Status> tweets = scouter.retrieve();
         String lines = tweets.map(Status::getText).collect(Collectors.joining("\n"));
         Files.write(lines, file, Charsets.UTF_16);
     }

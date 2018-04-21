@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 public interface ITweetRetriever {
     Stream<Status> retrieve(long sinceId);
 
-    default Stream<Status> retriever() {
+    default Stream<Status> retrieve() {
         return retrieve(0);
     }
 }

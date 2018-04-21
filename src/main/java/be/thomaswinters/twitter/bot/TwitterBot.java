@@ -1,6 +1,6 @@
 package be.thomaswinters.twitter.bot;
 
-import be.thomaswinters.twitter.bot.util.TwitterLoginUtils;
+import be.thomaswinters.twitter.bot.util.TwitterLoginUtil;
 import twitter4j.*;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public abstract class TwitterBot {
     }
 
     public TwitterBot(URL propertiesFile) throws IOException {
-        this(TwitterLoginUtils.getProperties(propertiesFile));
+        this(TwitterLoginUtil.getProperties(propertiesFile));
     }
     //endregion
 

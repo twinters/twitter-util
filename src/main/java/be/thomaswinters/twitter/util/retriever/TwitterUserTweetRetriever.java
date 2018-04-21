@@ -1,4 +1,4 @@
-package be.thomaswinters.twitter.util.scouter;
+package be.thomaswinters.twitter.util.retriever;
 
 import twitter4j.*;
 

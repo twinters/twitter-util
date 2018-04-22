@@ -1,6 +1,7 @@
 package be.thomaswinters.twitter.bot;
 
 import be.thomaswinters.twitter.bot.util.TwitterLoginUtil;
+import be.thomaswinters.twitter.util.TwitterUtil;
 import be.thomaswinters.twitter.util.analysis.TwitterAnalysisUtil;
 import be.thomaswinters.twitter.util.retriever.TwitterMentionsRetriever;
 import twitter4j.Status;
@@ -83,25 +84,6 @@ public abstract class TwitterBot {
         return new TwitterMentionsRetriever(twitterConnection)
                 .retrieve(mostRecentReply)
                 .sorted(Comparator.comparingLong(Status::getId));
-
-//        ResponseList<Status> timeline = twitterConnection.getUserTimeline(twitterConnection.getScreenName());
-//        OptionalLong minTimeline = timeline.stream().mapToLong(Status::getId).min();
-//
-//        Paging paging = new Paging(1, Integer.max(20, recentlyRepliedTo.size()));
-//        Stream<Status> unansweredMentions =
-//                twitterConnection
-//                        .getMentionsTimeline(paging)
-//                        .stream()
-//                        .filter(e -> !recentlyRepliedTo.contains(e.getId()));
-//        System.out.println("Recently replied to: " + recentlyRepliedTo);
-//        System.out.println("unansweredMentions: " + unansweredMentions.collect(Collectors.toList()));
-//
-//        // Make the mentions at least as recent as the least recent recent reply
-//        if (minTimeline.isPresent()) {
-//            unansweredMentions = unansweredMentions
-//                    .filter(e -> e.getId() > minTimeline.getAsLong());
-//        }
-//        return unansweredMentions;
     }
 
     protected Optional<Status> replyToStatus(Status mentionTweet) {
@@ -111,7 +93,12 @@ public abstract class TwitterBot {
                 System.out.println("REPLYING TO: " + mentionTweet.getText() + "\nREPLY: " + replyText.get() + "\n");
                 return Optional.of(reply(replyText.get(), mentionTweet));
             } catch (TwitterException twitEx) {
-                throw new RuntimeException(twitEx);
+                if (twitEx.exceededRateLimitation()) {
+                    TwitterUtil.waitForExceededRateLimitationReset();
+                    return replyToStatus(mentionTweet);
+                } else {
+                    throw new RuntimeException(twitEx);
+                }
             }
         }
         return Optional.empty();

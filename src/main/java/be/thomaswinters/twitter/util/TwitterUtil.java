@@ -2,6 +2,8 @@ package be.thomaswinters.twitter.util;
 
 import twitter4j.*;
 
+import java.util.concurrent.TimeUnit;
+
 public class TwitterUtil {
 
 
@@ -63,5 +65,13 @@ public class TwitterUtil {
     public static String removeTwitterWords(String text) {
         return text.replaceAll(TWITTER_USERNAME_REGEX, "")
                 .replaceAll(TWITTER_HASHTAG_REGEX, "");
+    }
+
+    public static void waitForExceededRateLimitationReset() {
+        try {
+            TimeUnit.MINUTES.sleep(15);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

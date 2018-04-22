@@ -27,7 +27,7 @@ public class TwitterLoginUtil {
 
     public static Twitter getTwitterFromEnvironment(String environmentPrefix) {
         return getTwitter(
-                System.getenv(environmentPrefix + "consumerkey"),
+                System.getenv(environmentPrefix + "consumerKey"),
                 System.getenv(environmentPrefix + "consumerSecret"),
                 System.getenv(environmentPrefix + "accessToken"),
                 System.getenv(environmentPrefix + "accessTokenSecret")

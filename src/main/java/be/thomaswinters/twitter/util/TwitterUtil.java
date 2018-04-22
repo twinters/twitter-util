@@ -37,22 +37,6 @@ public class TwitterUtil {
         return timeline.stream().mapToLong(e -> e.getId()).max().orElse(0l);
     }
 
-    /**
-     * Returns most recent tweet, excluding replies and retweets
-     *
-     * @return
-     * @throws TwitterException
-     */
-    public static long getLastRealTweet(Twitter twitter) throws TwitterException {
-        ResponseList<Status> timeline = twitter.getUserTimeline(twitter.getScreenName());
-        return timeline.stream()
-                .filter(
-                        e -> !e.getText().startsWith("@")
-                                && !e.getText().startsWith("RT : "))
-                .mapToLong(Status::getId)
-                .max()
-                .orElse(0l);
-    }
 
     public static boolean hasValidLength(String text) {
         return text.length() <= MAX_TWEET_LENGTH;

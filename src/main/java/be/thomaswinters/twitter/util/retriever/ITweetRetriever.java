@@ -8,6 +8,6 @@ public interface ITweetRetriever {
     Stream<Status> retrieve(long sinceId);
 
     default Stream<Status> retrieve() {
-        return retrieve(0);
+        return retrieve(1l);
     }
 }

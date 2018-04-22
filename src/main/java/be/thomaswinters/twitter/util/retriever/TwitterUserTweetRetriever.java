@@ -1,7 +1,10 @@
 package be.thomaswinters.twitter.util.retriever;
 
 import be.thomaswinters.twitter.util.retriever.util.PagingTweetDownloader;
-import twitter4j.*;
+import twitter4j.Paging;
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -23,14 +26,7 @@ public class TwitterUserTweetRetriever implements ITweetRetriever {
     public TwitterUserTweetRetriever(Twitter twitter, String user) {
         this(twitter, user, false, false);
     }
-
-    public TwitterUserTweetRetriever() throws IllegalStateException, TwitterException {
-        this(TwitterFactory.getSingleton(), getOwnUsername());
-    }
-
-    public static String getOwnUsername() throws IllegalStateException, TwitterException {
-        return new TwitterFactory().getInstance().getScreenName();
-    }
+    
 
     @Override
     public Stream<Status> retrieve(long sinceId) {

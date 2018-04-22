@@ -1,12 +1,12 @@
 package be.thomaswinters.twitter.util.download;
 
+import be.thomaswinters.twitter.bot.util.TwitterLoginUtil;
 import be.thomaswinters.twitter.util.retriever.ITweetRetriever;
 import be.thomaswinters.twitter.util.retriever.TwitterUserTweetRetriever;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import twitter4j.Status;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,8 +29,9 @@ public class TweetDownloader {
     public static void main(String[] args) throws IOException, TwitterException {
         String user = args[0];
         (new TweetDownloader(
-                new TwitterUserTweetRetriever(TwitterFactory.getSingleton(), user))).downloadTo(
-                new File("res/" + user + ".txt"));
+                new TwitterUserTweetRetriever(TwitterLoginUtil.getTwitterFromEnvironment(), user, false, false)))
+                .downloadTo(
+                        new File(user + ".txt"));
     }
 
 }

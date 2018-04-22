@@ -1,6 +1,7 @@
 package be.thomaswinters.twitter.bot.chatbot;
 
 import be.thomaswinters.bot.IChatBot;
+import be.thomaswinters.twitter.bot.chatbot.data.TwitterChatMessage;
 import twitter4j.Status;
 import twitter4j.Twitter;
 

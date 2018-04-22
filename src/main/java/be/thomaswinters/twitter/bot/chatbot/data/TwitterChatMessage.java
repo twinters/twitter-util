@@ -1,4 +1,4 @@
-package be.thomaswinters.twitter.bot.chatbot;
+package be.thomaswinters.twitter.bot.chatbot.data;
 
 import be.thomaswinters.bot.data.IChatMessage;
 import be.thomaswinters.bot.data.IChatUser;

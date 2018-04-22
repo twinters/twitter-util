@@ -34,12 +34,18 @@ public class TwitterLoginUtil {
         );
     }
 
+    public static Twitter getTwitterFromEnvironment() {
+        return getTwitterFromEnvironment("oauth.");
+    }
+
     public static Twitter getTwitter(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret) {
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setOAuthConsumerKey(consumerKey);
-        cb.setOAuthConsumerSecret(consumerSecret);
-        cb.setOAuthAccessToken(accessToken);
-        cb.setOAuthAccessTokenSecret(accessTokenSecret);
+        ConfigurationBuilder cb =
+                new ConfigurationBuilder()
+                        .setOAuthConsumerKey(consumerKey)
+                        .setOAuthConsumerSecret(consumerSecret)
+                        .setOAuthAccessToken(accessToken)
+                        .setOAuthAccessTokenSecret(accessTokenSecret)
+                        .setTweetModeExtended(true);
         return new TwitterFactory(cb.build()).getInstance();
 
     }

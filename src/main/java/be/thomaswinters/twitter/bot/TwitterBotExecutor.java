@@ -30,7 +30,7 @@ public class TwitterBotExecutor {
 
                     Optional<String> tweet = bot.prepareNewTweet();
                     if (tweet.isPresent()) {
-                        System.out.println(tweet.get());
+                        System.out.println(">> POSTED TWEET IN DEBUG: << : " + tweet.get());
                     } else {
                         System.out.println("Failed to prepare new tweet");
                     }
@@ -53,9 +53,13 @@ public class TwitterBotExecutor {
     }
 
 
-    public void run(String[] args) throws TwitterException {
+    public void run(String[] args, Object... otherArgumentObjects) throws TwitterException {
         TwitterBotArguments arguments = argumentsCreator.get();
-        JCommander.newBuilder().addObject(arguments).build().parse(args);
+        JCommander.Builder b = JCommander.newBuilder().addObject(arguments);
+        for (Object o : otherArgumentObjects) {
+            b = b.addObject(o);
+        }
+        b.build().parse(args);
         run(arguments);
     }
 }

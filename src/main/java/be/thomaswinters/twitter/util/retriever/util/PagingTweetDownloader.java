@@ -3,26 +3,47 @@ package be.thomaswinters.twitter.util.retriever.util;
 import twitter4j.Paging;
 import twitter4j.Status;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-public class PagingTweetDownloader implements Supplier<List<Status>> {
+public class PagingTweetDownloader {
 
     private final Function<Paging, List<Status>> retriever;
-    private Paging paging;
 
-    public PagingTweetDownloader(Function<Paging, List<Status>> retriever, long since) {
+    public PagingTweetDownloader(Function<Paging, List<Status>> retriever) {
         this.retriever = retriever;
-        this.paging = new Paging(0, 100);
-        paging.sinceId(since);
     }
 
-    public PagingTweetDownloader
-
-    public List<Status> get() {
-        List<Status> tweets = retriever.apply(paging);
-        paging.setPage(paging.getPage());
-        return tweets;
+    public Stream<Status> getTweets(long sinceId) {
+        Pager pager = new Pager(sinceId);
+        return Stream.generate(pager)
+                .takeWhile(list -> list.size() > 0)
+                .flatMap(List::stream);
     }
+
+    private class Pager implements Supplier<List<Status>> {
+
+        private Paging paging;
+        private boolean done;
+
+        public Pager(long sinceId) {
+            this.paging = new Paging(1, 100);
+            paging.sinceId(sinceId);
+        }
+
+        public List<Status> get() {
+            if (done) {
+                return new ArrayList<>();
+            }
+            List<Status> tweets = retriever.apply(paging);
+            done = tweets.isEmpty();
+            paging.setPage(paging.getPage() + 1);
+            return tweets;
+        }
+
+    }
+
 }

@@ -1,13 +1,19 @@
 package be.thomaswinters.twitter.bot;
 
 import be.thomaswinters.twitter.bot.util.TwitterLoginUtil;
-import twitter4j.*;
+import be.thomaswinters.twitter.util.analysis.TwitterAnalysisUtil;
+import be.thomaswinters.twitter.util.retriever.TwitterMentionsRetriever;
+import twitter4j.Status;
+import twitter4j.StatusUpdate;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -72,32 +78,32 @@ public abstract class TwitterBot {
     }
 
     private Stream<Status> getUnansweredTweets() throws IllegalStateException, TwitterException {
-        ResponseList<Status> timeline = twitterConnection.getUserTimeline(twitterConnection.getScreenName());
-        OptionalLong minTimeline = timeline.stream().mapToLong(Status::getId).min();
+        long mostRecentReply = TwitterAnalysisUtil.getLastReply(twitterConnection);
+        System.out.println(mostRecentReply);
+        return new TwitterMentionsRetriever(twitterConnection)
+                .retrieve(mostRecentReply);
 
-        Set<Long> recentlyRepliedTo = timeline
-                .stream()
-                .map(Status::getInReplyToStatusId)
-                .filter(e -> e > 0)
-                .collect(Collectors.toSet());
-
-        Paging paging = new Paging(1, Integer.max(20, recentlyRepliedTo.size()));
-        Stream<Status> unansweredMentions =
-                twitterConnection
-                        .getMentionsTimeline(paging)
-                        .stream()
-                        .filter(e -> !recentlyRepliedTo.contains(e.getId()));
-
-        // Make the mentions at least as recent as the least recent recent reply
-        if (minTimeline.isPresent()) {
-            unansweredMentions = unansweredMentions
-                    .filter(e -> e.getId() > minTimeline.getAsLong());
-        }
-        return unansweredMentions;
+//        ResponseList<Status> timeline = twitterConnection.getUserTimeline(twitterConnection.getScreenName());
+//        OptionalLong minTimeline = timeline.stream().mapToLong(Status::getId).min();
+//
+//        Paging paging = new Paging(1, Integer.max(20, recentlyRepliedTo.size()));
+//        Stream<Status> unansweredMentions =
+//                twitterConnection
+//                        .getMentionsTimeline(paging)
+//                        .stream()
+//                        .filter(e -> !recentlyRepliedTo.contains(e.getId()));
+//        System.out.println("Recently replied to: " + recentlyRepliedTo);
+//        System.out.println("unansweredMentions: " + unansweredMentions.collect(Collectors.toList()));
+//
+//        // Make the mentions at least as recent as the least recent recent reply
+//        if (minTimeline.isPresent()) {
+//            unansweredMentions = unansweredMentions
+//                    .filter(e -> e.getId() > minTimeline.getAsLong());
+//        }
+//        return unansweredMentions;
     }
 
     protected Optional<Status> replyToStatus(Status mentionTweet) {
-        // Check if this is a direct reply
         Optional<String> replyText = createReplyTo(mentionTweet);
         if (replyText.isPresent()) {
             try {

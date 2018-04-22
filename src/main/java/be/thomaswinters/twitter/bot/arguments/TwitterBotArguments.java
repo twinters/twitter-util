@@ -10,14 +10,11 @@ public class TwitterBotArguments {
     @Parameter(names = "-debug")
     protected boolean debug = false;
 
-    @Parameter(names = "-post")
-    protected boolean post = false;
-
-    @Parameter(names = "-reply")
-    protected boolean reply = false;
+    @Parameter(names = "-mode", converter = PostingModeConverter.class)
+    protected PostingMode mode = PostingMode.POST;
 
 
-    @Parameter(names = "-amountOfTimes")
+    @Parameter(names = "-times")
     protected int amountOfTimes = 1;
 
     public boolean isInfinity() {
@@ -33,10 +30,10 @@ public class TwitterBotArguments {
     }
 
     public boolean isPosting() {
-        return post;
+        return mode.allowsPosting();
     }
 
     public boolean isReplying() {
-        return reply;
+        return mode.allowsReplying();
     }
 }

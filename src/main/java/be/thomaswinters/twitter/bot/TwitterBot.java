@@ -111,7 +111,7 @@ public abstract class TwitterBot {
                 System.out.println("REPLYING TO: " + mentionTweet.getText() + "\nREPLY: " + replyText.get() + "\n");
                 return Optional.of(reply(replyText.get(), mentionTweet));
             } catch (TwitterException twitEx) {
-                twitEx.printStackTrace();
+                throw new RuntimeException(twitEx);
             }
         }
         return Optional.empty();

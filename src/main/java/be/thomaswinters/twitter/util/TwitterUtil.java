@@ -71,4 +71,13 @@ public class TwitterUtil {
         return mentionTweet.getText().toLowerCase().startsWith("@" + screenName.toLowerCase())
                 || mentionTweet.getInReplyToUserId() == userId;
     }
+
+    private static final String TWITTER_USERNAME_REGEX = "(?<=^|(?<=[^a-zA-Z0-9-\\.]))@[A-Za-z0-9-]+(?=[^a-zA-Z0-9-_\\.])";
+    private static final String TWITTER_HASHTAG_REGEX = "(?:\\s|\\A)[##]+([A-Za-z0-9-_]+)";
+
+
+    public static String removeTwitterWords(String text) {
+        return text.replaceAll(TWITTER_USERNAME_REGEX, "")
+                .replaceAll(TWITTER_HASHTAG_REGEX, "");
+    }
 }

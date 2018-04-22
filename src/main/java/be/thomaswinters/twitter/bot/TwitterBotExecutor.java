@@ -1,6 +1,5 @@
 package be.thomaswinters.twitter.bot;
 
-import be.thomaswinters.twitter.bot.arguments.PostingMode;
 import be.thomaswinters.twitter.bot.arguments.TwitterBotArguments;
 import com.beust.jcommander.JCommander;
 import twitter4j.TwitterException;
@@ -24,10 +23,10 @@ public class TwitterBotExecutor {
 
     public void run(TwitterBotArguments arguments) throws TwitterException {
 
-        for (int i = 0; i < arguments.getAmountOfTimes(); i++) {
+        for (int i = 0; arguments.isInfinity() || i < arguments.getAmountOfTimes(); i++) {
 
             if (arguments.isDebug()) {
-                if (arguments.getPostingMode().equals(PostingMode.POST)) {
+                if (arguments.isPosting()) {
 
                     Optional<String> tweet = bot.prepareNewTweet();
                     if (tweet.isPresent()) {
@@ -36,14 +35,16 @@ public class TwitterBotExecutor {
                         System.out.println("Failed to prepare new tweet");
                     }
                     System.out.println("\n\n");
-                } else if (arguments.getPostingMode().equals(PostingMode.REPLY)) {
+                }
+                if (arguments.isReplying()) {
                     throw new RuntimeException("Debugging replies not supported yet");
                 }
 
             } else {
-                if (arguments.getPostingMode().equals(PostingMode.POST)) {
+                if (arguments.isPosting()) {
                     bot.postNewTweet();
-                } else if (arguments.getPostingMode().equals(PostingMode.REPLY)) {
+                }
+                if (arguments.isReplying()) {
                     bot.replyToAllUnrepliedMentions();
                 }
 

@@ -4,23 +4,21 @@ import com.beust.jcommander.Parameter;
 
 public class TwitterBotArguments {
 
-    @Parameter(names = "-mode", converter = PostingModeConverter.class)
-    protected PostingMode postingMode = PostingMode.POST;
-
     @Parameter(names = "-infinity")
     protected boolean infinity = false;
 
     @Parameter(names = "-debug")
     protected boolean debug = false;
 
+    @Parameter(names = "-post")
+    protected boolean post = false;
+
+    @Parameter(names = "-reply")
+    protected boolean reply = false;
+
 
     @Parameter(names = "-amountOfTimes")
     protected int amountOfTimes = 1;
-
-
-    public PostingMode getPostingMode() {
-        return postingMode;
-    }
 
     public boolean isInfinity() {
         return infinity;
@@ -32,5 +30,13 @@ public class TwitterBotArguments {
 
     public int getAmountOfTimes() {
         return amountOfTimes;
+    }
+
+    public boolean isPosting() {
+        return post;
+    }
+
+    public boolean isReplying() {
+        return reply;
     }
 }

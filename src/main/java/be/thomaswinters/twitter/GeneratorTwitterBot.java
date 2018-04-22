@@ -2,10 +2,12 @@ package be.thomaswinters.twitter;
 
 import be.thomaswinters.bot.IChatBot;
 import be.thomaswinters.bot.bots.TextGeneratorChatBotAdaptor;
+import be.thomaswinters.generator.generators.FilteringGenerator;
 import be.thomaswinters.generator.generators.IGenerator;
 import be.thomaswinters.twitter.bot.TwitterBot;
 import be.thomaswinters.twitter.bot.chatbot.ITwitterChatBot;
 import be.thomaswinters.twitter.bot.chatbot.TwitterChatBotAdaptor;
+import be.thomaswinters.twitter.util.TwitterUtil;
 import twitter4j.Status;
 import twitter4j.Twitter;
 
@@ -17,7 +19,7 @@ public class GeneratorTwitterBot extends TwitterBot {
 
     public GeneratorTwitterBot(Twitter twitterConnection, IGenerator<String> textGeneratorBot, ITwitterChatBot twitterChatBot) {
         super(twitterConnection);
-        this.textGeneratorBot = textGeneratorBot;
+        this.textGeneratorBot = new FilteringGenerator<>(textGeneratorBot, TwitterUtil::hasValidLength);
         this.twitterChatBot = twitterChatBot;
     }
 

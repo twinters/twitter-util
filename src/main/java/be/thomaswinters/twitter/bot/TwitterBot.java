@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -44,9 +45,9 @@ public abstract class TwitterBot {
     }
 
     protected Status reply(String replyText, Status toTweet) throws TwitterException {
-        StatusUpdate reply = new StatusUpdate("@" + toTweet.getUser().getScreenName() + " " + replyText);
-        reply.inReplyToStatusId(toTweet.getId());
-        Status post = twitterConnection.updateStatus(reply);
+        StatusUpdate replyPreparation = new StatusUpdate("@" + toTweet.getUser().getScreenName() + " " + replyText);
+        replyPreparation.inReplyToStatusId(toTweet.getId());
+        Status post = twitterConnection.updateStatus(replyPreparation);
         notifyNewPostListeners(post);
         return post;
     }
@@ -79,9 +80,9 @@ public abstract class TwitterBot {
 
     private Stream<Status> getUnansweredTweets() throws IllegalStateException, TwitterException {
         long mostRecentReply = TwitterAnalysisUtil.getLastReply(twitterConnection);
-        System.out.println(mostRecentReply);
         return new TwitterMentionsRetriever(twitterConnection)
-                .retrieve(mostRecentReply);
+                .retrieve(mostRecentReply)
+                .sorted(Comparator.comparingLong(Status::getId));
 
 //        ResponseList<Status> timeline = twitterConnection.getUserTimeline(twitterConnection.getScreenName());
 //        OptionalLong minTimeline = timeline.stream().mapToLong(Status::getId).min();

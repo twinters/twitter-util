@@ -29,7 +29,8 @@ public class TweetDownloader {
     public static void main(String[] args) throws IOException, TwitterException {
         String user = args[0];
         (new TweetDownloader(
-                new TwitterUserTweetRetriever(TwitterLoginUtil.getTwitterFromEnvironment(), user, false, false)))
+                new TwitterUserTweetRetriever(
+                        TwitterLoginUtil.getTwitterFromEnvironment(), user, false, false)))
                 .downloadTo(
                         new File(user + ".txt"));
     }

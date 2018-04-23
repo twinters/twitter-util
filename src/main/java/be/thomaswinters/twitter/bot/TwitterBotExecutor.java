@@ -18,7 +18,7 @@ public class TwitterBotExecutor {
     }
 
     public TwitterBotExecutor(TwitterBot bot) {
-        this(bot, () -> new TwitterBotArguments());
+        this(bot, TwitterBotArguments::new);
     }
 
     public void run(TwitterBotArguments arguments) throws TwitterException {
@@ -53,13 +53,9 @@ public class TwitterBotExecutor {
     }
 
 
-    public void run(String[] args, Object... otherArgumentObjects) throws TwitterException {
+    public void run(String[] args) throws TwitterException {
         TwitterBotArguments arguments = argumentsCreator.get();
-        JCommander.Builder b = JCommander.newBuilder().addObject(arguments);
-        for (Object o : otherArgumentObjects) {
-            b = b.addObject(o);
-        }
-        b.build().parse(args);
+        JCommander.newBuilder().addObject(arguments).build().parse(args);
         run(arguments);
     }
 }

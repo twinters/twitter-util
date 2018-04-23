@@ -11,6 +11,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.OptionalLong;
 
+@Deprecated
 public class InfinityTweeter {
     private final TwitterBot bot;
     private final int minutesOfPostingSleep;

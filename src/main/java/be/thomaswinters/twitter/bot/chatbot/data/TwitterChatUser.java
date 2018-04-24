@@ -1,7 +1,9 @@
 package be.thomaswinters.twitter.bot.chatbot.data;
 
-import be.thomaswinters.bot.data.IChatUser;
+import be.thomaswinters.chatbot.data.IChatUser;
 import twitter4j.User;
+
+import java.util.Optional;
 
 public class TwitterChatUser implements IChatUser {
     private final User user;
@@ -11,8 +13,8 @@ public class TwitterChatUser implements IChatUser {
     }
 
     @Override
-    public String getFullName() {
-        return user.getName();
+    public Optional<String> getFullName() {
+        return Optional.of(user.getName());
     }
 
     @Override

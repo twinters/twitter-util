@@ -1,6 +1,9 @@
 package be.thomaswinters.twitter.bot;
 
+import be.thomaswinters.chatbot.IChatBot;
+import be.thomaswinters.chatbot.ui.ChatbotCLI;
 import be.thomaswinters.twitter.bot.arguments.TwitterBotArguments;
+import be.thomaswinters.twitter.util.IExtractableChatBot;
 import com.beust.jcommander.JCommander;
 import twitter4j.TwitterException;
 
@@ -37,7 +40,12 @@ public class TwitterBotExecutor {
                     System.out.println("\n\n");
                 }
                 if (arguments.isReplying()) {
-                    throw new RuntimeException("Debugging replies not supported yet");
+                    if (bot instanceof IExtractableChatBot) {
+                        Optional<IChatBot> botOptional = ((IExtractableChatBot) bot).getChatBot();
+                        botOptional.ifPresent(bot -> new ChatbotCLI(bot).run());
+                    }
+                    throw new RuntimeException("Debugging replies not fully supported yet. " +
+                            "Please implement IExtractableChatBot to debug replies");
                 }
 
             } else {

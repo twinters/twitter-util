@@ -1,4 +1,6 @@
 include ':generator-util'
 project(':generator-util').projectDir = new File(settingsDir, '../generator-util')
+include ':chatbot-util'
+project(':chatbot-util').projectDir = new File(settingsDir, '../chatbot-util')
 rootProject.name = 'twitter-util'
 

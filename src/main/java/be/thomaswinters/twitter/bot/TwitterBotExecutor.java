@@ -42,7 +42,8 @@ public class TwitterBotExecutor {
                 if (arguments.isReplying()) {
                     if (bot instanceof IExtractableChatBot) {
                         Optional<IChatBot> botOptional = ((IExtractableChatBot) bot).getChatBot();
-                        botOptional.ifPresent(bot -> new ChatbotGUI(bot).run());
+                        String botName = bot.getTwitterConnection().getScreenName();
+                        botOptional.ifPresent(chatbot -> new ChatbotGUI(chatbot, botName).run());
                     } else {
                         throw new RuntimeException("Debugging replies not fully supported yet. " +
                                 "Please implement IExtractableChatBot to debug replies");

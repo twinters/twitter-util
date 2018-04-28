@@ -29,7 +29,9 @@ public class GeneratorTwitterBot extends TwitterBot implements IExtractableChatB
     }
 
     public GeneratorTwitterBot(Twitter twitterConnection, IGenerator<String> textGeneratorBot) {
-        this(twitterConnection, textGeneratorBot, new TwitterChatBotAdaptor(twitterConnection, new TextGeneratorChatBotAdaptor(textGeneratorBot)));
+        this(twitterConnection, textGeneratorBot,
+                new TwitterChatBotAdaptor(twitterConnection,
+                        new TextGeneratorChatBotAdaptor(textGeneratorBot)));
     }
 
 

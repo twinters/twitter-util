@@ -35,7 +35,7 @@ public abstract class TwitterBot {
     //endregion
 
     //region twitterConnection
-    protected Twitter getTwitterConnection() {
+    public Twitter getTwitterConnection() {
         return twitterConnection;
     }
 

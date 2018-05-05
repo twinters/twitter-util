@@ -1,4 +1,4 @@
-package be.thomaswinters.twitter.bot.util;
+package be.thomaswinters.twitter.util;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
-public class TwitterLoginUtil {
+public class TwitterLogin {
     public static Twitter getProperties(URL propertiesFile) throws IOException {
 
         Properties properties = new Properties();

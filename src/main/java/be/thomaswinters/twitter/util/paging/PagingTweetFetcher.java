@@ -1,4 +1,4 @@
-package be.thomaswinters.twitter.tweetsfetcher.util;
+package be.thomaswinters.twitter.util.paging;
 
 import twitter4j.Paging;
 import twitter4j.Status;
@@ -9,11 +9,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class PagingTweetDownloader {
+public class PagingTweetFetcher {
 
     private final Function<Paging, List<Status>> retriever;
 
-    public PagingTweetDownloader(Function<Paging, List<Status>> retriever) {
+    public PagingTweetFetcher(Function<Paging, List<Status>> retriever) {
         this.retriever = retriever;
     }
 

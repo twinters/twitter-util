@@ -1,8 +1,8 @@
 package be.thomaswinters.twitter.util.download;
 
-import be.thomaswinters.twitter.bot.util.TwitterLoginUtil;
 import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
 import be.thomaswinters.twitter.tweetsfetcher.UserTweetsFetcher;
+import be.thomaswinters.twitter.util.TwitterLogin;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import twitter4j.Status;
@@ -30,7 +30,7 @@ public class TweetDownloader {
         String user = args[0];
         (new TweetDownloader(
                 new UserTweetsFetcher(
-                        TwitterLoginUtil.getTwitterFromEnvironment(), user, false, false)))
+                        TwitterLogin.getTwitterFromEnvironment(), user, false, false)))
                 .downloadTo(
                         new File(user + ".txt"));
     }

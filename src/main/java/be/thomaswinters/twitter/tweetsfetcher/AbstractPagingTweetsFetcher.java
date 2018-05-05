@@ -1,6 +1,6 @@
 package be.thomaswinters.twitter.tweetsfetcher;
 
-import be.thomaswinters.twitter.tweetsfetcher.util.PagingTweetDownloader;
+import be.thomaswinters.twitter.util.paging.PagingTweetFetcher;
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -18,7 +18,7 @@ public abstract class AbstractPagingTweetsFetcher implements ITweetsFetcher {
 
     @Override
     public Stream<Status> retrieve(long sinceId) {
-        return new PagingTweetDownloader(this::getTweetsFromPage).getTweets(sinceId);
+        return new PagingTweetFetcher(this::getTweetsFromPage).getTweets(sinceId);
     }
 
     protected Twitter getTwitter() {

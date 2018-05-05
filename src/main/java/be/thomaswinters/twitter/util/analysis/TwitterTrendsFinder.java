@@ -1,6 +1,7 @@
 package be.thomaswinters.twitter.util.analysis;
 
 import com.google.common.collect.ImmutableList;
+import twitter4j.Trend;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -51,7 +52,7 @@ public class TwitterTrendsFinder {
 //		System.out.println("Fetching trends in " + location);
         Twitter twitter = TwitterFactory.getSingleton();
         List<String> trends = Stream.of(twitter.trends().getPlaceTrends(location).getTrends())
-                .map(e -> e.getName()).collect(Collectors.toList());
+                .map(Trend::getName).collect(Collectors.toList());
 
         cache.put(location, new TrendsCache(LocalDateTime.now(), trends));
 

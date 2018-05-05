@@ -10,11 +10,11 @@ import java.util.function.Predicate;
 /**
  * Filter for filtering out tweets that has already been interacted with
  */
-public class AlreadyParticipatedFilteredTweetsFetcher implements Predicate<Status> {
+public class AlreadyParticipatedFilter implements Predicate<Status> {
     private final Twitter twitter;
     private final String mentionTag;
 
-    public AlreadyParticipatedFilteredTweetsFetcher(Twitter twitter) throws TwitterException {
+    public AlreadyParticipatedFilter(Twitter twitter) throws TwitterException {
         this.twitter = twitter;
         this.mentionTag = "@" + twitter.getScreenName();
     }

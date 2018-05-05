@@ -1,6 +1,6 @@
 package be.thomaswinters.twitter.tweetsfetcher;
 
-import be.thomaswinters.twitter.tweetsfetcher.util.PagingTweetDownloader;
+import be.thomaswinters.twitter.util.paging.PagingTweetFetcher;
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -31,7 +31,7 @@ public class UserTweetsFetcher implements ITweetsFetcher {
     @Override
     public Stream<Status> retrieve(long sinceId) {
 
-        PagingTweetDownloader tweetDownloader = new PagingTweetDownloader(this::getUserTimeLine);
+        PagingTweetFetcher tweetDownloader = new PagingTweetFetcher(this::getUserTimeLine);
         return tweetDownloader.getTweets(sinceId)
                 .filter(e -> allowReplies || e.getInReplyToStatusId() <= 0)
                 .filter(e -> allowRetweets || !e.isRetweet());

@@ -20,7 +20,14 @@ public class TwitterHomeRetriever implements ITweetRetriever {
 
     @Override
     public Stream<Status> retrieve(long sinceId) {
-        return new PagingTweetDownloader(this::getHomeTweets).getTweets(sinceId);
+        try {
+            long ownId = twitter.getId();
+            return new PagingTweetDownloader(this::getHomeTweets)
+                    .getTweets(sinceId)
+                    .filter(status -> status.getUser().getId() != ownId);
+        } catch (TwitterException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<Status> getHomeTweets(Paging page) {

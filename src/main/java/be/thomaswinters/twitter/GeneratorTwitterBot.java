@@ -7,9 +7,9 @@ import be.thomaswinters.generator.generators.IGenerator;
 import be.thomaswinters.twitter.bot.TwitterBot;
 import be.thomaswinters.twitter.bot.chatbot.ITwitterChatBot;
 import be.thomaswinters.twitter.bot.chatbot.TwitterChatBotAdaptor;
+import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
 import be.thomaswinters.twitter.util.IExtractableChatBot;
 import be.thomaswinters.twitter.util.TwitterUtil;
-import be.thomaswinters.twitter.util.retriever.ITweetsFetcher;
 import twitter4j.Status;
 import twitter4j.Twitter;
 

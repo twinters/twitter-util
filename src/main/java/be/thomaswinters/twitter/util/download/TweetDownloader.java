@@ -1,8 +1,8 @@
 package be.thomaswinters.twitter.util.download;
 
 import be.thomaswinters.twitter.bot.util.TwitterLoginUtil;
-import be.thomaswinters.twitter.util.retriever.ITweetsFetcher;
-import be.thomaswinters.twitter.util.retriever.UserTweetsFetcher;
+import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
+import be.thomaswinters.twitter.tweetsfetcher.UserTweetsFetcher;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import twitter4j.Status;

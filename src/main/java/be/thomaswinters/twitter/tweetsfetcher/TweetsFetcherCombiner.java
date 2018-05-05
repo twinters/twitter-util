@@ -1,4 +1,4 @@
-package be.thomaswinters.twitter.util.retriever;
+package be.thomaswinters.twitter.tweetsfetcher;
 
 import com.google.common.collect.ImmutableList;
 import twitter4j.Status;

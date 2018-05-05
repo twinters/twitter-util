@@ -1,9 +1,9 @@
 package be.thomaswinters.twitter.bot;
 
+import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
+import be.thomaswinters.twitter.tweetsfetcher.MentionTweetsFetcher;
 import be.thomaswinters.twitter.util.TwitterUtil;
 import be.thomaswinters.twitter.util.analysis.TwitterAnalysisUtil;
-import be.thomaswinters.twitter.util.retriever.ITweetsFetcher;
-import be.thomaswinters.twitter.util.retriever.MentionTweetsFetcher;
 import com.google.common.collect.ImmutableList;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;

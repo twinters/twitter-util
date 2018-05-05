@@ -1,6 +1,6 @@
-package be.thomaswinters.twitter.util.retriever;
+package be.thomaswinters.twitter.tweetsfetcher;
 
-import be.thomaswinters.twitter.util.retriever.util.PagingTweetDownloader;
+import be.thomaswinters.twitter.tweetsfetcher.util.PagingTweetDownloader;
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;

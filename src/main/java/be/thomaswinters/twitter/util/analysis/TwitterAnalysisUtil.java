@@ -1,6 +1,6 @@
 package be.thomaswinters.twitter.util.analysis;
 
-import be.thomaswinters.twitter.util.retriever.UserTweetsFetcher;
+import be.thomaswinters.twitter.tweetsfetcher.UserTweetsFetcher;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;

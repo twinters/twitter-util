@@ -1,37 +1,43 @@
 package be.thomaswinters.twitter.bot;
 
-import be.thomaswinters.twitter.bot.util.TwitterLoginUtil;
 import be.thomaswinters.twitter.util.TwitterUtil;
 import be.thomaswinters.twitter.util.analysis.TwitterAnalysisUtil;
+import be.thomaswinters.twitter.util.retriever.ITweetRetriever;
 import be.thomaswinters.twitter.util.retriever.TwitterMentionsRetriever;
+import com.google.common.collect.ImmutableList;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 public abstract class TwitterBot {
 
+    public static final Function<Twitter, ITweetRetriever> MENTIONS_RETRIEVER = TwitterMentionsRetriever::new;
+
     private final Twitter twitterConnection;
+    private final Collection<ITweetRetriever> tweetsToAnswerRetrievers;
     private final Collection<Consumer<Status>> postListeners = new ArrayList<>();
 
     //region Constructor
-    public TwitterBot(Twitter twitterConnection) {
+    public TwitterBot(Twitter twitterConnection, Collection<Function<Twitter, ITweetRetriever>> tweetsToAnswerRetrievers) {
         this.twitterConnection = twitterConnection;
+        this.tweetsToAnswerRetrievers = ImmutableList.copyOf(
+                tweetsToAnswerRetrievers
+                        .stream()
+                        .map(e -> e.apply(twitterConnection))
+                        .collect(Collectors.toList()));
     }
 
-    public TwitterBot(URL propertiesFile) throws IOException {
-        this(TwitterLoginUtil.getProperties(propertiesFile));
+    public TwitterBot(Twitter twitterConnection) {
+        this(twitterConnection, Collections.singleton(MENTIONS_RETRIEVER));
     }
+
     //endregion
 
     //region twitterConnection

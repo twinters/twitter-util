@@ -1,6 +1,6 @@
 package be.thomaswinters.twitter.tweetsfetcher;
 
-import be.thomaswinters.twitter.exception.TwitterExceptionUnchecker;
+import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.filter.FilteredTweetsFetcher;
 import be.thomaswinters.twitter.tweetsfetcher.filter.UserFilteredTweetsFetcher;
 import twitter4j.Status;
@@ -21,14 +21,14 @@ public interface ITweetsFetcher {
     }
 
     default ITweetsFetcher filterOutOwnTweets(Twitter twitter) {
-        return TwitterExceptionUnchecker.uncheck(UserFilteredTweetsFetcher::new,this, twitter);
+        return TwitterUnchecker.uncheck(UserFilteredTweetsFetcher::new,this, twitter);
     }
 
     default ITweetsFetcher filterOutRetweets() {
-        return  TwitterExceptionUnchecker.uncheck(FilteredTweetsFetcher::new,this, FilteredTweetsFetcher.RETWEETS_REJECTER);
+        return  TwitterUnchecker.uncheck(FilteredTweetsFetcher::new,this, FilteredTweetsFetcher.RETWEETS_REJECTER);
     }
 
     default ITweetsFetcher filterOutReplies() {
-        return  TwitterExceptionUnchecker.uncheck(FilteredTweetsFetcher::new, this, FilteredTweetsFetcher.REPLY_REJECTER);
+        return  TwitterUnchecker.uncheck(FilteredTweetsFetcher::new, this, FilteredTweetsFetcher.REPLY_REJECTER);
     }
 }

@@ -3,6 +3,7 @@ package be.thomaswinters.twitter.tweetsfetcher;
 import com.google.common.collect.ImmutableList;
 import twitter4j.Status;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Stream;
 
@@ -11,6 +12,10 @@ public class TweetsFetcherCombiner implements ITweetsFetcher {
 
     public TweetsFetcherCombiner(Collection<? extends ITweetsFetcher> tweetRetrievers) {
         this.tweetRetrievers = ImmutableList.copyOf(tweetRetrievers);
+    }
+
+    public TweetsFetcherCombiner(ITweetsFetcher... tweetsFetchers) {
+        this(Arrays.asList(tweetsFetchers));
     }
 
     @Override

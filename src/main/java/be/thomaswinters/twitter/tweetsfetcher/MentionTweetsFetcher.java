@@ -1,6 +1,6 @@
 package be.thomaswinters.twitter.tweetsfetcher;
 
-import be.thomaswinters.twitter.exception.TwitterExceptionUnchecker;
+import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -15,6 +15,6 @@ public class MentionTweetsFetcher extends AbstractPagingTweetsFetcher {
 
     @Override
     protected List<Status> getTweetsFromPage(Paging page) {
-        return TwitterExceptionUnchecker.uncheck(getTwitter()::getMentionsTimeline, page);
+        return TwitterUnchecker.uncheck(getTwitter()::getMentionsTimeline, page);
     }
 }

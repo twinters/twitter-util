@@ -6,8 +6,6 @@ import twitter4j.Status;
 import java.util.stream.Stream;
 
 public abstract class AbstractFilteredTweetsFetcher implements ITweetsFetcher {
-
-
     private final ITweetsFetcher innerFetcher;
 
     public AbstractFilteredTweetsFetcher(ITweetsFetcher innerFetcher) {

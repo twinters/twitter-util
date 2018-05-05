@@ -1,5 +1,7 @@
 package be.thomaswinters.twitter.userfetcher;
 
+import twitter4j.User;
+
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAmount;
 import java.util.List;
@@ -10,7 +12,7 @@ public class CachedUserFetcher  implements IUserFetcher {
     private final IUserFetcher innerFetcher;
     private final TemporalAmount allowedCachingTime;
 
-    private List<Long> cache;
+    private List<User> cache;
     private LocalDateTime lastCacheTime;
 
 
@@ -20,9 +22,9 @@ public class CachedUserFetcher  implements IUserFetcher {
     }
 
     @Override
-    public Stream<Long> fetchUserIds() {
+    public Stream<User> fetchUsers() {
         if (cache == null || LocalDateTime.now().isAfter(lastCacheTime.plus(allowedCachingTime))) {
-            cache = innerFetcher.fetchUserIds().collect(Collectors.toList());
+            cache = innerFetcher.fetchUsers().collect(Collectors.toList());
             lastCacheTime = LocalDateTime.now();
         }
         return cache.stream();

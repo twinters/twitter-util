@@ -107,4 +107,8 @@ public class UncheckedTwitterException extends RuntimeException implements Twitt
         twitterException.setStackTrace(stackTrace);
     }
 
+    @Override
+    public String toString() {
+        return twitterException.toString();
+    }
 }

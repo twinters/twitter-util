@@ -51,8 +51,12 @@ public class TwitterFollower {
         return getRelationship(user).isSourceFollowedByTarget();
     }
 
-    public void unfollow(User tweetPoster) throws TwitterException {
-        twitter.destroyFriendship(tweetPoster.getId());
-        cache.invalidate(tweetPoster.getId());
+    public void unfollow(User user) throws TwitterException {
+        twitter.destroyFriendship(user.getId());
+        cache.invalidate(user.getId());
+    }
+    public void follow(User user) throws TwitterException {
+        twitter.createFriendship(user.getId());
+        cache.invalidate(user.getId());
     }
 }

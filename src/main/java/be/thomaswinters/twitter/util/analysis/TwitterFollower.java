@@ -52,10 +52,12 @@ public class TwitterFollower {
     }
 
     public void unfollow(User user) throws TwitterException {
+        System.out.println("UNFOLLOWED: " + user.getScreenName());
         twitter.destroyFriendship(user.getId());
         cache.invalidate(user.getId());
     }
     public void follow(User user) throws TwitterException {
+        System.out.println("STARTED FOLLOWING: " + user.getScreenName());
         twitter.createFriendship(user.getId());
         cache.invalidate(user.getId());
     }

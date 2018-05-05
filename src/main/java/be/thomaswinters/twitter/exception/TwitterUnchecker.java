@@ -22,7 +22,7 @@ public class TwitterUnchecker {
 
     @FunctionalInterface
     public interface Function_WithTwitterExceptions<T, R, E extends TwitterException> {
-        R apply(T t) throws E;
+        R apply(T t) throws TwitterException;
     }
     @FunctionalInterface
     public interface BiFunction_WithTwitterExceptions<T, S, R, E extends TwitterException> {
@@ -128,6 +128,16 @@ public class TwitterUnchecker {
         } catch (TwitterException exception) {
             throwAsUnchecked(exception);
             return null;
+        }
+    }
+    /**
+     * uncheck(Class::forName, "xxx");
+     */
+    public static <T, E extends TwitterException> void uncheckConsumer(Consumer_WithTwitterExceptions<T, E> consumer, T t) {
+        try {
+            consumer.accept(t);
+        } catch (TwitterException exception) {
+            throwAsUnchecked(exception);
         }
     }
     /**

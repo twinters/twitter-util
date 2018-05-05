@@ -6,13 +6,12 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 
-import java.util.stream.Stream;
+public class UserFilteredTweetsFetcher extends AbstractFilteredTweetsFetcher {
+    private final long userId;
 
-public class UserFilteredTweetsFetcher implements ITweetsFetcher {
-    private final FilteredTweetsFetcher filteredFetcher;
-
-    public UserFilteredTweetsFetcher(ITweetsFetcher innerFetcher, long userIdToBlock) {
-        this.filteredFetcher = new FilteredTweetsFetcher(innerFetcher, status -> status.getUser().getId() != userIdToBlock);
+    public UserFilteredTweetsFetcher(ITweetsFetcher innerFetcher, long userId) {
+        super(innerFetcher);
+        this.userId = userId;
     }
 
     public UserFilteredTweetsFetcher(ITweetsFetcher innerFetcher, User user) {
@@ -24,7 +23,7 @@ public class UserFilteredTweetsFetcher implements ITweetsFetcher {
     }
 
     @Override
-    public Stream<Status> retrieve(long sinceId) {
-        return filteredFetcher.retrieve(sinceId);
+    public boolean isAllowed(Status status) {
+        return status.getUser().getId() != userId;
     }
 }

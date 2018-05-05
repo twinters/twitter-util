@@ -1,6 +1,7 @@
 package be.thomaswinters.twitter.tweetsfetcher.filter;
 
 import be.thomaswinters.sentence.SentenceUtil;
+import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -26,6 +27,7 @@ public class AlreadyParticipatedFilter implements Predicate<Status> {
 
     /**
      * Returns false (=not allowed) if the user has already participated in the conversation
+     *
      * @param status
      * @return
      */
@@ -35,17 +37,13 @@ public class AlreadyParticipatedFilter implements Predicate<Status> {
         if (userIsPartOfTweet(status)) {
             return false;
         }
-        try {
-            while (current.getInReplyToStatusId() > 0L) {
-                current = twitter.showStatus(current.getInReplyToStatusId());
-                if (userIsPartOfTweet(current)){
-                    return false;
-                }
+        while (current.getInReplyToStatusId() > 0L) {
+            current = TwitterUnchecker.uncheck(twitter::showStatus, current.getInReplyToStatusId());
+            assert current != null;
+            if (userIsPartOfTweet(current)) {
+                return false;
             }
-        } catch (TwitterException e) {
-            e.printStackTrace();
         }
-
-        return false;
+        return true;
     }
 }

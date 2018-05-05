@@ -11,27 +11,27 @@ public class TwitterExceptionUnchecker {
 
 
     @FunctionalInterface
-    public interface Consumer_WithExceptions<T, E extends TwitterException> {
+    public interface Consumer_WithTwitterExceptions<T, E extends TwitterException> {
         void accept(T t) throws E;
     }
 
     @FunctionalInterface
-    public interface BiConsumer_WithExceptions<T, U, E extends TwitterException> {
+    public interface BiConsumer_WithTwitterExceptions<T, U, E extends TwitterException> {
         void accept(T t, U u) throws E;
     }
 
     @FunctionalInterface
-    public interface Function_WithExceptions<T, R, E extends TwitterException> {
+    public interface Function_WithTwitterExceptions<T, R, E extends TwitterException> {
         R apply(T t) throws E;
     }
 
     @FunctionalInterface
-    public interface Supplier_WithExceptions<T, E extends TwitterException> {
+    public interface Supplier_WithTwitterExceptions<T, E extends TwitterException> {
         T get() throws E;
     }
 
     @FunctionalInterface
-    public interface Runnable_WithExceptions<E extends TwitterException> {
+    public interface Runnable_WithTwitterExceptions<E extends TwitterException> {
         void run() throws E;
     }
 
@@ -40,7 +40,7 @@ public class TwitterExceptionUnchecker {
      * System.out.println(Class.forName(name)))); or
      * .forEach(rethrowConsumer(ClassNameUtil::println));
      */
-    public static <T, E extends TwitterException> Consumer<T> rethrowConsumer(Consumer_WithExceptions<T, E> consumer) {
+    public static <T, E extends TwitterException> Consumer<T> rethrowConsumer(Consumer_WithTwitterExceptions<T, E> consumer) {
         return t -> {
             try {
                 consumer.accept(t);
@@ -51,7 +51,7 @@ public class TwitterExceptionUnchecker {
     }
 
     public static <T, U, E extends TwitterException> BiConsumer<T, U> rethrowBiConsumer(
-            BiConsumer_WithExceptions<T, U, E> biConsumer) {
+            BiConsumer_WithTwitterExceptions<T, U, E> biConsumer) {
         return (t, u) -> {
             try {
                 biConsumer.accept(t, u);
@@ -66,7 +66,7 @@ public class TwitterExceptionUnchecker {
      * .map(rethrowFunction(Class::forName))
      */
     public static <T, R, E extends TwitterException> Function<T, R> rethrowFunction(
-            Function_WithExceptions<T, R, E> function) {
+            Function_WithTwitterExceptions<T, R, E> function) {
         return t -> {
             try {
                 return function.apply(t);
@@ -81,7 +81,7 @@ public class TwitterExceptionUnchecker {
      * rethrowSupplier(() -> new StringJoiner(new String(new byte[]{77, 97, 114,
      * 107}, "UTF-8"))),
      */
-    public static <T, E extends TwitterException> Supplier<T> rethrowSupplier(Supplier_WithExceptions<T, E> function) {
+    public static <T, E extends TwitterException> Supplier<T> rethrowSupplier(Supplier_WithTwitterExceptions<T, E> function) {
         return () -> {
             try {
                 return function.get();
@@ -95,7 +95,7 @@ public class TwitterExceptionUnchecker {
     /**
      * uncheck(() -> Class.forName("xxx"));
      */
-    public static void uncheck(@SuppressWarnings("rawtypes") Runnable_WithExceptions t) {
+    public static void uncheck(@SuppressWarnings("rawtypes") Runnable_WithTwitterExceptions t) {
         try {
             t.run();
         } catch (TwitterException exception) {
@@ -106,7 +106,7 @@ public class TwitterExceptionUnchecker {
     /**
      * uncheck(() -> Class.forName("xxx"));
      */
-    public static <R, E extends TwitterException> R uncheck(Supplier_WithExceptions<R, E> supplier) {
+    public static <R, E extends TwitterException> R uncheck(Supplier_WithTwitterExceptions<R, E> supplier) {
         try {
             return supplier.get();
         } catch (TwitterException exception) {
@@ -118,7 +118,7 @@ public class TwitterExceptionUnchecker {
     /**
      * uncheck(Class::forName, "xxx");
      */
-    public static <T, R, E extends TwitterException> R uncheck(Function_WithExceptions<T, R, E> function, T t) {
+    public static <T, R, E extends TwitterException> R uncheck(Function_WithTwitterExceptions<T, R, E> function, T t) {
         try {
             return function.apply(t);
         } catch (TwitterException exception) {

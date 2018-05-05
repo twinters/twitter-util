@@ -78,18 +78,15 @@ public abstract class TwitterBot {
 
     //region Reply
     public void replyToAllUnrepliedMentions() throws TwitterException {
-        getUnansweredTweets()
+        long mostRecentReply = TwitterAnalysisUtil.getLastReplyStatus(twitterConnection).getInReplyToStatusId();
+        tweetsToAnswerRetrievers
+                .stream()
+                .flatMap(retriever -> retriever.retrieve(mostRecentReply))
+                .filter(tweet -> tweet.getId() > mostRecentReply)
                 // Sort from lowest to highest such that older tweets are replied to first: more stable!
-                .sorted((e, f) -> Long.signum(e.getId() - f.getId()))
+                .sorted(Comparator.comparingLong(Status::getId))
                 // Reply to all mentions
                 .forEachOrdered(this::replyToStatus);
-    }
-
-    private Stream<Status> getUnansweredTweets() throws IllegalStateException, TwitterException {
-        long mostRecentReply = TwitterAnalysisUtil.getLastReply(twitterConnection);
-        return new TwitterMentionsRetriever(twitterConnection)
-                .retrieve(mostRecentReply)
-                .sorted(Comparator.comparingLong(Status::getId));
     }
 
     protected Optional<Status> replyToStatus(Status mentionTweet) {

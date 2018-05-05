@@ -39,4 +39,9 @@ public class TwitterAnalysisUtil {
     public static long getLastReply(Twitter twitter) throws TwitterException {
         return getLastReply(twitter, twitter.getScreenName());
     }
+
+    public static Status getLastReplyStatus(Twitter twitter) throws TwitterException {
+        long id = getLastReply(twitter);
+        return twitter.showStatus(id);
+    }
 }

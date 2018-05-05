@@ -9,7 +9,7 @@ import be.thomaswinters.twitter.bot.chatbot.ITwitterChatBot;
 import be.thomaswinters.twitter.bot.chatbot.TwitterChatBotAdaptor;
 import be.thomaswinters.twitter.util.IExtractableChatBot;
 import be.thomaswinters.twitter.util.TwitterUtil;
-import be.thomaswinters.twitter.util.retriever.ITweetRetriever;
+import be.thomaswinters.twitter.util.retriever.ITweetsFetcher;
 import twitter4j.Status;
 import twitter4j.Twitter;
 
@@ -25,7 +25,7 @@ public class GeneratorTwitterBot extends TwitterBot implements IExtractableChatB
     public GeneratorTwitterBot(Twitter twitterConnection,
                                IGenerator<String> textGeneratorBot,
                                ITwitterChatBot twitterChatBot,
-                               Function<Twitter, ITweetRetriever>... retrievers) {
+                               Function<Twitter, ITweetsFetcher>... retrievers) {
         super(twitterConnection, Arrays.asList(retrievers));
         this.textGeneratorBot = new FilteringGenerator<>(textGeneratorBot, TwitterUtil::hasValidLength);
         this.twitterChatBot = twitterChatBot;
@@ -35,7 +35,7 @@ public class GeneratorTwitterBot extends TwitterBot implements IExtractableChatB
     public GeneratorTwitterBot(Twitter twitterConnection,
                                IGenerator<String> textGeneratorBot,
                                IChatBot chatBot,
-                               Function<Twitter, ITweetRetriever>... retrievers) {
+                               Function<Twitter, ITweetsFetcher>... retrievers) {
         this(twitterConnection, textGeneratorBot, new TwitterChatBotAdaptor(twitterConnection, chatBot), retrievers);
     }
 

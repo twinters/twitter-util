@@ -4,7 +4,7 @@ import twitter4j.Status;
 
 import java.util.stream.Stream;
 
-public interface ITweetRetriever {
+public interface ITweetsFetcher {
     Stream<Status> retrieve(long sinceId);
 
     default Stream<Status> retrieve() {

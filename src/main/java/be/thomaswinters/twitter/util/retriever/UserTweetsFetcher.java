@@ -9,24 +9,24 @@ import twitter4j.TwitterException;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class TwitterUserTweetRetriever implements ITweetRetriever {
+public class UserTweetsFetcher implements ITweetsFetcher {
 
     private final Twitter twitter;
     private final String user;
     private final boolean allowRetweets;
     private final boolean allowReplies;
 
-    public TwitterUserTweetRetriever(Twitter twitter, String user, boolean allowRetweets, boolean allowReplies) {
+    public UserTweetsFetcher(Twitter twitter, String user, boolean allowRetweets, boolean allowReplies) {
         this.twitter = twitter;
         this.user = user;
         this.allowRetweets = allowRetweets;
         this.allowReplies = allowReplies;
     }
 
-    public TwitterUserTweetRetriever(Twitter twitter, String user) {
+    public UserTweetsFetcher(Twitter twitter, String user) {
         this(twitter, user, false, false);
     }
-    
+
 
     @Override
     public Stream<Status> retrieve(long sinceId) {

@@ -2,8 +2,8 @@ package be.thomaswinters.twitter.bot;
 
 import be.thomaswinters.twitter.util.TwitterUtil;
 import be.thomaswinters.twitter.util.analysis.TwitterAnalysisUtil;
-import be.thomaswinters.twitter.util.retriever.ITweetRetriever;
-import be.thomaswinters.twitter.util.retriever.TwitterMentionsRetriever;
+import be.thomaswinters.twitter.util.retriever.ITweetsFetcher;
+import be.thomaswinters.twitter.util.retriever.MentionTweetsFetcher;
 import com.google.common.collect.ImmutableList;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
 
 public abstract class TwitterBot {
 
-    public static final Function<Twitter, ITweetRetriever> MENTIONS_RETRIEVER = TwitterMentionsRetriever::new;
+    public static final Function<Twitter, ITweetsFetcher> MENTIONS_RETRIEVER = MentionTweetsFetcher::new;
 
     private final Twitter twitterConnection;
-    private final Collection<ITweetRetriever> tweetsToAnswerRetrievers;
+    private final Collection<ITweetsFetcher> tweetsToAnswerRetrievers;
     private final Collection<Consumer<Status>> postListeners = new ArrayList<>();
 
     //region Constructor
-    public TwitterBot(Twitter twitterConnection, Collection<Function<Twitter, ITweetRetriever>> tweetsToAnswerRetrievers) {
+    public TwitterBot(Twitter twitterConnection, Collection<Function<Twitter, ITweetsFetcher>> tweetsToAnswerRetrievers) {
         this.twitterConnection = twitterConnection;
         this.tweetsToAnswerRetrievers = ImmutableList.copyOf(
                 tweetsToAnswerRetrievers

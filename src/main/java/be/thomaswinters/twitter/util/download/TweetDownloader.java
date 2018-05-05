@@ -1,8 +1,8 @@
 package be.thomaswinters.twitter.util.download;
 
 import be.thomaswinters.twitter.bot.util.TwitterLoginUtil;
-import be.thomaswinters.twitter.util.retriever.ITweetRetriever;
-import be.thomaswinters.twitter.util.retriever.TwitterUserTweetRetriever;
+import be.thomaswinters.twitter.util.retriever.ITweetsFetcher;
+import be.thomaswinters.twitter.util.retriever.UserTweetsFetcher;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import twitter4j.Status;
@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TweetDownloader {
-    private ITweetRetriever scouter;
+    private ITweetsFetcher scouter;
 
-    public TweetDownloader(ITweetRetriever scouter) {
+    public TweetDownloader(ITweetsFetcher scouter) {
         this.scouter = scouter;
     }
 
@@ -29,7 +29,7 @@ public class TweetDownloader {
     public static void main(String[] args) throws IOException, TwitterException {
         String user = args[0];
         (new TweetDownloader(
-                new TwitterUserTweetRetriever(
+                new UserTweetsFetcher(
                         TwitterLoginUtil.getTwitterFromEnvironment(), user, false, false)))
                 .downloadTo(
                         new File(user + ".txt"));

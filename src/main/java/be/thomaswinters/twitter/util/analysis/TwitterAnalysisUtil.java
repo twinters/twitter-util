@@ -1,6 +1,6 @@
 package be.thomaswinters.twitter.util.analysis;
 
-import be.thomaswinters.twitter.util.retriever.TwitterUserTweetRetriever;
+import be.thomaswinters.twitter.util.retriever.UserTweetsFetcher;
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -28,7 +28,7 @@ public class TwitterAnalysisUtil {
 
     public static long getLastReply(Twitter twitter, String username) throws TwitterException {
         ResponseList<Status> timeline = twitter.getUserTimeline(username);
-        return new TwitterUserTweetRetriever(twitter, username, false, true)
+        return new UserTweetsFetcher(twitter, username, false, true)
                 .retrieve()
                 .dropWhile(e -> e.getInReplyToStatusId() <= 0l)
                 .findFirst()

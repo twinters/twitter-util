@@ -9,11 +9,11 @@ import twitter4j.TwitterException;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class TwitterMentionsRetriever implements ITweetRetriever {
+public class MentionTweetsFetcher implements ITweetsFetcher {
 
     private final Twitter twitter;
 
-    public TwitterMentionsRetriever(Twitter twitter) {
+    public MentionTweetsFetcher(Twitter twitter) {
         this.twitter = twitter;
     }
 

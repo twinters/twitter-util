@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class TwitterQuerier implements ITweetRetriever {
+public class SearchTweetsFetcher implements ITweetsFetcher {
 
     private static final boolean SHOW_REJECTION_REASONS = false;
 
@@ -20,7 +20,7 @@ public class TwitterQuerier implements ITweetRetriever {
     private final Query.ResultType queryType;
     private final boolean allowURLs;
 
-    public TwitterQuerier(Twitter twitter, Optional<String> language, Query.ResultType queryType, List<String> words, boolean allowURLS) {
+    public SearchTweetsFetcher(Twitter twitter, Optional<String> language, Query.ResultType queryType, List<String> words, boolean allowURLS) {
         this.twitter = twitter;
         this.words = ImmutableList.copyOf(words.stream()
                 .map(String::toLowerCase)
@@ -30,23 +30,23 @@ public class TwitterQuerier implements ITweetRetriever {
         this.allowURLs = allowURLS;
     }
 
-    public TwitterQuerier(Twitter twitter, Optional<String> language, Query.ResultType queryType, String word, boolean allowURLS) {
+    public SearchTweetsFetcher(Twitter twitter, Optional<String> language, Query.ResultType queryType, String word, boolean allowURLS) {
         this(twitter, language, queryType, Collections.singletonList(word), allowURLS);
     }
 
-    public TwitterQuerier(Twitter twitter, Query.ResultType queryType, String word) {
+    public SearchTweetsFetcher(Twitter twitter, Query.ResultType queryType, String word) {
         this(twitter, Optional.empty(), queryType, word, false);
     }
 
-    public TwitterQuerier(Twitter twitter, String language, String word) {
+    public SearchTweetsFetcher(Twitter twitter, String language, String word) {
         this(twitter, Optional.of(language), Query.MIXED, word, false);
     }
 
-    public TwitterQuerier(Twitter twitter, List<String> words) {
+    public SearchTweetsFetcher(Twitter twitter, List<String> words) {
         this(twitter, Optional.empty(), Query.MIXED, words, false);
     }
 
-    public TwitterQuerier(Twitter twitter, String word) {
+    public SearchTweetsFetcher(Twitter twitter, String word) {
         this(twitter, Optional.empty(), Query.MIXED, word, false);
     }
 

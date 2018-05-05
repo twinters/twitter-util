@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-public class TwitterHomeRetriever implements ITweetRetriever {
+public class TimelineTweetsFetcher implements ITweetsFetcher {
 
     private final Twitter twitter;
 
-    public TwitterHomeRetriever(Twitter twitter) {
+    public TimelineTweetsFetcher(Twitter twitter) {
         this.twitter = twitter;
     }
 

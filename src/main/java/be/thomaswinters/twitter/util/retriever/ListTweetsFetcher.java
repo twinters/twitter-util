@@ -9,12 +9,12 @@ import twitter4j.TwitterException;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class TwitterListRetriever implements ITweetRetriever {
+public class ListTweetsFetcher implements ITweetsFetcher {
 
     private final Twitter twitter;
     private final long list;
 
-    public TwitterListRetriever(Twitter twitter, long list) {
+    public ListTweetsFetcher(Twitter twitter, long list) {
         this.twitter = twitter;
         this.list = list;
     }

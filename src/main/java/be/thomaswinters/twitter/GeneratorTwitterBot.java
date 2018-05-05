@@ -9,23 +9,34 @@ import be.thomaswinters.twitter.bot.chatbot.ITwitterChatBot;
 import be.thomaswinters.twitter.bot.chatbot.TwitterChatBotAdaptor;
 import be.thomaswinters.twitter.util.IExtractableChatBot;
 import be.thomaswinters.twitter.util.TwitterUtil;
+import be.thomaswinters.twitter.util.retriever.ITweetRetriever;
 import twitter4j.Status;
 import twitter4j.Twitter;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class GeneratorTwitterBot extends TwitterBot implements IExtractableChatBot {
     private final IGenerator<String> textGeneratorBot;
     private final ITwitterChatBot twitterChatBot;
 
-    public GeneratorTwitterBot(Twitter twitterConnection, IGenerator<String> textGeneratorBot, ITwitterChatBot twitterChatBot) {
-        super(twitterConnection);
+    @SafeVarargs
+    public GeneratorTwitterBot(Twitter twitterConnection,
+                               IGenerator<String> textGeneratorBot,
+                               ITwitterChatBot twitterChatBot,
+                               Function<Twitter, ITweetRetriever>... retrievers) {
+        super(twitterConnection, Arrays.asList(retrievers));
         this.textGeneratorBot = new FilteringGenerator<>(textGeneratorBot, TwitterUtil::hasValidLength);
         this.twitterChatBot = twitterChatBot;
     }
 
-    public GeneratorTwitterBot(Twitter twitterConnection, IGenerator<String> textGeneratorBot, IChatBot chatBot) {
-        this(twitterConnection, textGeneratorBot, new TwitterChatBotAdaptor(twitterConnection, chatBot));
+    @SafeVarargs
+    public GeneratorTwitterBot(Twitter twitterConnection,
+                               IGenerator<String> textGeneratorBot,
+                               IChatBot chatBot,
+                               Function<Twitter, ITweetRetriever>... retrievers) {
+        this(twitterConnection, textGeneratorBot, new TwitterChatBotAdaptor(twitterConnection, chatBot), retrievers);
     }
 
     public GeneratorTwitterBot(Twitter twitterConnection, IGenerator<String> textGeneratorBot) {

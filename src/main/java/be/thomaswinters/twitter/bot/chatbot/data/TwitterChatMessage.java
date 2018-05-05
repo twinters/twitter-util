@@ -38,4 +38,10 @@ public class TwitterChatMessage implements IChatMessage {
         return new TwitterChatUser(tweet.getUser());
     }
 
+    @Override
+    public String toString() {
+        return "TwitterChatMessage{" +
+                tweet.getUser() + ": " + tweet.getText() +
+                '}';
+    }
 }

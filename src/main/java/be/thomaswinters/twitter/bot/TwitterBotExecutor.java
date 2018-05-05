@@ -33,7 +33,7 @@ public class TwitterBotExecutor {
 
                     Optional<String> tweet = bot.prepareNewTweet();
                     if (tweet.isPresent()) {
-                        System.out.println(">> POSTED TWEET IN DEBUG: << : " + tweet.get());
+                        System.out.println(">> POSTED TWEET IN DEBUG: << " + tweet.get());
                     } else {
                         System.out.println("Failed to prepare new tweet");
                     }

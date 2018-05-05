@@ -36,9 +36,11 @@ public class TwitterUtil {
 
     public static long getLastTweet(Twitter twitter) throws TwitterException {
         ResponseList<Status> timeline = twitter.getUserTimeline(twitter.getScreenName());
-        return timeline.stream().mapToLong(e -> e.getId()).max().orElse(0l);
+        return timeline.stream()
+                .mapToLong(Status::getId)
+                .max()
+                .orElse(0l);
     }
-
 
     public static boolean hasValidLength(String text) {
         return text.length() <= MAX_TWEET_LENGTH;

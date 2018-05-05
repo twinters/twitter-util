@@ -16,6 +16,10 @@ public interface ITweetsFetcher {
         return retrieve(1l);
     }
 
+    default ITweetsFetcher combineWith(ITweetsFetcher fetcher) {
+        return new TweetsFetcherCombiner(this, fetcher);
+    }
+
     default ITweetsFetcher filter(Predicate<Status> filter) {
         return new FilteredTweetsFetcher(this, filter);
     }

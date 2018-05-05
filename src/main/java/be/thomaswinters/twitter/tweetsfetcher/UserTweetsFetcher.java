@@ -31,13 +31,13 @@ public class UserTweetsFetcher implements ITweetsFetcher {
     @Override
     public Stream<Status> retrieve(long sinceId) {
 
-        PagingTweetDownloader tweetDownloader = new PagingTweetDownloader(page -> getUserTimeLine(user, page));
+        PagingTweetDownloader tweetDownloader = new PagingTweetDownloader(this::getUserTimeLine);
         return tweetDownloader.getTweets(sinceId)
                 .filter(e -> allowReplies || e.getInReplyToStatusId() <= 0)
                 .filter(e -> allowRetweets || !e.isRetweet());
     }
 
-    private List<Status> getUserTimeLine(String user, Paging page) {
+    private List<Status> getUserTimeLine(Paging page) {
         try {
             return twitter.getUserTimeline(user, page);
         } catch (TwitterException e) {

@@ -1,8 +1,12 @@
 package be.thomaswinters.twitter.util.retriever;
 
+import com.google.common.collect.ImmutableList;
 import twitter4j.*;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TwitterQuerier implements ITweetRetriever {
@@ -11,17 +15,23 @@ public class TwitterQuerier implements ITweetRetriever {
 
     private final Twitter twitter;
 
-    private final String word;
+    private final ImmutableList<String> words;
     private final Optional<String> language;
     private final Query.ResultType queryType;
     private final boolean allowURLs;
 
-    public TwitterQuerier(Twitter twitter, Optional<String> language, Query.ResultType queryType, String word, boolean allowURLS) {
+    public TwitterQuerier(Twitter twitter, Optional<String> language, Query.ResultType queryType, List<String> words, boolean allowURLS) {
         this.twitter = twitter;
-        this.word = word.toLowerCase();
+        this.words = ImmutableList.copyOf(words.stream()
+                .map(String::toLowerCase)
+                .collect(Collectors.toList()));
         this.language = language;
         this.queryType = queryType;
         this.allowURLs = allowURLS;
+    }
+
+    public TwitterQuerier(Twitter twitter, Optional<String> language, Query.ResultType queryType, String word, boolean allowURLS) {
+        this(twitter, language, queryType, Collections.singletonList(word), allowURLS);
     }
 
     public TwitterQuerier(Twitter twitter, Query.ResultType queryType, String word) {
@@ -32,6 +42,10 @@ public class TwitterQuerier implements ITweetRetriever {
         this(twitter, Optional.of(language), Query.MIXED, word, false);
     }
 
+    public TwitterQuerier(Twitter twitter, List<String> words) {
+        this(twitter, Optional.empty(), Query.MIXED, words, false);
+    }
+
     public TwitterQuerier(Twitter twitter, String word) {
         this(twitter, Optional.empty(), Query.MIXED, word, false);
     }
@@ -40,7 +54,7 @@ public class TwitterQuerier implements ITweetRetriever {
     public Stream<Status> retrieve(long sinceId) {
 
         // create a new search
-        Query query = new Query(word);
+        Query query = new Query(words.stream().collect(Collectors.joining(" ")));
         query.setCount(100);
         if (sinceId > 0) {
             query.setSinceId(sinceId);
@@ -96,10 +110,10 @@ public class TwitterQuerier implements ITweetRetriever {
             }
             return false;
         }
-        if (!tweet.getText().toLowerCase().contains(word.toLowerCase().replaceAll("\"", ""))) {
+        if (!words.stream().allMatch(word -> tweet.getText().toLowerCase().contains(word.toLowerCase().replaceAll("\"", "")))) {
 
             if (SHOW_REJECTION_REASONS) {
-                System.out.println("Bad tweet (Does not contain " + word + "): " + tweet.getText());
+                System.out.println("Bad tweet (Does not contain " + words + "): " + tweet.getText());
             }
             return false;
         }
@@ -111,9 +125,7 @@ public class TwitterQuerier implements ITweetRetriever {
                 }
                 return false;
             }
-        } catch (IllegalStateException e1) {
-            e1.printStackTrace();
-        } catch (TwitterException e1) {
+        } catch (IllegalStateException | TwitterException e1) {
             e1.printStackTrace();
         }
 

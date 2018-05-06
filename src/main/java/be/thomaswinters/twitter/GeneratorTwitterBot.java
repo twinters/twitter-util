@@ -13,7 +13,6 @@ import be.thomaswinters.twitter.util.TwitterUtil;
 import twitter4j.Status;
 import twitter4j.Twitter;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -26,7 +25,7 @@ public class GeneratorTwitterBot extends TwitterBot implements IExtractableChatB
                                IGenerator<String> textGeneratorBot,
                                ITwitterChatBot twitterChatBot,
                                Function<Twitter, ITweetsFetcher>... retrievers) {
-        super(twitterConnection, Arrays.asList(retrievers));
+        super(twitterConnection, retrievers);
         this.textGeneratorBot = new FilteringGenerator<>(textGeneratorBot, TwitterUtil::hasValidLength);
         this.twitterChatBot = twitterChatBot;
     }

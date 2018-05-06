@@ -25,17 +25,17 @@ public abstract class TwitterBot {
     private final Collection<Consumer<Status>> postListeners = new ArrayList<>();
 
     //region Constructor
-    public TwitterBot(Twitter twitterConnection, Collection<Function<Twitter, ITweetsFetcher>> tweetsToAnswerRetrievers) {
+    public TwitterBot(Twitter twitterConnection, Function<Twitter, ITweetsFetcher>... tweetsToAnswerRetrievers) {
         this.twitterConnection = twitterConnection;
+        List<Function<Twitter, ITweetsFetcher>> fetchers = Arrays.asList(tweetsToAnswerRetrievers);
+        if (fetchers.isEmpty()) {
+            fetchers = Collections.singletonList(MENTIONS_RETRIEVER);
+        }
         this.tweetsToAnswerRetrievers = ImmutableList.copyOf(
-                tweetsToAnswerRetrievers
+                fetchers
                         .stream()
                         .map(e -> e.apply(twitterConnection))
                         .collect(Collectors.toList()));
-    }
-
-    public TwitterBot(Twitter twitterConnection) {
-        this(twitterConnection, Collections.singleton(MENTIONS_RETRIEVER));
     }
 
     //endregion
@@ -78,14 +78,17 @@ public abstract class TwitterBot {
 
     //region Reply
     public void replyToAllUnrepliedMentions() throws TwitterException {
-        long mostRecentReply = TwitterAnalysisUtil.getLastReplyStatus(twitterConnection).getInReplyToStatusId();
+        long mostRecentRepliedToStatus = TwitterAnalysisUtil.getLastReplyStatus(twitterConnection)
+                .map(Status::getInReplyToStatusId)
+                .orElse(1L);
+
         tweetsToAnswerRetrievers
                 .stream()
-                .flatMap(retriever -> retriever.retrieve(mostRecentReply))
-                .filter(tweet -> tweet.getId() > mostRecentReply)
+                .flatMap(retriever -> retriever.retrieve(mostRecentRepliedToStatus))
                 // Sort from lowest to highest such that older tweets are replied to first: more stable!
                 .sorted(Comparator.comparingLong(Status::getId))
                 // Reply to all mentions
+                .peek(System.out::println)
                 .forEachOrdered(this::replyToStatus);
     }
 

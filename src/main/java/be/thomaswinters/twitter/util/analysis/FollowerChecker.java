@@ -10,14 +10,14 @@ import twitter4j.User;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class TwitterFollower {
+public class FollowerChecker {
 
     private final Cache<Long, Relationship> cache;
 
     private final Twitter twitter;
     private final long userId;
 
-    public TwitterFollower(Twitter twitter) throws TwitterException {
+    public FollowerChecker(Twitter twitter) throws TwitterException {
         this.twitter = twitter;
         this.userId = twitter.getId();
         this.cache = CacheBuilder
@@ -45,8 +45,9 @@ public class TwitterFollower {
     }
 
     public boolean isFollowing(User user) {
-        return getRelationship(user).isSourceFollowingTarget();
+        return getRelationship(user).isSourceFollowingTarget() || user.isFollowRequestSent();
     }
+
     public boolean isFollowedBy(User user) {
         return getRelationship(user).isSourceFollowedByTarget();
     }
@@ -56,6 +57,7 @@ public class TwitterFollower {
         twitter.destroyFriendship(user.getId());
         cache.invalidate(user.getId());
     }
+
     public void follow(User user) throws TwitterException {
         System.out.println("STARTED FOLLOWING: " + user.getScreenName());
         twitter.createFriendship(user.getId());

@@ -1,6 +1,6 @@
 package be.thomaswinters.twitter.tweetsfetcher.filter;
 
-import be.thomaswinters.twitter.util.analysis.TwitterFollower;
+import be.thomaswinters.twitter.util.analysis.FollowerChecker;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -14,12 +14,12 @@ import java.util.function.Predicate;
 public class NotFollowingCurrentUserFilter implements Predicate<Status> {
     private final Twitter twitter;
     private final boolean unfollowAutomatically;
-    private final TwitterFollower followStatusChecker;
+    private final FollowerChecker followStatusChecker;
 
     public NotFollowingCurrentUserFilter(Twitter twitter, boolean unfollowAutomatically) throws TwitterException {
         this.twitter = twitter;
         this.unfollowAutomatically = unfollowAutomatically;
-        this.followStatusChecker = new TwitterFollower(twitter);
+        this.followStatusChecker = new FollowerChecker(twitter);
     }
 
     /**

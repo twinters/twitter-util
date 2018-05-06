@@ -88,7 +88,6 @@ public abstract class TwitterBot {
                 // Sort from lowest to highest such that older tweets are replied to first: more stable!
                 .sorted(Comparator.comparingLong(Status::getId))
                 // Reply to all mentions
-                .peek(System.out::println)
                 .forEachOrdered(this::replyToStatus);
     }
 

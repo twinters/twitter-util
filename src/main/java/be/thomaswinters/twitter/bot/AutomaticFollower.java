@@ -2,6 +2,7 @@ package be.thomaswinters.twitter.bot;
 
 import be.thomaswinters.generator.generators.IGenerator;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
+import be.thomaswinters.twitter.exception.UncheckedTwitterException;
 import be.thomaswinters.twitter.userfetcher.FollowersFetcher;
 import be.thomaswinters.twitter.util.analysis.FollowerChecker;
 import twitter4j.Twitter;
@@ -32,7 +33,7 @@ public class AutomaticFollower implements IGenerator<String> {
         try {
             followNewFollowersBack();
         } catch (TwitterException e) {
-            e.printStackTrace();
+            throw new UncheckedTwitterException(e);
         }
         return Optional.empty();
     }

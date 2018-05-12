@@ -87,6 +87,7 @@ public abstract class TwitterBot {
                 .flatMap(retriever -> retriever.retrieve(mostRecentRepliedToStatus))
                 // Sort from lowest to highest such that older tweets are replied to first: more stable!
                 .sorted(Comparator.comparingLong(Status::getId))
+                .distinct()
                 // Reply to all mentions
                 .forEachOrdered(this::replyToStatus);
     }

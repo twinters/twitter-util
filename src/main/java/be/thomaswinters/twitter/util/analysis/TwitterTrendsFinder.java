@@ -19,7 +19,7 @@ public class TwitterTrendsFinder {
     /*-********************************************-*
      *  Cache
      *-********************************************-*/
-    private static int REFETCH_TRENDS_MINUTES = 60;
+    private static final int REFETCH_TRENDS_MINUTES = 60;
     private static Map<Integer, TrendsCache> cache = new HashMap<>();
 
     public static class TrendsCache {

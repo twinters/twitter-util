@@ -10,6 +10,7 @@ import twitter4j.Twitter;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+@FunctionalInterface
 public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
 
     @Override
@@ -20,7 +21,7 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
     Stream<Status> retrieve(long sinceId);
 
     default Stream<Status> retrieve() {
-        return retrieve(1l);
+        return retrieve(1L);
     }
 
     default ITweetsFetcher combineWith(ITweetsFetcher fetcher) {
@@ -28,6 +29,7 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
     }
 
     default ITweetsFetcher filter(Predicate<Status> filter) {
+        // TODO: Remove filteredtweetsfetched and use super.filter
         return new FilteredTweetsFetcher(this, filter);
     }
 
@@ -36,11 +38,11 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
     }
 
     default ITweetsFetcher filterOutRetweets() {
-        return  TwitterUnchecker.uncheck(FilteredTweetsFetcher::new,this, FilteredTweetsFetcher.RETWEETS_REJECTER);
+        return  TwitterUnchecker.uncheck(this::filter, FilteredTweetsFetcher.RETWEETS_REJECTER);
     }
 
     default ITweetsFetcher filterOutReplies() {
-        return  TwitterUnchecker.uncheck(FilteredTweetsFetcher::new, this, FilteredTweetsFetcher.REPLY_REJECTER);
+        return  TwitterUnchecker.uncheck(this::filter, FilteredTweetsFetcher.REPLY_REJECTER);
     }
 
 }

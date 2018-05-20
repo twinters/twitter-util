@@ -1,5 +1,6 @@
 package be.thomaswinters.twitter.tweetsfetcher;
 
+import be.thomaswinters.generator.streamgenerator.reacting.IReactingStreamGenerator;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.filter.FilteredTweetsFetcher;
 import be.thomaswinters.twitter.tweetsfetcher.filter.UserFilteredTweetsFetcher;
@@ -9,7 +10,13 @@ import twitter4j.Twitter;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public interface ITweetsFetcher {
+public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
+
+    @Override
+    default Stream<Status> generateStream(Long sinceId) {
+        return retrieve(sinceId);
+    }
+
     Stream<Status> retrieve(long sinceId);
 
     default Stream<Status> retrieve() {
@@ -35,4 +42,5 @@ public interface ITweetsFetcher {
     default ITweetsFetcher filterOutReplies() {
         return  TwitterUnchecker.uncheck(FilteredTweetsFetcher::new, this, FilteredTweetsFetcher.REPLY_REJECTER);
     }
+
 }

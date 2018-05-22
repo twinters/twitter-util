@@ -14,6 +14,7 @@ public class UncheckedTwitterException extends RuntimeException implements Twitt
     private final TwitterException twitterException;
 
     public UncheckedTwitterException(TwitterException twitterException) {
+        super(twitterException);
         this.twitterException = twitterException;
     }
 

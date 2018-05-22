@@ -45,6 +45,10 @@ public abstract class TwitterBot {
         return twitterConnection;
     }
 
+    protected Status quoteRetweet(String status, Status toTweet) throws TwitterException {
+        tweet(status + " " + TwitterUtil.getQuoteRetweetUrl(toTweet));
+    }
+
     protected Status tweet(String status) throws TwitterException {
         Status post = twitterConnection.updateStatus(status);
         notifyNewPostListeners(post);

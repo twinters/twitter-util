@@ -21,4 +21,14 @@ public class TwitterChatUser implements IChatUser {
     public String getScreenName() {
         return "@" + user.getScreenName();
     }
+
+    @Override
+    public long getId() {
+        return user.getId();
+    }
+
+    @Override
+    public String toString() {
+        return getScreenName();
+    }
 }

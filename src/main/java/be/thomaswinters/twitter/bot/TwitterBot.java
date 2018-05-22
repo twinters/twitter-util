@@ -46,7 +46,7 @@ public abstract class TwitterBot {
     }
 
     protected Status quoteRetweet(String status, Status toTweet) throws TwitterException {
-        tweet(status + " " + TwitterUtil.getQuoteRetweetUrl(toTweet));
+        return tweet(status + " " + TwitterUtil.getQuoteRetweetUrl(toTweet));
     }
 
     protected Status tweet(String status) throws TwitterException {

@@ -18,7 +18,7 @@ public class TwitterChatMessage implements IChatMessage {
     }
 
     @Override
-    public String getMessage() {
+    public String getText() {
         return tweet.getText();
     }
 
@@ -38,10 +38,12 @@ public class TwitterChatMessage implements IChatMessage {
         return new TwitterChatUser(tweet.getUser());
     }
 
+    public Status getTweet() {
+        return tweet;
+    }
+
     @Override
     public String toString() {
-        return "TwitterChatMessage{" +
-                tweet.getUser() + ": " + tweet.getText() +
-                '}';
+        return getUser().getScreenName() + ": " + getText();
     }
 }

@@ -59,6 +59,24 @@ public class TwitterUtil {
         return mentionTweet.getText().toLowerCase().startsWith("@" + screenName.toLowerCase())
                 || mentionTweet.getInReplyToUserId() == userId;
     }
+    public static boolean isFuzzyReplyingTo(String userName, Status mention) throws TwitterException {
+        String name = "@" + userName;
+
+        String tweet = mention.getText();
+
+        while (tweet.startsWith("@")) {
+            if (tweet.startsWith(name)) {
+                return true;
+            }
+            if (tweet.contains(" ")) {
+                tweet = tweet.split(" ", 2)[1];
+            } else {
+                tweet = "";
+            }
+        }
+
+        return false;
+    }
 
     private static final String TWITTER_USERNAME_REGEX = "(?<=^|(?<=[^a-zA-Z0-9-\\.]))@[A-Za-z0-9-]+(?=[^a-zA-Z0-9-_\\.])";
     private static final String TWITTER_HASHTAG_REGEX = "(?:\\s|\\A)[##]+([A-Za-z0-9-_]+)";

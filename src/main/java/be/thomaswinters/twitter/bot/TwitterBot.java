@@ -25,6 +25,7 @@ public abstract class TwitterBot {
     private final Collection<Consumer<Status>> postListeners = new ArrayList<>();
 
     //region Constructor
+    @SafeVarargs
     public TwitterBot(Twitter twitterConnection, Function<Twitter, ITweetsFetcher>... tweetsToAnswerRetrievers) {
         this.twitterConnection = twitterConnection;
         List<Function<Twitter, ITweetsFetcher>> fetchers = Arrays.asList(tweetsToAnswerRetrievers);

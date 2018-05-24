@@ -4,6 +4,8 @@ import be.thomaswinters.chatbot.IChatBot;
 import be.thomaswinters.chatbot.ui.ChatbotGUI;
 import be.thomaswinters.generator.generators.IGenerator;
 import be.thomaswinters.twitter.bot.arguments.TwitterBotArguments;
+import be.thomaswinters.twitter.bot.loggers.TweetPrinter;
+import be.thomaswinters.twitter.bot.loggers.TweetReplyPrinter;
 import be.thomaswinters.twitter.util.IExtractableChatBot;
 import com.beust.jcommander.JCommander;
 import twitter4j.TwitterException;
@@ -26,6 +28,10 @@ public class TwitterBotExecutor {
     }
 
     public void run(TwitterBotArguments arguments) throws TwitterException {
+        if (arguments.isLog()) {
+            bot.addPostListener(new TweetPrinter());
+            bot.addReplyListener(new TweetReplyPrinter());
+        }
 
         for (int i = 0; arguments.isInfinity() || i < arguments.getAmountOfTimes(); i++) {
 

@@ -22,7 +22,6 @@ public abstract class TextualTwitterBot extends TwitterBot implements IGenerator
         Optional<String> text = prepareNewTweet();
         if (text.isPresent()) {
             try {
-                System.out.println("POSTING: " + text.get());
 //                return Optional.of(
                         getTwitterConnection().updateStatus(text.get());
 //                );
@@ -39,7 +38,6 @@ public abstract class TextualTwitterBot extends TwitterBot implements IGenerator
         Optional<String> replyText = createReplyTo(mentionTweet);
         if (replyText.isPresent()) {
             try {
-                System.out.println("REPLYING TO: " + mentionTweet.getText() + "\nREPLY: " + replyText.get() + "\n");
 //                return Optional.of(
  reply(replyText.get(), mentionTweet);
 // );

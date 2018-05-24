@@ -10,6 +10,9 @@ public class TwitterBotArguments {
     @Parameter(names = "-debug")
     protected boolean debug = false;
 
+    @Parameter(names = "-log")
+    protected boolean log = true;
+
     @Parameter(names = "-mode", converter = PostingModeConverter.class)
     protected PostingMode mode = PostingMode.POST;
 
@@ -23,6 +26,10 @@ public class TwitterBotArguments {
 
     public boolean isDebug() {
         return debug;
+    }
+
+    public boolean isLog() {
+        return log;
     }
 
     public int getAmountOfTimes() {

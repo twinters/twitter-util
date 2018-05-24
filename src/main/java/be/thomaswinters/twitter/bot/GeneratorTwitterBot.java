@@ -1,4 +1,4 @@
-package be.thomaswinters.twitter;
+package be.thomaswinters.twitter.bot;
 
 import be.thomaswinters.chatbot.IChatBot;
 import be.thomaswinters.chatbot.bots.TextGeneratorChatBotAdaptor;

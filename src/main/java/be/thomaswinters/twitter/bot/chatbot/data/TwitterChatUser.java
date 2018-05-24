@@ -18,8 +18,13 @@ public class TwitterChatUser implements IChatUser {
     }
 
     @Override
-    public String getScreenName() {
+    public String getMentionName() {
         return "@" + user.getScreenName();
+    }
+
+    @Override
+    public String getScreenName() {
+        return user.getScreenName();
     }
 
     @Override

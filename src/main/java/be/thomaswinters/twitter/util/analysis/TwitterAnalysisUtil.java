@@ -23,6 +23,7 @@ public class TwitterAnalysisUtil {
                 .filter(
                         e -> !e.getText().startsWith("@")
                                 && !e.getText().startsWith("RT : "))
+                .filter(e->e.getInReplyToStatusId() <= 0L )
                 .mapToLong(Status::getId)
                 .max()
                 .orElse(0l);

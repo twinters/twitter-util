@@ -11,6 +11,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ public abstract class TwitterBot {
     private final Twitter twitterConnection;
     private final Collection<ITweetsFetcher> tweetsToAnswerRetrievers;
     private final Collection<Consumer<Status>> postListeners = new ArrayList<>();
+    private final Collection<BiConsumer<Status, Status>> replyListeners = new ArrayList<>();
 
     //region Constructor
     @SafeVarargs
@@ -60,7 +62,7 @@ public abstract class TwitterBot {
         StatusUpdate replyPreparation = new StatusUpdate("@" + toTweet.getUser().getScreenName() + " " + replyText);
         replyPreparation.inReplyToStatusId(toTweet.getId());
         Status post = twitterConnection.updateStatus(replyPreparation);
-        notifyNewPostListeners(post);
+        notifyNewReplyListeners(post, toTweet);
         return post;
     }
     //endregion
@@ -94,9 +96,15 @@ public abstract class TwitterBot {
     public void addPostListener(Consumer<Status> listener) {
         this.postListeners.add(listener);
     }
-
     private void notifyNewPostListeners(Status post) {
         postListeners.forEach(f -> f.accept(post));
+    }
+
+    public void addReplyListener(BiConsumer<Status,Status> listener) {
+        this.replyListeners.add(listener);
+    }
+    private void notifyNewReplyListeners(Status reply, Status toTweet) {
+        replyListeners.forEach(f -> f.accept(reply, toTweet));
     }
     //endregion
 

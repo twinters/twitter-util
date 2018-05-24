@@ -65,21 +65,6 @@ public abstract class TwitterBot {
     }
     //endregion
 
-    //region post new tweet
-    public Optional<Status> postNewTweet() {
-        Optional<String> text = prepareNewTweet();
-        if (text.isPresent()) {
-            try {
-                System.out.println("POSTING: " + text.get());
-                return Optional.of(twitterConnection.updateStatus(text.get()));
-            } catch (TwitterException e) {
-                e.printStackTrace();
-            }
-        }
-        return Optional.empty();
-    }
-    //endregion
-
 
     //region Reply
     public void replyToAllUnrepliedMentions() throws TwitterException {
@@ -96,28 +81,16 @@ public abstract class TwitterBot {
                 // Reply to all mentions
                 .forEachOrdered(this::replyToStatus);
     }
-
-    protected Optional<Status> replyToStatus(Status mentionTweet) {
-        Optional<String> replyText = createReplyTo(mentionTweet);
-        if (replyText.isPresent()) {
-            try {
-                System.out.println("REPLYING TO: " + mentionTweet.getText() + "\nREPLY: " + replyText.get() + "\n");
-                return Optional.of(reply(replyText.get(), mentionTweet));
-            } catch (TwitterException twitEx) {
-                if (twitEx.exceededRateLimitation()) {
-                    TwitterUtil.waitForExceededRateLimitationReset();
-                    return replyToStatus(mentionTweet);
-                } else {
-                    throw new RuntimeException(twitEx);
-                }
-            }
-        }
-        return Optional.empty();
-    }
     //endregion
 
-    //region Listeners
 
+    //region abstract methods
+    public abstract Optional<Status> postNewTweet();
+    protected abstract Optional<Status> replyToStatus(Status mentionTweet);
+    //endregion
+
+
+    //region Listeners
     public void addPostListener(Consumer<Status> listener) {
         this.postListeners.add(listener);
     }
@@ -127,9 +100,4 @@ public abstract class TwitterBot {
     }
     //endregion
 
-    //region Abstract functions
-    public abstract Optional<String> createReplyTo(Status mentionTweet);
-
-    public abstract Optional<String> prepareNewTweet();
-    //endregion
 }

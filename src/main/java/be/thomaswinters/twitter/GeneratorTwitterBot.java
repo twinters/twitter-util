@@ -4,6 +4,7 @@ import be.thomaswinters.chatbot.IChatBot;
 import be.thomaswinters.chatbot.bots.TextGeneratorChatBotAdaptor;
 import be.thomaswinters.generator.generators.FilteringGenerator;
 import be.thomaswinters.generator.generators.IGenerator;
+import be.thomaswinters.twitter.bot.TextualTwitterBot;
 import be.thomaswinters.twitter.bot.TwitterBot;
 import be.thomaswinters.twitter.bot.chatbot.ITwitterChatBot;
 import be.thomaswinters.twitter.bot.chatbot.TwitterChatBotAdaptor;
@@ -16,7 +17,7 @@ import twitter4j.Twitter;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class GeneratorTwitterBot extends TwitterBot implements IExtractableChatBot {
+public class GeneratorTwitterBot extends TextualTwitterBot implements IExtractableChatBot {
     private final IGenerator<String> textGeneratorBot;
     private final ITwitterChatBot twitterChatBot;
 

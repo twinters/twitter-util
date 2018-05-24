@@ -7,24 +7,19 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class SelectivelyReplyingTwitterBot extends TwitterBot {
+@Deprecated
+public class SelectivelyReplyingTwitterBot extends TextualTwitterBot {
     public static final Predicate<Status> NOT_YET_LIKED = status -> !status.isFavorited();
 
-    private final TwitterBot innerTwitterBot;
+    private final TextualTwitterBot innerTwitterBot;
     private final Predicate<Status> mentionFilter;
 
 
     @SafeVarargs
-    public SelectivelyReplyingTwitterBot(Twitter twitterConnection, TwitterBot innerTwitterBot, Predicate<Status>... mentionFilters) {
+    public SelectivelyReplyingTwitterBot(Twitter twitterConnection, TextualTwitterBot innerTwitterBot, Predicate<Status>... mentionFilters) {
         super(twitterConnection);
         this.innerTwitterBot = innerTwitterBot;
         this.mentionFilter = Arrays.stream(mentionFilters).reduce(x -> true, Predicate::and);
-    }
-
-    public SelectivelyReplyingTwitterBot(Twitter twitterConnection, TwitterBot innerTwitterBot, Predicate<Status> mentionFilter) {
-        super(twitterConnection);
-        this.innerTwitterBot = innerTwitterBot;
-        this.mentionFilter = mentionFilter;
     }
 
 

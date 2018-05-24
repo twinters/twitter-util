@@ -2,6 +2,7 @@ package be.thomaswinters.twitter.bot;
 
 import be.thomaswinters.chatbot.IChatBot;
 import be.thomaswinters.chatbot.ui.ChatbotGUI;
+import be.thomaswinters.generator.generators.IGenerator;
 import be.thomaswinters.twitter.bot.arguments.TwitterBotArguments;
 import be.thomaswinters.twitter.util.IExtractableChatBot;
 import com.beust.jcommander.JCommander;
@@ -30,8 +31,11 @@ public class TwitterBotExecutor {
 
             if (arguments.isDebug()) {
                 if (arguments.isPosting()) {
-
-                    Optional<String> tweet = bot.prepareNewTweet();
+                    if (!(bot instanceof IGenerator)) {
+                        throw new IllegalArgumentException("Can't debug a bot that is not a generator " + bot);
+                    }
+                    IGenerator<?> generator = (IGenerator<?>) bot;
+                    Optional<?> tweet = generator.generate();
                     if (tweet.isPresent()) {
                         System.out.println(">> POSTED TWEET IN DEBUG: << " + tweet.get());
                     } else {

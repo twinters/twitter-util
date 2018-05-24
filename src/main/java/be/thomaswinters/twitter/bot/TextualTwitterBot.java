@@ -22,14 +22,11 @@ public abstract class TextualTwitterBot extends TwitterBot implements IGenerator
         Optional<String> text = prepareNewTweet();
         if (text.isPresent()) {
             try {
-//                return Optional.of(
-                        getTwitterConnection().updateStatus(text.get());
-//                );
+                getTwitterConnection().updateStatus(text.get());
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
         }
-//        return Optional.empty();
     }
     //endregion
 
@@ -38,19 +35,16 @@ public abstract class TextualTwitterBot extends TwitterBot implements IGenerator
         Optional<String> replyText = createReplyTo(mentionTweet);
         if (replyText.isPresent()) {
             try {
-//                return Optional.of(
- reply(replyText.get(), mentionTweet);
-// );
+                reply(replyText.get(), mentionTweet);
             } catch (TwitterException twitEx) {
                 if (twitEx.exceededRateLimitation()) {
                     TwitterUtil.waitForExceededRateLimitationReset();
-//                    return replyToStatus(mentionTweet);
+                    replyToStatus(mentionTweet);
                 } else {
                     throw new RuntimeException(twitEx);
                 }
             }
         }
-//        return Optional.empty();
     }
 
     //region Abstract functions

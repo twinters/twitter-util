@@ -88,6 +88,7 @@ public abstract class TwitterBot {
 
     //region abstract methods
     public abstract void postNewTweet();
+
     protected abstract void replyToStatus(Status mentionTweet);
     //endregion
 
@@ -96,13 +97,15 @@ public abstract class TwitterBot {
     public void addPostListener(Consumer<Status> listener) {
         this.postListeners.add(listener);
     }
+
     private void notifyNewPostListeners(Status post) {
         postListeners.forEach(f -> f.accept(post));
     }
 
-    public void addReplyListener(BiConsumer<Status,Status> listener) {
+    public void addReplyListener(BiConsumer<Status, Status> listener) {
         this.replyListeners.add(listener);
     }
+
     private void notifyNewReplyListeners(Status reply, Status toTweet) {
         replyListeners.forEach(f -> f.accept(reply, toTweet));
     }

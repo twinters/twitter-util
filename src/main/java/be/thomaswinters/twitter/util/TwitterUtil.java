@@ -94,4 +94,22 @@ public class TwitterUtil {
             throw new RuntimeException(e);
         }
     }
+
+    public static Status getParentTweetIfJustMentioning(Twitter twitter, Status mentionTweet) {
+        Status tweetToGetTextFrom = mentionTweet;
+        try {
+            if (!isFuzzyReplyingTo(twitter.getScreenName(), tweetToGetTextFrom)
+                    && mentionsUser(twitter.getScreenName(), tweetToGetTextFrom)
+                    && mentionTweet.getInReplyToStatusId() > 0) {
+                tweetToGetTextFrom = twitter.showStatus(mentionTweet.getInReplyToStatusId());
+            }
+        } catch (TwitterException e) {
+            e.printStackTrace();
+        }
+        return tweetToGetTextFrom;
 }
+
+    private static boolean mentionsUser(String screenName, Status tweet) {
+        return tweet.getText().toLowerCase().contains("@"+screenName.toLowerCase());
+    }
+    }

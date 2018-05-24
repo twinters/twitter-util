@@ -1,15 +1,11 @@
 package be.thomaswinters.twitter.bot.util;
 
 import be.thomaswinters.twitter.bot.TwitterBot;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.Twitter;
+import be.thomaswinters.twitter.util.TwitterUtil;
 import twitter4j.TwitterException;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
-import java.util.OptionalLong;
 
 @Deprecated
 public class InfinityTweeter {
@@ -41,8 +37,6 @@ public class InfinityTweeter {
     }
 
     public void tweetForever() throws InterruptedException, TwitterException {
-        long sinceId = 0;
-
         // keep tweeting forever
         while (!isTerminated) {
 
@@ -50,18 +44,15 @@ public class InfinityTweeter {
 
             // TWEET
             System.out.println("Preparing new tweet...");
-            Optional<Status> status = Optional.empty();
+//            Optional<Status> status = Optional.empty();
             try {
-                status = bot.postNewTweet();
-                if (status.isPresent()) {
-                    sinceId = Math.max(sinceId, status.get().getId());
-                }
+                bot.postNewTweet();
             } catch (Exception e) {
                 System.out.println("ERROR:" + e.getMessage());
             }
 
             // Check for status
-            status.ifPresent(status1 -> System.out.println("\nI posted a tweet! --> " + status1.getText()));
+//            status.ifPresent(status1 -> System.out.println("\nI posted a tweet! --> " + status1.getText()));
 
 
             System.out.println("Listening for replies...");
@@ -81,30 +72,6 @@ public class InfinityTweeter {
 
         }
 
-    }
-
-    public static long findLastStatusUpdate(Twitter twitter) throws IllegalStateException, TwitterException {
-        String user = twitter.getScreenName();
-
-        ResponseList<Status> tweets = twitter.getUserTimeline(user);
-
-        OptionalLong result = tweets.stream().mapToLong(e -> e.getId()).max();
-        if (!result.isPresent()) {
-            return 0;
-        }
-        return result.getAsLong();
-    }
-
-    public static long findLastReply(Twitter twitter) throws IllegalStateException, TwitterException {
-        String user = twitter.getScreenName();
-
-        ResponseList<Status> tweets = twitter.getUserTimeline(user);
-
-        OptionalLong result = tweets.stream().filter(e -> e.getInReplyToStatusId() > 0).mapToLong(e -> e.getId()).max();
-        if (!result.isPresent()) {
-            return 0;
-        }
-        return result.getAsLong();
     }
 
 }

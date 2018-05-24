@@ -18,37 +18,41 @@ public abstract class TextualTwitterBot extends TwitterBot implements IGenerator
 
     //region post new tweet
     @Override
-    public Optional<Status> postNewTweet() {
+    public void postNewTweet() {
         Optional<String> text = prepareNewTweet();
         if (text.isPresent()) {
             try {
                 System.out.println("POSTING: " + text.get());
-                return Optional.of(getTwitterConnection().updateStatus(text.get()));
+//                return Optional.of(
+                        getTwitterConnection().updateStatus(text.get());
+//                );
             } catch (TwitterException e) {
                 e.printStackTrace();
             }
         }
-        return Optional.empty();
+//        return Optional.empty();
     }
     //endregion
 
     @Override
-    protected Optional<Status> replyToStatus(Status mentionTweet) {
+    protected void replyToStatus(Status mentionTweet) {
         Optional<String> replyText = createReplyTo(mentionTweet);
         if (replyText.isPresent()) {
             try {
                 System.out.println("REPLYING TO: " + mentionTweet.getText() + "\nREPLY: " + replyText.get() + "\n");
-                return Optional.of(reply(replyText.get(), mentionTweet));
+//                return Optional.of(
+ reply(replyText.get(), mentionTweet);
+// );
             } catch (TwitterException twitEx) {
                 if (twitEx.exceededRateLimitation()) {
                     TwitterUtil.waitForExceededRateLimitationReset();
-                    return replyToStatus(mentionTweet);
+//                    return replyToStatus(mentionTweet);
                 } else {
                     throw new RuntimeException(twitEx);
                 }
             }
         }
-        return Optional.empty();
+//        return Optional.empty();
     }
 
     //region Abstract functions

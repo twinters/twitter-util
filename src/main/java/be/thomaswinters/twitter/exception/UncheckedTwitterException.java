@@ -1,5 +1,6 @@
 package be.thomaswinters.twitter.exception;
 
+import org.jetbrains.annotations.NotNull;
 import twitter4j.RateLimitStatus;
 import twitter4j.TwitterException;
 import twitter4j.TwitterResponse;
@@ -13,7 +14,7 @@ import java.io.PrintWriter;
 public class UncheckedTwitterException extends RuntimeException implements TwitterResponse {
     private final TwitterException twitterException;
 
-    public UncheckedTwitterException(TwitterException twitterException) {
+    public UncheckedTwitterException(@NotNull TwitterException twitterException) {
         super(twitterException);
         this.twitterException = twitterException;
     }

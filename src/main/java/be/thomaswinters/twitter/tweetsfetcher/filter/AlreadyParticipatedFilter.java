@@ -2,6 +2,7 @@ package be.thomaswinters.twitter.tweetsfetcher.filter;
 
 import be.thomaswinters.sentence.SentenceUtil;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
+import be.thomaswinters.twitter.exception.UncheckedTwitterException;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -38,7 +39,15 @@ public class AlreadyParticipatedFilter implements Predicate<Status> {
             return false;
         }
         while (current.getInReplyToStatusId() > 0L) {
-            current = TwitterUnchecker.uncheck(twitter::showStatus, current.getInReplyToStatusId());
+            try {
+                current = twitter.showStatus(current.getInReplyToStatusId());
+            } catch (TwitterException e) {
+                if (e.getErrorCode() == 144) {
+                    return true;
+                } else {
+                    throw new UncheckedTwitterException(e);
+                }
+            }
             assert current != null;
             if (userIsPartOfTweet(current)) {
                 return false;

@@ -19,22 +19,6 @@ public class UncheckedTwitterException extends RuntimeException implements Twitt
         this.twitterException = twitterException;
     }
 
-    public String getMessage() {
-        return twitterException.getMessage();
-    }
-
-    public int getStatusCode() {
-        return twitterException.getStatusCode();
-    }
-
-    public int getErrorCode() {
-        return twitterException.getErrorCode();
-    }
-
-    public String getResponseHeader(String name) {
-        return twitterException.getResponseHeader(name);
-    }
-
     @Override
     public RateLimitStatus getRateLimitStatus() {
         return twitterException.getRateLimitStatus();
@@ -45,72 +29,4 @@ public class UncheckedTwitterException extends RuntimeException implements Twitt
         return twitterException.getAccessLevel();
     }
 
-    public int getRetryAfter() {
-        return twitterException.getRetryAfter();
-    }
-
-    public boolean isCausedByNetworkIssue() {
-        return twitterException.isCausedByNetworkIssue();
-    }
-
-    public boolean exceededRateLimitation() {
-        return twitterException.exceededRateLimitation();
-    }
-
-    public boolean resourceNotFound() {
-        return twitterException.resourceNotFound();
-    }
-
-    public String getExceptionCode() {
-        return twitterException.getExceptionCode();
-    }
-
-    public String getErrorMessage() {
-        return twitterException.getErrorMessage();
-    }
-
-    public boolean isErrorMessageAvailable() {
-        return twitterException.isErrorMessageAvailable();
-    }
-
-    public String getLocalizedMessage() {
-        return twitterException.getLocalizedMessage();
-    }
-
-    public Throwable getCause() {
-        return twitterException.getCause();
-    }
-
-    public Throwable initCause(Throwable cause) {
-        return twitterException.initCause(cause);
-    }
-
-    public void printStackTrace() {
-        twitterException.printStackTrace();
-    }
-
-    public void printStackTrace(PrintStream s) {
-        twitterException.printStackTrace(s);
-    }
-
-    public void printStackTrace(PrintWriter s) {
-        twitterException.printStackTrace(s);
-    }
-
-    public Throwable fillInStackTrace() {
-        return twitterException.fillInStackTrace();
-    }
-
-    public StackTraceElement[] getStackTrace() {
-        return twitterException.getStackTrace();
-    }
-
-    public void setStackTrace(StackTraceElement[] stackTrace) {
-        twitterException.setStackTrace(stackTrace);
-    }
-
-    @Override
-    public String toString() {
-        return twitterException.toString();
-    }
 }

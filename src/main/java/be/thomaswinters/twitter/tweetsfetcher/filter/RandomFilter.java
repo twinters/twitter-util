@@ -1,5 +1,6 @@
 package be.thomaswinters.twitter.tweetsfetcher.filter;
 
+import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -22,8 +23,11 @@ public class RandomFilter implements Predicate<Status> {
     private final int outOf;
     private final long salt;
 
-    public RandomFilter(Twitter twitter, int chances, int outOf) throws TwitterException {
-        this.salt = twitter.getId();
+    public RandomFilter(Twitter twitter, int chances, int outOf) {
+        if (twitter==null){
+            throw new IllegalArgumentException("Twitter can't be null");
+        }
+        this.salt = TwitterUnchecker.uncheck(twitter::getId);
 
         // Multiply the chances and outOf by a random number, such that the random function uses a different periods
         int multiplier = (int) (this.salt % MULTIPLIER_CALCULATOR_NUMBER);

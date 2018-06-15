@@ -114,8 +114,7 @@ public class TwitterUnchecker {
         try {
             return supplier.get();
         } catch (TwitterException exception) {
-            throwAsUnchecked(exception);
-            return null;
+            throw new UncheckedTwitterException(exception);
         }
     }
 

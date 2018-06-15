@@ -60,18 +60,19 @@ public class TwitterUtil {
                 || mentionTweet.getInReplyToUserId() == userId;
     }
     public static boolean isFuzzyReplyingTo(String userName, Status mention) throws TwitterException {
-        String name = "@" + userName;
+        String name = "@" + userName.toLowerCase();
 
-        String tweet = mention.getText();
+        String tweetText = mention.getText().toLowerCase();
 
-        while (tweet.startsWith("@")) {
-            if (tweet.startsWith(name)) {
-                return true;
+        while (tweetText.startsWith("@")) {
+            if (tweetText.startsWith(name)) {
+                // If the only content left is the tag, then it's not a reply but a tag.
+                return !tweetText.trim().equals(name);
             }
-            if (tweet.contains(" ")) {
-                tweet = tweet.split(" ", 2)[1];
+            if (tweetText.contains(" ")) {
+                tweetText = tweetText.split(" ", 2)[1];
             } else {
-                tweet = "";
+                tweetText = "";
             }
         }
 

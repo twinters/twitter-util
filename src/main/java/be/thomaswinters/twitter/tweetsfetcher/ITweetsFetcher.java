@@ -3,6 +3,7 @@ package be.thomaswinters.twitter.tweetsfetcher;
 import be.thomaswinters.generator.streamgenerator.reacting.IReactingStreamGenerator;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.filter.FilteredTweetsFetcher;
+import be.thomaswinters.twitter.tweetsfetcher.filter.RandomFilter;
 import be.thomaswinters.twitter.tweetsfetcher.filter.UserFilteredTweetsFetcher;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -34,15 +35,21 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
     }
 
     default ITweetsFetcher filterOutOwnTweets(Twitter twitter) {
-        return TwitterUnchecker.uncheck(UserFilteredTweetsFetcher::new,this, twitter);
+        return TwitterUnchecker.uncheck(UserFilteredTweetsFetcher::new, this, twitter);
     }
 
     default ITweetsFetcher filterOutRetweets() {
-        return  TwitterUnchecker.uncheck(this::filter, FilteredTweetsFetcher.RETWEETS_REJECTER);
+        return TwitterUnchecker.uncheck(this::filter, FilteredTweetsFetcher.RETWEETS_REJECTER);
     }
 
     default ITweetsFetcher filterOutReplies() {
-        return  TwitterUnchecker.uncheck(this::filter, FilteredTweetsFetcher.REPLY_REJECTER);
+        return TwitterUnchecker.uncheck(this::filter, FilteredTweetsFetcher.REPLY_REJECTER);
+    }
+
+    default ITweetsFetcher filterRandomlyIf(Twitter twitter, Predicate<Status> shouldFilter, int chances, int outOf) {
+        RandomFilter randomFilter = new RandomFilter(twitter, chances, outOf);
+        return TwitterUnchecker.uncheck(this::filter,
+                status -> !shouldFilter.test(status) || randomFilter.test(status));
     }
 
 }

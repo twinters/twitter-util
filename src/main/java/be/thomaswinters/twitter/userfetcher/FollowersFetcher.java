@@ -1,9 +1,8 @@
 package be.thomaswinters.twitter.userfetcher;
 
-import be.thomaswinters.twitter.exception.UncheckedTwitterException;
+import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.util.paging.CursoringUserFetcher;
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.User;
 
 import java.util.stream.Stream;
@@ -18,22 +17,11 @@ public class FollowersFetcher implements IUserFetcher {
 
     @Override
     public Stream<User> fetchUsers() {
-        try {
-            long userId = twitter.getId();
-            return new CursoringUserFetcher(twitter,
-                    followerCursor -> {
-                        try {
-                            return twitter.getFollowersIDs(userId, followerCursor);
-                        } catch (TwitterException e) {
-                            e.printStackTrace();
-                            throw new UncheckedTwitterException(e);
-                        }
-                    })
-                    .getUsers();
-        } catch (TwitterException e) {
-            e.printStackTrace();
-            throw new UncheckedTwitterException(e);
-        }
+        long userId = TwitterUnchecker.uncheck(twitter::getId);
+        return new CursoringUserFetcher(twitter,
+                followerCursor ->
+                        TwitterUnchecker.uncheck(twitter::getFollowersIDs, userId, followerCursor))
+                .getUsers();
     }
 
 }

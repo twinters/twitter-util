@@ -17,7 +17,7 @@ public class SelectivelyReplyingTwitterBot extends TextualTwitterBot {
 
     @SafeVarargs
     public SelectivelyReplyingTwitterBot(Twitter twitterConnection, TextualTwitterBot innerTwitterBot, Predicate<Status>... mentionFilters) {
-        super(twitterConnection);
+        super(twitterConnection, MENTIONS_RETRIEVER.apply(twitterConnection));
         this.innerTwitterBot = innerTwitterBot;
         this.mentionFilter = Arrays.stream(mentionFilters).reduce(x -> true, Predicate::and);
     }

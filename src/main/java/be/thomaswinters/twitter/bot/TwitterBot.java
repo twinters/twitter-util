@@ -4,17 +4,17 @@ import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
 import be.thomaswinters.twitter.tweetsfetcher.MentionTweetsFetcher;
 import be.thomaswinters.twitter.util.TwitterUtil;
 import be.thomaswinters.twitter.util.analysis.TwitterAnalysisUtil;
-import com.google.common.collect.ImmutableList;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 
 public abstract class TwitterBot {
@@ -22,23 +22,18 @@ public abstract class TwitterBot {
     public static final Function<Twitter, ITweetsFetcher> MENTIONS_RETRIEVER = MentionTweetsFetcher::new;
 
     private final Twitter twitterConnection;
-    private final Collection<ITweetsFetcher> tweetsToAnswerRetrievers;
+    private final ITweetsFetcher tweetsToAnswerRetriever;
     private final Collection<Consumer<Status>> postListeners = new ArrayList<>();
     private final Collection<BiConsumer<Status, Status>> replyListeners = new ArrayList<>();
 
     //region Constructor
-    @SafeVarargs
-    public TwitterBot(Twitter twitterConnection, Function<Twitter, ITweetsFetcher>... tweetsToAnswerRetrievers) {
+    public TwitterBot(Twitter twitterConnection, ITweetsFetcher tweetsToAnswerRetrievers) {
         this.twitterConnection = twitterConnection;
-        List<Function<Twitter, ITweetsFetcher>> fetchers = Arrays.asList(tweetsToAnswerRetrievers);
-        if (fetchers.isEmpty()) {
-            fetchers = Collections.singletonList(MENTIONS_RETRIEVER);
-        }
-        this.tweetsToAnswerRetrievers = ImmutableList.copyOf(
-                fetchers
-                        .stream()
-                        .map(e -> e.apply(twitterConnection))
-                        .collect(Collectors.toList()));
+        this.tweetsToAnswerRetriever = tweetsToAnswerRetrievers;
+    }
+
+    public TwitterBot(Twitter twitterConnection) {
+        this(twitterConnection, MENTIONS_RETRIEVER.apply(twitterConnection));
     }
 
     //endregion
@@ -74,9 +69,8 @@ public abstract class TwitterBot {
                 .map(Status::getInReplyToStatusId)
                 .orElse(1L);
 
-        tweetsToAnswerRetrievers
-                .stream()
-                .flatMap(retriever -> retriever.retrieve(mostRecentRepliedToStatus))
+        tweetsToAnswerRetriever
+                .retrieve(mostRecentRepliedToStatus)
                 // Sort from lowest to highest such that older tweets are replied to first: more stable!
                 .sorted(Comparator.comparingLong(Status::getId))
                 .distinct()

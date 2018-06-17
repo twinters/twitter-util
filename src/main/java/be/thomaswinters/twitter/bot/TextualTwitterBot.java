@@ -12,8 +12,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class TextualTwitterBot extends TwitterBot implements IGenerator<String>, IReactingGenerator<String, Status> {
-    protected TextualTwitterBot(Twitter twitterConnection, Function<Twitter, ITweetsFetcher>... tweetsToAnswerRetrievers) {
-        super(twitterConnection, tweetsToAnswerRetrievers);
+    protected TextualTwitterBot(Twitter twitterConnection, ITweetsFetcher tweetsToAnswerRetriever) {
+        super(twitterConnection, tweetsToAnswerRetriever);
     }
 
     //region post new tweet

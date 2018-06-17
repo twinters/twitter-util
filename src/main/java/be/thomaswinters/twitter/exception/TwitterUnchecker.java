@@ -10,35 +10,6 @@ import java.util.function.Supplier;
 public class TwitterUnchecker {
 
 
-    @FunctionalInterface
-    public interface Consumer_WithTwitterExceptions<T, E extends TwitterException> {
-        void accept(T t) throws E;
-    }
-
-    @FunctionalInterface
-    public interface BiConsumer_WithTwitterExceptions<T, U, E extends TwitterException> {
-        void accept(T t, U u) throws E;
-    }
-
-    @FunctionalInterface
-    public interface Function_WithTwitterExceptions<T, R, E extends TwitterException> {
-        R apply(T t) throws TwitterException;
-    }
-    @FunctionalInterface
-    public interface BiFunction_WithTwitterExceptions<T, S, R, E extends TwitterException> {
-        R apply(T t, S s) throws E;
-    }
-
-    @FunctionalInterface
-    public interface Supplier_WithTwitterExceptions<T, E extends TwitterException> {
-        T get() throws E;
-    }
-
-    @FunctionalInterface
-    public interface Runnable_WithTwitterExceptions<E extends TwitterException> {
-        void run() throws E;
-    }
-
     /**
      * .forEach(rethrowConsumer(name ->
      * System.out.println(Class.forName(name)))); or
@@ -129,6 +100,7 @@ public class TwitterUnchecker {
             return null;
         }
     }
+
     /**
      * uncheck(Class::forName, "xxx");
      */
@@ -136,24 +108,67 @@ public class TwitterUnchecker {
         try {
             consumer.accept(t);
         } catch (TwitterException exception) {
-            throwAsUnchecked(exception);
+            throw new UncheckedTwitterException(exception);
         }
     }
+
     /**
      * uncheck(Class::forName, "xxx");
      */
     public static <T, S, R, E extends TwitterException> R uncheck(BiFunction_WithTwitterExceptions<T, S, R, E> function, T t, S s) {
         try {
-            return function.apply(t,s);
+            return function.apply(t, s);
         } catch (TwitterException exception) {
-            throwAsUnchecked(exception);
-            return null;
+            throw new UncheckedTwitterException(exception);
+        }
+    }
+
+    public static <T, S, Q, R, E extends TwitterException> R uncheck(TriFunction_WithTwitterExceptions<T, S, Q, R, E> function, T t, S s, Q q) {
+        try {
+            return function.apply(t, s, q);
+        } catch (TwitterException exception) {
+            throw new UncheckedTwitterException(exception);
         }
     }
 
     @SuppressWarnings("unchecked")
     private static <E extends Throwable> void throwAsUnchecked(TwitterException exception) throws E {
         throw new UncheckedTwitterException(exception);
+    }
+
+    @FunctionalInterface
+    public interface Consumer_WithTwitterExceptions<T, E extends TwitterException> {
+        void accept(T t) throws E;
+    }
+
+    @FunctionalInterface
+    public interface BiConsumer_WithTwitterExceptions<T, U, E extends TwitterException> {
+        void accept(T t, U u) throws E;
+    }
+
+    @FunctionalInterface
+    public interface Function_WithTwitterExceptions<T, R, E extends TwitterException> {
+        R apply(T t) throws TwitterException;
+    }
+
+    @FunctionalInterface
+    public interface BiFunction_WithTwitterExceptions<T, S, R, E extends TwitterException> {
+        R apply(T t, S s) throws E;
+    }
+
+    @FunctionalInterface
+    public interface TriFunction_WithTwitterExceptions<T, S, Q, R, E extends TwitterException> {
+        R apply(T t, S s, Q q) throws E;
+    }
+
+    @FunctionalInterface
+    public interface Supplier_WithTwitterExceptions<T, E extends TwitterException> {
+        T get() throws E;
+    }
+
+    @FunctionalInterface
+    public interface Runnable_WithTwitterExceptions<E extends TwitterException> {
+        void run() throws E;
     }
 
 }

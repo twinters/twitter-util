@@ -44,7 +44,7 @@ public class RandomFilter implements Predicate<Status> {
     }
 
     public boolean test(long id) {
-        long number = (id * JUMPING_LARGE_PRIME + salt) % outOf;
+        long number = (((id * JUMPING_LARGE_PRIME + salt) % outOf )+ outOf)% outOf;
         return number < chances;
 
     }

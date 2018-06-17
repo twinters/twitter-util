@@ -1,5 +1,6 @@
 package be.thomaswinters.twitter.tweetsfetcher;
 
+import be.thomaswinters.generator.generators.reacting.IReactingGenerator;
 import be.thomaswinters.generator.streamgenerator.reacting.IReactingStreamGenerator;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.filter.FilteredTweetsFetcher;
@@ -8,6 +9,7 @@ import be.thomaswinters.twitter.tweetsfetcher.filter.UserFilteredTweetsFetcher;
 import twitter4j.Status;
 import twitter4j.Twitter;
 
+import java.time.temporal.TemporalAmount;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -50,6 +52,11 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
         RandomFilter randomFilter = new RandomFilter(twitter, chances, outOf);
         return TwitterUnchecker.uncheck(this::filter,
                 status -> !shouldFilter.test(status) || randomFilter.test(status));
+    }
+
+    default TweetsFetcherCache cache(TemporalAmount timeToCache) {
+        return new TweetsFetcherCache(this,timeToCache);
+    }
     }
 
 }

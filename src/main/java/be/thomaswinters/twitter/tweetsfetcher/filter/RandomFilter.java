@@ -30,7 +30,7 @@ public class RandomFilter implements Predicate<Status> {
         this.salt = TwitterUnchecker.uncheck(twitter::getId);
 
         // Multiply the chances and outOf by a random number, such that the random function uses a different periods
-        int multiplier = (int) (this.salt % MULTIPLIER_CALCULATOR_NUMBER);
+        int multiplier = (int) (this.salt % MULTIPLIER_CALCULATOR_NUMBER)+1;
         this.chances = chances * multiplier;
         this.outOf = outOf * multiplier;
     }

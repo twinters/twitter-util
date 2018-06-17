@@ -4,6 +4,7 @@ import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import twitter4j.Twitter;
 import twitter4j.User;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public class ListUserFetcher implements IUserFetcher {
@@ -18,6 +19,10 @@ public class ListUserFetcher implements IUserFetcher {
 
     @Override
     public Stream<User> fetchUsers() {
-        return TwitterUnchecker.uncheck(twitter::getUserListMembers, listId, 5000, -1).stream();
+        return getUsers(twitter,listId).stream();
+    }
+
+    public static List<User> getUsers(Twitter twitter, long listId) {
+        return TwitterUnchecker.uncheck(twitter::getUserListMembers, listId, 5000, -1);
     }
 }

@@ -24,6 +24,9 @@ public class TwitterChatMessage implements IChatMessage {
 
     @Override
     public Optional<IChatMessage> getPrevious() {
+        if (tweet.getInReplyToStatusId() <= 1L) {
+            return Optional.empty();
+        }
         try {
             Status previousTweet = twitter.showStatus(tweet.getInReplyToStatusId());
             return Optional.of(new TwitterChatMessage(twitter, previousTweet));

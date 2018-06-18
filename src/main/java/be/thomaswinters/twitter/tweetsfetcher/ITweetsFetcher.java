@@ -55,6 +55,10 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
         return TwitterUnchecker.uncheck(this::filter,
                 status -> !shouldFilter.test(status) || randomFilter.test(status));
     }
+    default ITweetsFetcher filterRandomly(Twitter twitter, int chances, int outOf) {
+        RandomFilter randomFilter = new RandomFilter(twitter, chances, outOf);
+        return filter(randomFilter);
+    }
 
     default TweetsFetcherCache cache(TemporalAmount timeToCache) {
         return new TweetsFetcherCache(this, timeToCache);

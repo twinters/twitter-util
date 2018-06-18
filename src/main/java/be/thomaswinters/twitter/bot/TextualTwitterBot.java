@@ -31,7 +31,7 @@ public abstract class TextualTwitterBot extends TwitterBot implements IGenerator
     //endregion
 
     @Override
-    protected void replyToStatus(Status mentionTweet) {
+    public void replyToStatus(Status mentionTweet) {
         Optional<String> replyText = createReplyTo(mentionTweet);
         if (replyText.isPresent()) {
             try {

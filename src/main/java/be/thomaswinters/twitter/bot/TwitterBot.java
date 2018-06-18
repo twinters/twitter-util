@@ -83,7 +83,7 @@ public abstract class TwitterBot {
     //region abstract methods
     public abstract void postNewTweet();
 
-    protected abstract void replyToStatus(Status mentionTweet);
+    public abstract void replyToStatus(Status mentionTweet);
     //endregion
 
 

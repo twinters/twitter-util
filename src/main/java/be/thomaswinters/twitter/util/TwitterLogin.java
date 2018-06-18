@@ -41,10 +41,10 @@ public class TwitterLogin {
     public static Twitter getTwitter(String consumerKey, String consumerSecret, String accessToken, String accessTokenSecret) {
         ConfigurationBuilder cb =
                 new ConfigurationBuilder()
-                        .setOAuthConsumerKey(consumerKey)
-                        .setOAuthConsumerSecret(consumerSecret)
-                        .setOAuthAccessToken(accessToken)
-                        .setOAuthAccessTokenSecret(accessTokenSecret)
+                        .setOAuthConsumerKey(consumerKey.trim())
+                        .setOAuthConsumerSecret(consumerSecret.trim())
+                        .setOAuthAccessToken(accessToken.trim())
+                        .setOAuthAccessTokenSecret(accessTokenSecret.trim())
                         .setTweetModeExtended(true);
         return new TwitterFactory(cb.build()).getInstance();
 

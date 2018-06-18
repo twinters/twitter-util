@@ -26,11 +26,14 @@ public class TwitterLogin {
     }
 
     public static Twitter getTwitterFromEnvironment(String environmentPrefix) {
+        if (environmentPrefix.endsWith(".")) {
+            environmentPrefix = environmentPrefix.substring(0, environmentPrefix.length() - 1);
+        }
         return getTwitter(
-                System.getenv(environmentPrefix + "consumerKey"),
-                System.getenv(environmentPrefix + "consumerSecret"),
-                System.getenv(environmentPrefix + "accessToken"),
-                System.getenv(environmentPrefix + "accessTokenSecret")
+                System.getenv(environmentPrefix + ".consumerKey"),
+                System.getenv(environmentPrefix + ".consumerSecret"),
+                System.getenv(environmentPrefix + ".accessToken"),
+                System.getenv(environmentPrefix + ".accessTokenSecret")
         );
     }
 

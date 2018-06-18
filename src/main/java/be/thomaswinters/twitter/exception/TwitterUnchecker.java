@@ -96,8 +96,7 @@ public class TwitterUnchecker {
         try {
             return function.apply(t);
         } catch (TwitterException exception) {
-            throwAsUnchecked(exception);
-            return null;
+            throw new UncheckedTwitterException(exception);
         }
     }
 

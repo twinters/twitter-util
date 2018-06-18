@@ -1,5 +1,6 @@
 package be.thomaswinters.twitter.bot;
 
+import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
 import be.thomaswinters.twitter.tweetsfetcher.MentionTweetsFetcher;
 import be.thomaswinters.twitter.util.TwitterUtil;
@@ -15,21 +16,32 @@ import java.util.Comparator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 
 public abstract class TwitterBot {
 
     public static final Function<Twitter, ITweetsFetcher> MENTIONS_RETRIEVER = MentionTweetsFetcher::new;
+    public static final Function<Twitter, Supplier<Long>> LAST_REPLIED_TO_SUPPLIER = twitter ->
+            () -> TwitterUnchecker.uncheck(TwitterAnalysisUtil::getLastReplyStatus, twitter)
+                    .map(Status::getInReplyToStatusId)
+                    .orElse(1L);
 
     private final Twitter twitterConnection;
     private final ITweetsFetcher tweetsToAnswerRetriever;
+    private final Supplier<Long> lastRepliedToSupplier;
     private final Collection<Consumer<Status>> postListeners = new ArrayList<>();
     private final Collection<BiConsumer<Status, Status>> replyListeners = new ArrayList<>();
 
     //region Constructor
-    public TwitterBot(Twitter twitterConnection, ITweetsFetcher tweetsToAnswerRetrievers) {
+    public TwitterBot(Twitter twitterConnection, ITweetsFetcher tweetsToAnswerRetrievers, Supplier<Long> lastRepliedToSupplier) {
         this.twitterConnection = twitterConnection;
         this.tweetsToAnswerRetriever = tweetsToAnswerRetrievers;
+        this.lastRepliedToSupplier = lastRepliedToSupplier;
+    }
+
+    public TwitterBot(Twitter twitterConnection, ITweetsFetcher tweetsToAnswerRetrievers) {
+        this(twitterConnection, tweetsToAnswerRetrievers, LAST_REPLIED_TO_SUPPLIER.apply(twitterConnection));
     }
 
     public TwitterBot(Twitter twitterConnection) {
@@ -64,10 +76,8 @@ public abstract class TwitterBot {
 
 
     //region Reply
-    public void replyToAllUnrepliedMentions() throws TwitterException {
-        long mostRecentRepliedToStatus = TwitterAnalysisUtil.getLastReplyStatus(twitterConnection)
-                .map(Status::getInReplyToStatusId)
-                .orElse(1L);
+    public void replyToAllUnrepliedMentions() {
+        long mostRecentRepliedToStatus = lastRepliedToSupplier.get();
 
         tweetsToAnswerRetriever
                 .retrieve(mostRecentRepliedToStatus)

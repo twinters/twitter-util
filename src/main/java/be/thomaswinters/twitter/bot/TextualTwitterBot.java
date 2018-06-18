@@ -9,7 +9,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import java.util.Optional;
-import java.util.function.Function;
 
 public abstract class TextualTwitterBot extends TwitterBot implements IGenerator<String>, IReactingGenerator<String, Status> {
     protected TextualTwitterBot(Twitter twitterConnection, ITweetsFetcher tweetsToAnswerRetriever) {

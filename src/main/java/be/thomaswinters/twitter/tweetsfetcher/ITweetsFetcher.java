@@ -1,6 +1,5 @@
 package be.thomaswinters.twitter.tweetsfetcher;
 
-import be.thomaswinters.generator.generators.reacting.IReactingGenerator;
 import be.thomaswinters.generator.streamgenerator.reacting.IReactingStreamGenerator;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.filter.FilteredTweetsFetcher;
@@ -11,6 +10,7 @@ import twitter4j.Twitter;
 
 import java.time.temporal.TemporalAmount;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @FunctionalInterface
@@ -27,8 +27,10 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
         return retrieve(1L);
     }
 
-    default ITweetsFetcher combineWith(ITweetsFetcher fetcher) {
-        return new TweetsFetcherCombiner(this, fetcher);
+    default ITweetsFetcher combineWith(ITweetsFetcher... fetchers) {
+        return new TweetsFetcherCombiner(
+                Stream.concat(Stream.of(this), Stream.of(fetchers))
+                        .collect(Collectors.toList()));
     }
 
     default ITweetsFetcher filter(Predicate<Status> filter) {
@@ -55,7 +57,7 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
     }
 
     default TweetsFetcherCache cache(TemporalAmount timeToCache) {
-        return new TweetsFetcherCache(this,timeToCache);
+        return new TweetsFetcherCache(this, timeToCache);
     }
 
     default IReactingStreamGenerator<Long, Long> mapToRepliedToIds() {

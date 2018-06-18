@@ -64,7 +64,7 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
         return new TweetsFetcherCache(this, timeToCache);
     }
 
-    default IReactingStreamGenerator<Long, Long> mapToRepliedToIds() {
+    default RepliedToTweetsIdFetcher mapToRepliedToIds() {
         return new RepliedToTweetsIdFetcher(this);
     }
 

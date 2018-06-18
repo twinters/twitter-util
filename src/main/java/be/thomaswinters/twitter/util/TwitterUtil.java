@@ -8,6 +8,8 @@ public class TwitterUtil {
 
 
     public static final int MAX_TWEET_LENGTH = 280;
+    public static final String TWITTER_USERNAME_REGEX = "(?<=^|(?<=[^a-zA-Z0-9-\\.]))@[A-Za-z0-9-]+(?=[^a-zA-Z0-9-_\\.])";
+    public static final String TWITTER_HASHTAG_REGEX = "(?:\\s|\\A)[##]+([A-Za-z0-9-_]+)";
 
     public static String getQuoteRetweetUrl(Status status) {
         return "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId();
@@ -32,7 +34,6 @@ public class TwitterUtil {
     public static boolean isTwitterWord(String word) {
         return word.startsWith("@") || word.startsWith("#") || word.startsWith("http://") || word.startsWith("https://");
     }
-
 
     public static long getLastTweet(Twitter twitter) throws TwitterException {
         ResponseList<Status> timeline = twitter.getUserTimeline(twitter.getScreenName());
@@ -59,6 +60,7 @@ public class TwitterUtil {
         return mentionTweet.getText().toLowerCase().startsWith("@" + screenName.toLowerCase())
                 || mentionTweet.getInReplyToUserId() == userId;
     }
+
     public static boolean isFuzzyReplyingTo(String userName, Status mention) throws TwitterException {
         String name = "@" + userName.toLowerCase();
 
@@ -78,10 +80,6 @@ public class TwitterUtil {
 
         return false;
     }
-
-    private static final String TWITTER_USERNAME_REGEX = "(?<=^|(?<=[^a-zA-Z0-9-\\.]))@[A-Za-z0-9-]+(?=[^a-zA-Z0-9-_\\.])";
-    private static final String TWITTER_HASHTAG_REGEX = "(?:\\s|\\A)[##]+([A-Za-z0-9-_]+)";
-
 
     public static String removeTwitterWords(String text) {
         return text.replaceAll(TWITTER_USERNAME_REGEX, "")
@@ -108,9 +106,9 @@ public class TwitterUtil {
             e.printStackTrace();
         }
         return tweetToGetTextFrom;
-}
+    }
 
     private static boolean mentionsUser(String screenName, Status tweet) {
-        return tweet.getText().toLowerCase().contains("@"+screenName.toLowerCase());
+        return tweet.getText().toLowerCase().contains("@" + screenName.toLowerCase());
     }
-    }
+}

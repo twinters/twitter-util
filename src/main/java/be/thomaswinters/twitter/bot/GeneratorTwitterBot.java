@@ -2,7 +2,6 @@ package be.thomaswinters.twitter.bot;
 
 import be.thomaswinters.chatbot.IChatBot;
 import be.thomaswinters.chatbot.bots.TextGeneratorChatBotAdaptor;
-import be.thomaswinters.generator.generators.FilteringGenerator;
 import be.thomaswinters.generator.generators.IGenerator;
 import be.thomaswinters.generator.generators.reacting.IReactingGenerator;
 import be.thomaswinters.twitter.bot.chatbot.TwitterChatBotAdaptor;
@@ -23,7 +22,7 @@ public class GeneratorTwitterBot extends TextualTwitterBot implements IExtractab
                                IReactingGenerator<String, Status> twitterChatBot,
                                ITweetsFetcher retriever) {
         super(twitterConnection, retriever);
-        this.textGeneratorBot = new FilteringGenerator<>(textGeneratorBot, TwitterUtil::hasValidLength);
+        this.textGeneratorBot = textGeneratorBot.filter(1, TwitterUtil::hasValidLength);
         this.twitterChatBot = twitterChatBot;
     }
 
@@ -43,7 +42,11 @@ public class GeneratorTwitterBot extends TextualTwitterBot implements IExtractab
 
     @Override
     public Optional<String> createReplyTo(Status mentionTweet) {
-        return twitterChatBot.generateRelated(mentionTweet);
+        Optional<String> result = twitterChatBot.generateRelated(mentionTweet);
+        if (result.isPresent() && TwitterUtil.hasValidLength(result.get())) {
+            return result;
+        }
+        return Optional.empty();
     }
 
     @Override

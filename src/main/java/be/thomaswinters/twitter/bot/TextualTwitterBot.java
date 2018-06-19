@@ -2,6 +2,7 @@ package be.thomaswinters.twitter.bot;
 
 import be.thomaswinters.generator.generators.IGenerator;
 import be.thomaswinters.generator.generators.reacting.IReactingGenerator;
+import be.thomaswinters.twitter.exception.ExcessiveTweetLengthException;
 import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
 import be.thomaswinters.twitter.util.TwitterUtil;
 import twitter4j.Status;
@@ -35,11 +36,14 @@ public abstract class TextualTwitterBot extends TwitterBot implements IGenerator
         if (replyText.isPresent()) {
             try {
                 reply(replyText.get(), mentionTweet);
+            } catch (ExcessiveTweetLengthException e) {
+                e.printStackTrace();
             } catch (TwitterException twitEx) {
                 if (twitEx.exceededRateLimitation()) {
                     TwitterUtil.waitForExceededRateLimitationReset();
                     replyToStatus(mentionTweet);
                 } else {
+                    System.out.println("PROBLEM WITH THIS TWEET: " + replyText.get());
                     throw new RuntimeException(twitEx);
                 }
             }

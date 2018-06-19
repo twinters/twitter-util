@@ -8,7 +8,7 @@ public class TwitterUtil {
 
 
     public static final int MAX_TWEET_LENGTH = 280;
-    public static final String TWITTER_USERNAME_REGEX = "(?<=^|(?<=[^a-zA-Z0-9-\\.]))@[A-Za-z0-9-]+(?=[^a-zA-Z0-9-_\\.])";
+    public static final String TWITTER_USERNAME_REGEX = "(?<=^|(?<=[^a-zA-Z0-9-_\\.]))@[A-Za-z0-9-_]+(?=[^a-zA-Z0-9-_\\.])";
     public static final String TWITTER_HASHTAG_REGEX = "(?:\\s|\\A)[##]+([A-Za-z0-9-_]+)";
 
     public static String getQuoteRetweetUrl(Status status) {

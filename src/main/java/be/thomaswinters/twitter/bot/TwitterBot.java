@@ -1,5 +1,6 @@
 package be.thomaswinters.twitter.bot;
 
+import be.thomaswinters.twitter.exception.ExcessiveTweetLengthException;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
 import be.thomaswinters.twitter.tweetsfetcher.MentionTweetsFetcher;
@@ -66,7 +67,12 @@ public abstract class TwitterBot {
     }
 
     protected Status reply(String replyText, Status toTweet) throws TwitterException {
-        StatusUpdate replyPreparation = new StatusUpdate("@" + toTweet.getUser().getScreenName() + " " + replyText);
+        String fullReplyText = "@" + toTweet.getUser().getScreenName() + " " + replyText;
+
+        if (!TwitterUtil.hasValidLength(fullReplyText)) {
+            throw new ExcessiveTweetLengthException(fullReplyText);
+        }
+        StatusUpdate replyPreparation = new StatusUpdate(fullReplyText);
         replyPreparation.inReplyToStatusId(toTweet.getId());
         Status post = twitterConnection.updateStatus(replyPreparation);
         notifyNewReplyListeners(post, toTweet);

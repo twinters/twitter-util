@@ -98,6 +98,10 @@ public abstract class TwitterBot {
     //region abstract methods
     public abstract void postNewTweet();
 
+    public void replyToStatus(long mentionTweet) {
+        replyToStatus(TwitterUnchecker.uncheck(getTwitterConnection()::showStatus, mentionTweet));
+    }
+
     public abstract void replyToStatus(Status mentionTweet);
     //endregion
 

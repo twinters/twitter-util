@@ -3,6 +3,7 @@ package be.thomaswinters.twitter.bot;
 import be.thomaswinters.generator.generators.IGenerator;
 import be.thomaswinters.generator.generators.reacting.IReactingGenerator;
 import be.thomaswinters.twitter.exception.ExcessiveTweetLengthException;
+import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
 import be.thomaswinters.twitter.util.TwitterUtil;
 import twitter4j.Status;
@@ -19,14 +20,7 @@ public abstract class TextualTwitterBot extends TwitterBot implements IGenerator
     //region post new tweet
     @Override
     public void postNewTweet() {
-        Optional<String> text = prepareNewTweet();
-        if (text.isPresent()) {
-            try {
-                getTwitterConnection().updateStatus(text.get());
-            } catch (TwitterException e) {
-                e.printStackTrace();
-            }
-        }
+        prepareNewTweet().ifPresent(e -> TwitterUnchecker.uncheck(this::tweet, e));
     }
     //endregion
 

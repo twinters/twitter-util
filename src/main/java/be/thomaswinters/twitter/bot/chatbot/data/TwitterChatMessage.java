@@ -41,6 +41,16 @@ public class TwitterChatMessage implements IChatMessage {
         return new TwitterChatUser(tweet.getUser());
     }
 
+    @Override
+    public Optional<String> getURL() {
+        return Optional.of("https://twitter.com/"+getUser().getScreenName()+"/status/"+getId());
+    }
+
+//    @Override
+    public long getId() {
+        return tweet.getId();
+    }
+
     public Status getTweet() {
         return tweet;
     }

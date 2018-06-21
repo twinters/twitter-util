@@ -5,7 +5,6 @@ import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
 import be.thomaswinters.twitter.tweetsfetcher.MentionTweetsFetcher;
 import be.thomaswinters.twitter.util.TwitterUtil;
-import be.thomaswinters.twitter.util.analysis.TwitterAnalysisUtil;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
@@ -24,7 +23,7 @@ public abstract class TwitterBot {
 
     public static final Function<Twitter, ITweetsFetcher> MENTIONS_RETRIEVER = MentionTweetsFetcher::new;
     public static final Function<Twitter, Supplier<Long>> LAST_REPLIED_TO_SUPPLIER = twitter ->
-            () -> TwitterUnchecker.uncheck(TwitterAnalysisUtil::getLastReplyStatus, twitter)
+            () -> TwitterUnchecker.uncheck(TwitterUtil::getLastReplyStatus, twitter)
                     .map(Status::getInReplyToStatusId)
                     .orElse(1L);
 

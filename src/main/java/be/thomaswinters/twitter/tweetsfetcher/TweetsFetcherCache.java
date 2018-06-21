@@ -29,7 +29,8 @@ public class TweetsFetcherCache implements ITweetsFetcher {
             lastSinceId = sinceId;
             lastCached = LocalDateTime.now();
         }
-        return cache.stream();
+        return cache.stream()
+                .filter(status -> status.getId() > sinceId);
 
     }
 }

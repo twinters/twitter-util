@@ -17,6 +17,7 @@ dependencies {
     compile group: 'com.beust', name: 'jcommander', version: '1.72'
 
     compile project(':generator-util')
+    compile project(':text-util')
     compile project(':chatbot-util')
 
 }

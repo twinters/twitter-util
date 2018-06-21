@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/983139517/chatbot-util.iml" filepath="$PROJECT_DIR$/.idea/modules/983139517/chatbot-util.iml" group="chatbot-util" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/983139517/chatbot-util_main.iml" filepath="$PROJECT_DIR$/.idea/modules/983139517/chatbot-util_main.iml" group="chatbot-util" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/983139517/chatbot-util_test.iml" filepath="$PROJECT_DIR$/.idea/modules/983139517/chatbot-util_test.iml" group="chatbot-util" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/604709017/generator-util.iml" filepath="$PROJECT_DIR$/.idea/modules/604709017/generator-util.iml" group="generator-util" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/604709017/generator-util_main.iml" filepath="$PROJECT_DIR$/.idea/modules/604709017/generator-util_main.iml" group="generator-util" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/604709017/generator-util_test.iml" filepath="$PROJECT_DIR$/.idea/modules/604709017/generator-util_test.iml" group="generator-util" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-60019547/text-util.iml" filepath="$PROJECT_DIR$/.idea/modules/-60019547/text-util.iml" group="text-util" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-60019547/text-util_main.iml" filepath="$PROJECT_DIR$/.idea/modules/-60019547/text-util_main.iml" group="text-util" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-60019547/text-util_test.iml" filepath="$PROJECT_DIR$/.idea/modules/-60019547/text-util_test.iml" group="text-util" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/twitter-util.iml" filepath="$PROJECT_DIR$/.idea/modules/twitter-util.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/twitter-util_main.iml" filepath="$PROJECT_DIR$/.idea/modules/twitter-util_main.iml" group="twitter-util" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/twitter-util_test.iml" filepath="$PROJECT_DIR$/.idea/modules/twitter-util_test.iml" group="twitter-util" />

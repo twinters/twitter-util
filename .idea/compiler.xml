@@ -2,10 +2,14 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="chatbot-util_main" target="1.9" />
+      <module name="chatbot-util_test" target="1.9" />
       <module name="generator-util_main" target="1.8" />
       <module name="generator-util_test" target="1.8" />
-      <module name="twitter-util_main" target="1.8" />
-      <module name="twitter-util_test" target="1.8" />
+      <module name="text-util_main" target="1.8" />
+      <module name="text-util_test" target="1.8" />
+      <module name="twitter-util_main" target="1.9" />
+      <module name="twitter-util_test" target="1.9" />
       <module name="twitter-utils_main" target="1.8" />
       <module name="twitter-utils_test" target="1.8" />
     </bytecodeTargetLevel>

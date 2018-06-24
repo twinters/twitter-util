@@ -9,7 +9,7 @@ import twitter4j.TwitterException;
 
 import java.util.Optional;
 
-public class ReplyingMode implements ITwitterBotMode {
+public class ReplyMode implements ITwitterBotMode {
     @Override
     public void execute(TwitterBot bot, TwitterBotArguments arguments) throws TwitterException {
         if (arguments.isDebug()) {

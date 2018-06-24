@@ -6,7 +6,7 @@ import be.thomaswinters.twitter.bot.arguments.TwitterBotArguments;
 
 import java.util.Optional;
 
-public class TweetingMode implements ITwitterBotMode {
+public class PostMode implements ITwitterBotMode {
     @Override
     public void execute(TwitterBot bot, TwitterBotArguments arguments) {
         if (arguments.isDebug()) {

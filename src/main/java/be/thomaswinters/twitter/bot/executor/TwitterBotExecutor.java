@@ -2,8 +2,6 @@ package be.thomaswinters.twitter.bot.executor;
 
 import be.thomaswinters.twitter.bot.TwitterBot;
 import be.thomaswinters.twitter.bot.arguments.TwitterBotArguments;
-import be.thomaswinters.twitter.bot.executor.modes.ReplyingMode;
-import be.thomaswinters.twitter.bot.executor.modes.TweetingMode;
 import be.thomaswinters.twitter.bot.loggers.TweetPrinter;
 import be.thomaswinters.twitter.bot.loggers.TweetReplyPrinter;
 import com.beust.jcommander.JCommander;
@@ -32,12 +30,7 @@ public class TwitterBotExecutor {
         }
 
         for (int i = 0; arguments.isInfinity() || i < arguments.getAmountOfTimes(); i++) {
-            if (arguments.isPosting()) {
-                new TweetingMode().execute(bot, arguments);
-            }
-            if (arguments.isReplying()) {
-                new ReplyingMode().execute(bot, arguments);
-            }
+            arguments.getMode().execute(bot, arguments);
         }
     }
 

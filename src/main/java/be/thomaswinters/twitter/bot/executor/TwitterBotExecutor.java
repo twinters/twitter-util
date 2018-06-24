@@ -1,8 +1,9 @@
-package be.thomaswinters.twitter.bot;
+package be.thomaswinters.twitter.bot.executor;
 
 import be.thomaswinters.chatbot.IChatBot;
 import be.thomaswinters.chatbot.ui.ChatbotGUI;
 import be.thomaswinters.generator.generators.IGenerator;
+import be.thomaswinters.twitter.bot.TwitterBot;
 import be.thomaswinters.twitter.bot.arguments.TwitterBotArguments;
 import be.thomaswinters.twitter.bot.loggers.TweetPrinter;
 import be.thomaswinters.twitter.bot.loggers.TweetReplyPrinter;

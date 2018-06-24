@@ -1,5 +1,6 @@
 package be.thomaswinters.twitter.bot;
 
+import be.thomaswinters.twitter.bot.executor.TwitterBotExecutor;
 import be.thomaswinters.twitter.exception.ExcessiveTweetLengthException;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
@@ -105,6 +106,9 @@ public abstract class TwitterBot {
     public abstract void replyToStatus(Status mentionTweet);
     //endregion
 
+    public TwitterBotExecutor createExecutor() {
+        return new TwitterBotExecutor(this);
+    }
 
     //region Listeners
     public void addPostListener(Consumer<Status> listener) {

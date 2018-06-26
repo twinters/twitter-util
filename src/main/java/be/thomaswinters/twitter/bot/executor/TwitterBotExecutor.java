@@ -24,7 +24,7 @@ public class TwitterBotExecutor {
     }
 
     public void run(TwitterBotArguments arguments) throws TwitterException {
-        if (arguments.isLog()) {
+        if (arguments.isLogging()) {
             bot.addPostListener(new TweetPrinter());
             bot.addReplyListener(new TweetReplyPrinter());
         }

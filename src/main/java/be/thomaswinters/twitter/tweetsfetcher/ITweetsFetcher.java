@@ -11,6 +11,7 @@ import twitter4j.Twitter;
 
 import java.time.temporal.TemporalAmount;
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -75,4 +76,10 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
         return new RepliedToTweetsIdFetcher(this);
     }
 
+    default ITweetsFetcher peek(Consumer<Status> consumer) {
+        return filter(e-> {
+            consumer.accept(e);
+            return true;
+        });
+    }
 }

@@ -4,6 +4,9 @@ import be.thomaswinters.twitter.bot.executor.modes.ITwitterBotMode;
 import be.thomaswinters.twitter.bot.executor.modes.PostMode;
 import com.beust.jcommander.Parameter;
 
+import java.time.Duration;
+import java.time.temporal.TemporalAmount;
+
 public class TwitterBotArguments {
 
     @Parameter(names = "-infinity")
@@ -21,6 +24,10 @@ public class TwitterBotArguments {
     @Parameter(names = "-times")
     protected int amountOfTimes = 1;
 
+    protected TemporalAmount timeBetweenReplyChecks = Duration.ofMinutes(0);
+    protected TemporalAmount minTimeBetweenPosts = Duration.ofMinutes(0);
+    // Range of amount of posts to post
+
     public boolean isInfinity() {
         return infinity;
     }
@@ -29,7 +36,7 @@ public class TwitterBotArguments {
         return debug;
     }
 
-    public boolean isLog() {
+    public boolean isLogging() {
         return log;
     }
 

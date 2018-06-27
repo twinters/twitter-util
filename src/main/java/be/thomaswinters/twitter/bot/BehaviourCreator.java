@@ -9,6 +9,7 @@ import be.thomaswinters.twitter.bot.chatbot.data.TwitterChatMessage;
 import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
 import twitter4j.Status;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +49,10 @@ public class BehaviourCreator {
     //region Special
     public static ITwitterBehaviour empty() {
         return new EmptyBehaviour();
+    }
+
+    public static ITwitterBehaviour automaticFollower(Twitter twitter) throws TwitterException {
+        return new AutomaticFollower(twitter);
     }
     //endregion
 

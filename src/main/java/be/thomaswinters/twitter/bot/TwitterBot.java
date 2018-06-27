@@ -1,5 +1,7 @@
 package be.thomaswinters.twitter.bot;
 
+import be.thomaswinters.twitter.bot.behaviours.IPostBehaviour;
+import be.thomaswinters.twitter.bot.behaviours.IReplyBehaviour;
 import be.thomaswinters.twitter.bot.executor.TwitterBotExecutor;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
@@ -22,26 +24,37 @@ public abstract class TwitterBot {
                     .map(Status::getInReplyToStatusId)
                     .orElse(1L);
 
+
     private final Twitter twitterConnection;
+
+    private final IPostBehaviour postBehaviour;
+    private final IReplyBehaviour replyBehaviour;
+
     private final ITweetsFetcher tweetsToAnswerRetriever;
     private final Supplier<Long> lastRepliedToSupplier;
+
 
     private final Tweeter tweeter;
 
     //region Constructor
-    public TwitterBot(Twitter twitterConnection, ITweetsFetcher tweetsToAnswerRetrievers, Supplier<Long> lastRepliedToSupplier) {
+    public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour, ITweetsFetcher tweetsToAnswerRetrievers, Supplier<Long> lastRepliedToSupplier) {
         this.twitterConnection = twitterConnection;
+
+        this.postBehaviour = postBehaviour;
+        this.replyBehaviour = replyBehaviour;
+
         this.tweetsToAnswerRetriever = tweetsToAnswerRetrievers;
         this.lastRepliedToSupplier = lastRepliedToSupplier;
+
         this.tweeter = new Tweeter(twitterConnection);
     }
 
-    public TwitterBot(Twitter twitterConnection, ITweetsFetcher tweetsToAnswerRetrievers) {
-        this(twitterConnection, tweetsToAnswerRetrievers, LAST_REPLIED_TO_SUPPLIER.apply(twitterConnection));
+    public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour, ITweetsFetcher tweetsToAnswerRetrievers) {
+        this(twitterConnection, postBehaviour, replyBehaviour, tweetsToAnswerRetrievers, LAST_REPLIED_TO_SUPPLIER.apply(twitterConnection));
     }
 
-    public TwitterBot(Twitter twitterConnection) {
-        this(twitterConnection, MENTIONS_RETRIEVER.apply(twitterConnection));
+    public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour) {
+        this(twitterConnection, postBehaviour, replyBehaviour, MENTIONS_RETRIEVER.apply(twitterConnection));
     }
 
     //endregion
@@ -85,13 +98,17 @@ public abstract class TwitterBot {
 
 
     //region abstract methods
-    public abstract void postNewTweet();
+    public void postNewTweet() {
+        postBehaviour.post(tweeter);
+    }
 
     public void replyToStatus(long mentionTweet) {
         replyToStatus(TwitterUnchecker.uncheck(getTwitterConnection()::showStatus, mentionTweet));
     }
 
-    public abstract void replyToStatus(Status mentionTweet);
+    public void replyToStatus(Status mentionTweet) {
+        replyBehaviour.reply(tweeter, mentionTweet);
+    }
     //endregion
 
     public TwitterBotExecutor createExecutor() {

@@ -13,16 +13,18 @@ import twitter4j.Twitter;
 
 import java.util.Optional;
 
-public class GeneratorTwitterBot extends TextualTwitterBot implements IExtractableChatBot {
-    private final IGenerator<String> textGeneratorBot;
+public class GeneratorTwitterBot extends TwitterBot implements IExtractableChatBot {
+    //    private final IGenerator<String> textGeneratorBot;
     private final IReactingGenerator<String, Status> twitterChatBot;
 
     public GeneratorTwitterBot(Twitter twitterConnection,
                                IGenerator<String> textGeneratorBot,
                                IReactingGenerator<String, Status> twitterChatBot,
                                ITweetsFetcher retriever) {
-        super(twitterConnection, retriever);
-        this.textGeneratorBot = textGeneratorBot.filter(1, TwitterUtil::hasValidLength);
+        super(twitterConnection,
+                BehaviourCreator.createTextGeneratorPoster(textGeneratorBot.filter(1, TwitterUtil::hasValidLength)),
+                BehaviourCreator.createStatusTextGeneratorReplier(twitterChatBot),
+                retriever);
         this.twitterChatBot = twitterChatBot;
     }
 
@@ -39,20 +41,6 @@ public class GeneratorTwitterBot extends TextualTwitterBot implements IExtractab
                         new TextGeneratorChatBotAdaptor(textGeneratorBot)), MENTIONS_RETRIEVER.apply(twitterConnection));
     }
 
-
-    @Override
-    public Optional<String> createReplyTo(Status mentionTweet) {
-        Optional<String> result = twitterChatBot.generateRelated(mentionTweet);
-        if (result.isPresent() && TwitterUtil.hasValidLength(result.get())) {
-            return result;
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<String> prepareNewTweet() {
-        return textGeneratorBot.generate();
-    }
 
     @Override
     public Optional<IChatBot> getChatBot() {

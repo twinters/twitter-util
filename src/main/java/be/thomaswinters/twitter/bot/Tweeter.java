@@ -49,6 +49,12 @@ public class Tweeter {
         return post;
     }
 
+
+    protected void follow(User user) throws TwitterException {
+        twitterConnection.createFriendship(user.getId());
+        notifyNewFollowListeners(user);
+    }
+
     public Twitter getTwitterConnection() {
         return twitterConnection;
     }

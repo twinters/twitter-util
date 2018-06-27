@@ -1,21 +1,15 @@
 package be.thomaswinters.twitter.bot;
 
 import be.thomaswinters.twitter.bot.executor.TwitterBotExecutor;
-import be.thomaswinters.twitter.exception.ExcessiveTweetLengthException;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
 import be.thomaswinters.twitter.tweetsfetcher.MentionTweetsFetcher;
 import be.thomaswinters.twitter.util.TwitterUtil;
 import twitter4j.Status;
-import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -31,14 +25,15 @@ public abstract class TwitterBot {
     private final Twitter twitterConnection;
     private final ITweetsFetcher tweetsToAnswerRetriever;
     private final Supplier<Long> lastRepliedToSupplier;
-    private final Collection<Consumer<Status>> postListeners = new ArrayList<>();
-    private final Collection<BiConsumer<Status, Status>> replyListeners = new ArrayList<>();
+
+    private final Tweeter tweeter;
 
     //region Constructor
     public TwitterBot(Twitter twitterConnection, ITweetsFetcher tweetsToAnswerRetrievers, Supplier<Long> lastRepliedToSupplier) {
         this.twitterConnection = twitterConnection;
         this.tweetsToAnswerRetriever = tweetsToAnswerRetrievers;
         this.lastRepliedToSupplier = lastRepliedToSupplier;
+        this.tweeter = new Tweeter(twitterConnection);
     }
 
     public TwitterBot(Twitter twitterConnection, ITweetsFetcher tweetsToAnswerRetrievers) {
@@ -57,26 +52,19 @@ public abstract class TwitterBot {
     }
 
     protected Status quoteRetweet(String status, Status toTweet) throws TwitterException {
-        return tweet(status + " " + TwitterUtil.getQuoteRetweetUrl(toTweet));
+        return tweeter.quoteRetweet(status, toTweet);
     }
 
     protected Status tweet(String status) throws TwitterException {
-        Status post = twitterConnection.updateStatus(status);
-        notifyNewPostListeners(post);
-        return post;
+        return tweeter.tweet(status);
     }
 
     protected Status reply(String replyText, Status toTweet) throws TwitterException {
-        String fullReplyText = "@" + toTweet.getUser().getScreenName() + " " + replyText;
+        return tweeter.reply(replyText, toTweet);
+    }
 
-        if (!TwitterUtil.hasValidLength(fullReplyText)) {
-            throw new ExcessiveTweetLengthException(fullReplyText);
-        }
-        StatusUpdate replyPreparation = new StatusUpdate(fullReplyText);
-        replyPreparation.inReplyToStatusId(toTweet.getId());
-        Status post = twitterConnection.updateStatus(replyPreparation);
-        notifyNewReplyListeners(post, toTweet);
-        return post;
+    public Tweeter getTweeter() {
+        return tweeter;
     }
     //endregion
 
@@ -110,22 +98,5 @@ public abstract class TwitterBot {
         return new TwitterBotExecutor(this);
     }
 
-    //region Listeners
-    public void addPostListener(Consumer<Status> listener) {
-        this.postListeners.add(listener);
-    }
-
-    private void notifyNewPostListeners(Status post) {
-        postListeners.forEach(f -> f.accept(post));
-    }
-
-    public void addReplyListener(BiConsumer<Status, Status> listener) {
-        this.replyListeners.add(listener);
-    }
-
-    private void notifyNewReplyListeners(Status reply, Status toTweet) {
-        replyListeners.forEach(f -> f.accept(reply, toTweet));
-    }
-    //endregion
 
 }

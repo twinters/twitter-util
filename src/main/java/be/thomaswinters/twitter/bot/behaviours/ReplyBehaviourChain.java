@@ -1,21 +1,23 @@
 package be.thomaswinters.twitter.bot.behaviours;
 
 import be.thomaswinters.twitter.bot.Tweeter;
+import twitter4j.Status;
 
 import java.util.List;
 import java.util.Optional;
 
-public class PostBehaviourCascade implements IPostBehaviour {
-    private final List<IPostBehaviour> behaviours;
+public class ReplyBehaviourChain implements IReplyBehaviour {
+    private final List<IReplyBehaviour> behaviours;
 
-    public PostBehaviourCascade(List<IPostBehaviour> behaviours) {
+    public ReplyBehaviourChain(List<IReplyBehaviour> behaviours) {
         this.behaviours = behaviours;
     }
 
+
     @Override
-    public boolean post(Tweeter tweeter) {
+    public boolean reply(Tweeter tweeter, Status tweetToReply) {
         Optional<Boolean> success = behaviours.stream()
-                .map(e -> e.post(tweeter))
+                .map(e -> e.reply(tweeter, tweetToReply))
                 .filter(e->e)
                 .findAny();
         return success.isPresent() && success.get();

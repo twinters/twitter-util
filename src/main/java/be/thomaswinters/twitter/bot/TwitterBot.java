@@ -18,7 +18,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 
-public abstract class TwitterBot {
+public class TwitterBot {
 
     public static final Function<Twitter, ITweetsFetcher> MENTIONS_RETRIEVER = MentionTweetsFetcher::new;
     public static final Function<Twitter, Supplier<Long>> LAST_REPLIED_TO_SUPPLIER = twitter ->

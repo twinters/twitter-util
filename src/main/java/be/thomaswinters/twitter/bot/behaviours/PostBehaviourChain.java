@@ -1,6 +1,6 @@
 package be.thomaswinters.twitter.bot.behaviours;
 
-import be.thomaswinters.twitter.bot.ITweeter;
+import be.thomaswinters.twitter.bot.tweeter.ITweeter;
 
 import java.util.List;
 import java.util.Optional;

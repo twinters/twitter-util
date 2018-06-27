@@ -1,4 +1,4 @@
-package be.thomaswinters.twitter.bot;
+package be.thomaswinters.twitter.bot.tweeter;
 
 import be.thomaswinters.twitter.exception.ExcessiveTweetLengthException;
 import be.thomaswinters.twitter.util.TwitterUtil;

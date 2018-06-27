@@ -1,4 +1,4 @@
-package be.thomaswinters.twitter.bot;
+package be.thomaswinters.twitter.bot.tweeter;
 
 import twitter4j.Status;
 import twitter4j.Twitter;

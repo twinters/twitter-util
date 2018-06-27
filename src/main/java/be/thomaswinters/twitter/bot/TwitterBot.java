@@ -1,5 +1,6 @@
 package be.thomaswinters.twitter.bot;
 
+import be.thomaswinters.twitter.bot.tweeter.Tweeter;
 import be.thomaswinters.twitter.bot.behaviours.IPostBehaviour;
 import be.thomaswinters.twitter.bot.behaviours.IReplyBehaviour;
 import be.thomaswinters.twitter.bot.executor.TwitterBotExecutor;

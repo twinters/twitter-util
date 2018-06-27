@@ -6,10 +6,10 @@ import be.thomaswinters.twitter.bot.Tweeter;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import twitter4j.Status;
 
-public class StringReactingGeneratorBehaviour implements IReplyBehaviour {
+public class TextReactingGeneratorBehaviour implements IReplyBehaviour {
     private final IReactingGenerator<String, String> textGenerator;
 
-    public StringReactingGeneratorBehaviour(IReactingGenerator<String, String> textGenerator) {
+    public TextReactingGeneratorBehaviour(IReactingGenerator<String, String> textGenerator) {
         this.textGenerator = textGenerator;
     }
 

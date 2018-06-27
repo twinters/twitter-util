@@ -22,8 +22,8 @@ public class GeneratorTwitterBot extends TwitterBot implements IExtractableChatB
                                IReactingGenerator<String, Status> twitterChatBot,
                                ITweetsFetcher retriever) {
         super(twitterConnection,
-                BehaviourCreator.createTextGeneratorPoster(textGeneratorBot.filter(1, TwitterUtil::hasValidLength)),
-                BehaviourCreator.createStatusTextGeneratorReplier(twitterChatBot),
+                BehaviourCreator.fromTextGenerator(textGeneratorBot.filter(1, TwitterUtil::hasValidLength)),
+                BehaviourCreator.fromReactingStatusGenerator(twitterChatBot),
                 retriever);
         this.twitterChatBot = twitterChatBot;
     }

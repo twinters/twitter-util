@@ -1,5 +1,6 @@
 package be.thomaswinters.twitter.bot;
 
+import be.thomaswinters.twitter.bot.behaviours.ITwitterBehaviour;
 import be.thomaswinters.twitter.bot.tweeter.Tweeter;
 import be.thomaswinters.twitter.bot.behaviours.IPostBehaviour;
 import be.thomaswinters.twitter.bot.behaviours.IReplyBehaviour;
@@ -56,6 +57,9 @@ public abstract class TwitterBot {
 
     public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour) {
         this(twitterConnection, postBehaviour, replyBehaviour, MENTIONS_RETRIEVER.apply(twitterConnection));
+    }
+    public TwitterBot(Twitter twitterConnection, ITwitterBehaviour twitterBehaviour) {
+        this(twitterConnection, twitterBehaviour, twitterBehaviour, MENTIONS_RETRIEVER.apply(twitterConnection));
     }
 
     //endregion

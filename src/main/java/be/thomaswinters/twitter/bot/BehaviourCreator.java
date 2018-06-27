@@ -12,19 +12,19 @@ import java.util.List;
 
 public class BehaviourCreator {
 
-    public static IPostBehaviour createTextGeneratorPoster(IGenerator<String> generator) {
-        return new TextGeneratorPostBehaviour(generator);
+    public static ITwitterBehaviour fromTextGenerator(IGenerator<String> generator) {
+        return new TextGeneratorBehaviour(generator);
     }
 
-    public static IReplyBehaviour createTextGeneratorReplier(IReactingGenerator<String, String> generator) {
+    public static IReplyBehaviour fromReactingTextGenerator(IReactingGenerator<String, String> generator) {
         return new ReactingGeneratorBehaviour<>(generator, (e, t) -> e.getText());
     }
 
-    public static IReplyBehaviour createChatMessageTextGeneratorReplier(IReactingGenerator<String, IChatMessage> generator) {
+    public static IReplyBehaviour fromReactingMessageGenerator(IReactingGenerator<String, IChatMessage> generator) {
         return new ReactingGeneratorBehaviour<>(generator, (e, t) -> new TwitterChatMessage(t, e));
     }
 
-    public static IReplyBehaviour createStatusTextGeneratorReplier(IReactingGenerator<String, Status> generator) {
+    public static IReplyBehaviour fromReactingStatusGenerator(IReactingGenerator<String, Status> generator) {
         return new ReactingGeneratorBehaviour<>(generator, (e, t) -> e);
     }
 

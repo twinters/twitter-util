@@ -1,6 +1,6 @@
 package be.thomaswinters.twitter.bot.behaviours;
 
-import be.thomaswinters.twitter.bot.Tweeter;
+import be.thomaswinters.twitter.bot.ITweeter;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +13,7 @@ public class PostBehaviourChain implements IPostBehaviour {
     }
 
     @Override
-    public boolean post(Tweeter tweeter) {
+    public boolean post(ITweeter tweeter) {
         Optional<Boolean> success = behaviours.stream()
                 .map(e -> e.post(tweeter))
                 .filter(e->e)

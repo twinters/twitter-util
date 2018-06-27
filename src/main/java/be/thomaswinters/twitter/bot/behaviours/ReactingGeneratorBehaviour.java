@@ -1,13 +1,12 @@
 package be.thomaswinters.twitter.bot.behaviours;
 
 import be.thomaswinters.generator.generators.reacting.IReactingGenerator;
-import be.thomaswinters.twitter.bot.Tweeter;
+import be.thomaswinters.twitter.bot.ITweeter;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import twitter4j.Status;
 import twitter4j.Twitter;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class ReactingGeneratorBehaviour<E> implements IReplyBehaviour {
     private final IReactingGenerator<String, E> textGenerator;
@@ -19,7 +18,7 @@ public class ReactingGeneratorBehaviour<E> implements IReplyBehaviour {
     }
 
     @Override
-    public boolean reply(Tweeter tweeter, Status tweetToReply) {
+    public boolean reply(ITweeter tweeter, Status tweetToReply) {
         return textGenerator
                 .generateRelated(mapper.apply(tweetToReply,tweeter.getTwitterConnection()))
                 .map(text -> TwitterUnchecker.uncheck(tweeter::reply, text, tweetToReply))

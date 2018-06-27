@@ -1,6 +1,6 @@
 package be.thomaswinters.twitter.bot.behaviours;
 
-import be.thomaswinters.twitter.bot.Tweeter;
+import be.thomaswinters.twitter.bot.ITweeter;
 import twitter4j.Status;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class ReplyBehaviourChain implements IReplyBehaviour {
 
 
     @Override
-    public boolean reply(Tweeter tweeter, Status tweetToReply) {
+    public boolean reply(ITweeter tweeter, Status tweetToReply) {
         Optional<Boolean> success = behaviours.stream()
                 .map(e -> e.reply(tweeter, tweetToReply))
                 .filter(e->e)

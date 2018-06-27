@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 /**
  * A class used to perform several Twitter actions that others can listen to
  */
-public class Tweeter {
+public class Tweeter implements ITweeter {
 
     private final Twitter twitterConnection;
 
@@ -25,17 +25,20 @@ public class Tweeter {
     }
 
     //region Performers
+    @Override
     public Status quoteRetweet(String status, Status toTweet) throws TwitterException {
         return tweet(status + " " + TwitterUtil.getQuoteRetweetUrl(toTweet));
     }
 
 
+    @Override
     public Status tweet(String status) throws TwitterException {
         Status post = twitterConnection.updateStatus(status);
         notifyNewPostListeners(post);
         return post;
     }
 
+    @Override
     public Status reply(String replyText, Status toTweet) throws TwitterException {
         String fullReplyText = "@" + toTweet.getUser().getScreenName() + " " + replyText;
 
@@ -50,11 +53,13 @@ public class Tweeter {
     }
 
 
+    @Override
     public void follow(User user) throws TwitterException {
         twitterConnection.createFriendship(user.getId());
         notifyNewFollowListeners(user);
     }
 
+    @Override
     public Twitter getTwitterConnection() {
         return twitterConnection;
     }

@@ -1,6 +1,6 @@
 package be.thomaswinters.twitter.bot.behaviours;
 
-import be.thomaswinters.twitter.bot.Tweeter;
+import be.thomaswinters.twitter.bot.ITweeter;
 
 /**
  * Abstraction for a post behaviour a Twitterbot can have
@@ -14,5 +14,5 @@ public interface IPostBehaviour {
      * @return true if the posting action was successful, false otherwise.
      * This is especially important for behaviours used in a cascade or other composites
      */
-    boolean post(Tweeter tweeter);
+    boolean post(ITweeter tweeter);
 }

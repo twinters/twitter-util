@@ -13,6 +13,7 @@ import twitter4j.Twitter;
 
 import java.util.Optional;
 
+@Deprecated
 public class GeneratorTwitterBot extends TwitterBot implements IExtractableChatBot {
     //    private final IGenerator<String> textGeneratorBot;
     private final IReactingGenerator<String, Status> twitterChatBot;

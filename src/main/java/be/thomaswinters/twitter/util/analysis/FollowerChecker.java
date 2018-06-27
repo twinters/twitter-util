@@ -28,11 +28,9 @@ public class FollowerChecker {
 
     private Relationship getRelationship(User user) {
         try {
-            Relationship relationship = cache.get(
+            return cache.get(
                     user.getId(),
                     () -> twitter.showFriendship(userId, user.getId()));
-
-            return relationship;
         } catch (ExecutionException e) {
             e.printStackTrace();
         }

@@ -25,18 +25,18 @@ public class Tweeter {
     }
 
     //region Performers
-    protected Status quoteRetweet(String status, Status toTweet) throws TwitterException {
+    public Status quoteRetweet(String status, Status toTweet) throws TwitterException {
         return tweet(status + " " + TwitterUtil.getQuoteRetweetUrl(toTweet));
     }
 
 
-    protected Status tweet(String status) throws TwitterException {
+    public Status tweet(String status) throws TwitterException {
         Status post = twitterConnection.updateStatus(status);
         notifyNewPostListeners(post);
         return post;
     }
 
-    protected Status reply(String replyText, Status toTweet) throws TwitterException {
+    public Status reply(String replyText, Status toTweet) throws TwitterException {
         String fullReplyText = "@" + toTweet.getUser().getScreenName() + " " + replyText;
 
         if (!TwitterUtil.hasValidLength(fullReplyText)) {
@@ -50,7 +50,7 @@ public class Tweeter {
     }
 
 
-    protected void follow(User user) throws TwitterException {
+    public void follow(User user) throws TwitterException {
         twitterConnection.createFriendship(user.getId());
         notifyNewFollowListeners(user);
     }

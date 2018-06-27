@@ -15,5 +15,5 @@ public interface IReplyBehaviour {
      * @return true if the replying action was successful, false otherwise.
      * * This is especially important for behaviours used in a cascade or other composites
      */
-    boolean reply(Tweeter tweeter, Status status);
+    boolean reply(Tweeter tweeter, Status tweetToReply);
 }

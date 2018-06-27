@@ -45,7 +45,14 @@ public class BehaviourCreator {
     }
     //endregion
 
+    //region Special
+    public static ITwitterBehaviour empty() {
+        return new EmptyBehaviour();
+    }
+    //endregion
+
     //region QuoteRetweeter
+
     public static <E> IPostBehaviour createQuoterFromReactor(IReactingGenerator<String, E> reacter,
                                                              BiFunction<Status, Twitter, E> mapper,
                                                              IGenerator<Status> statusGenerator) {

@@ -9,6 +9,7 @@ import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
 import twitter4j.Status;
 import twitter4j.Twitter;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -36,7 +37,8 @@ public class QuoteRetweetingBehaviour<E> implements IPostBehaviour {
                                     ITweetsFetcher tweetsFetcher,
                                     ISelector<Status> statusSelector,
                                     Supplier<Long> fetchTweetsSinceSupplier) {
-        this(replyBehaviour, mapper, tweetsFetcher.seed(fetchTweetsSinceSupplier).reduceToGenerator(statusSelector));
+        this(replyBehaviour, mapper, tweetsFetcher
+                .seed(fetchTweetsSinceSupplier).reduceToGenerator(statusSelector));
     }
 
 
@@ -45,8 +47,8 @@ public class QuoteRetweetingBehaviour<E> implements IPostBehaviour {
         Optional<Status> statusToReplyTo = statusGenerator.generate();
         if (statusToReplyTo.isPresent()) {
             Optional<Status> reply = reacter
-                    .generateRelated(mapper.apply(statusToReplyTo.get(),tweeter.getTwitterConnection()))
-                    .map(text -> TwitterUnchecker.uncheck(tweeter::reply, text, statusToReplyTo.get()));
+                    .generateRelated(mapper.apply(statusToReplyTo.get(), tweeter.getTwitterConnection()))
+                    .map(text -> TwitterUnchecker.uncheck(tweeter::quoteRetweet, text, statusToReplyTo.get()));
             return reply.isPresent();
         }
         return false;

@@ -1,16 +1,20 @@
 package be.thomaswinters.twitter.bot.behaviours;
 
+import be.thomaswinters.chatbot.IChatBot;
+import be.thomaswinters.chatbot.data.IChatMessage;
 import be.thomaswinters.generator.generators.reacting.IReactingGenerator;
 import be.thomaswinters.twitter.bot.tweeter.ITweeter;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
+import be.thomaswinters.twitter.util.IExtractableChatBot;
 import twitter4j.Status;
 import twitter4j.Twitter;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 
-public class ReactingGeneratorBehaviour<E> implements IReplyBehaviour {
+public class ReactingGeneratorBehaviour<E> implements IReplyBehaviour, IExtractableChatBot {
     private final IReactingGenerator<String, E> textGenerator;
-    private final BiFunction<Status,Twitter,E> mapper;
+    private final BiFunction<Status, Twitter, E> mapper;
 
     public ReactingGeneratorBehaviour(IReactingGenerator<String, E> textGenerator, BiFunction<Status, Twitter, E> mapper) {
         this.textGenerator = textGenerator;
@@ -20,9 +24,14 @@ public class ReactingGeneratorBehaviour<E> implements IReplyBehaviour {
     @Override
     public boolean reply(ITweeter tweeter, Status tweetToReply) {
         return textGenerator
-                .generateRelated(mapper.apply(tweetToReply,tweeter.getTwitterConnection()))
+                .generateRelated(mapper.apply(tweetToReply, tweeter.getTwitterConnection()))
                 .map(text -> TwitterUnchecker.uncheck(tweeter::reply, text, tweetToReply))
                 .isPresent();
+    }
+
+    @Override
+    public Optional<IChatBot> getChatBot() {
+        return Optional.of(message -> textGenerator.generateRelated((E) message));
     }
     /**
      * TODO: Add this code somehow:

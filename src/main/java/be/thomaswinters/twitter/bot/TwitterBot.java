@@ -130,6 +130,14 @@ public class TwitterBot {
     }
     //endregion
 
+    public IPostBehaviour getPostBehaviour() {
+        return postBehaviour;
+    }
+
+    public IReplyBehaviour getReplyBehaviour() {
+        return replyBehaviour;
+    }
+
     public TwitterBotExecutor createExecutor() {
         return new TwitterBotExecutor(this);
     }

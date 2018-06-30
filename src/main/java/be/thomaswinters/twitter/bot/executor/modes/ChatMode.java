@@ -14,8 +14,8 @@ import java.util.Optional;
 public class ChatMode implements ITwitterBotMode {
     @Override
     public void execute(TwitterBot bot, ITweeter tweeter, TwitterBotArguments arguments) throws TwitterException {
-        if (bot instanceof IExtractableChatBot) {
-            Optional<IChatBot> botOptional = ((IExtractableChatBot) bot).getChatBot();
+        if (bot.getReplyBehaviour() instanceof IExtractableChatBot) {
+            Optional<IChatBot> botOptional = ((IExtractableChatBot) bot.getReplyBehaviour()).getChatBot();
             String botName = bot.getTwitterConnection().getScreenName();
             botOptional.ifPresent(chatbot -> new ChatbotGUI(chatbot, botName).run());
         } else {

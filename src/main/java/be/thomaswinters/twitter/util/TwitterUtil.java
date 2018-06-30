@@ -1,12 +1,14 @@
 package be.thomaswinters.twitter.util;
 
 import be.thomaswinters.sentence.SentenceUtil;
+import be.thomaswinters.twitter.exception.UncheckedTwitterException;
 import be.thomaswinters.twitter.tweetsfetcher.UserTweetsFetcher;
 import com.twitter.twittertext.TwitterTextParser;
 import twitter4j.*;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class TwitterUtil {
@@ -182,5 +184,35 @@ public class TwitterUtil {
             return Optional.ofNullable(twitter.showStatus(id.get()));
         }
         return Optional.empty();
+    }
+
+    /**
+     * Executes an action that might throw UncheckedTwitterExceptions in a way that checks what the error is
+     * and retries accordingly
+     *
+     * @param action    A callable that returns true if it was successfull
+     * @return
+     */
+    public static boolean robustTwitterAction(Supplier<Boolean> action) {
+        try {
+            return action.get();
+        } catch (UncheckedTwitterException e) {
+            // Tweet too long
+            if (e.getErrorCode() == 186) {
+                return false;
+            }
+            // If exceeded rate limitation: sleep
+            else if (e.exceededRateLimitation()) {
+                System.out.println("Exceeded Twitter rate limitation: sleeping for 10 minutes");
+                try {
+                    TimeUnit.MINUTES.sleep(10);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                return action.get();
+            } else {
+                throw e;
+            }
+        }
     }
 }

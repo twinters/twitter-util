@@ -8,4 +8,9 @@ public interface ITwitterBehaviour extends IPostBehaviour, IReplyBehaviour {
     default Weighted<ITwitterBehaviour> weight(double weight) {
         return new Weighted<>(this, weight);
     }
+
+    @Override
+    default ITwitterBehaviour retry(int amountOfTimes) {
+        return new RetryingTwitterBehaviour(this, amountOfTimes);
+    }
 }

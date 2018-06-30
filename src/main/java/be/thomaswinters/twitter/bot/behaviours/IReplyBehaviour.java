@@ -1,5 +1,6 @@
 package be.thomaswinters.twitter.bot.behaviours;
 
+import be.thomaswinters.generator.selection.Weighted;
 import be.thomaswinters.twitter.bot.tweeter.ITweeter;
 import twitter4j.Status;
 
@@ -21,5 +22,9 @@ public interface IReplyBehaviour {
 
     default IReplyBehaviour chain(IReplyBehaviour replyBehaviour) {
         return new ReplyBehaviourChain(Arrays.asList(this, replyBehaviour));
+    }
+
+    default Weighted<? extends IReplyBehaviour> weight(double weight) {
+        return new Weighted<>(this, weight);
     }
 }

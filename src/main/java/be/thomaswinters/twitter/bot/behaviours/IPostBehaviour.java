@@ -1,5 +1,6 @@
 package be.thomaswinters.twitter.bot.behaviours;
 
+import be.thomaswinters.generator.selection.Weighted;
 import be.thomaswinters.twitter.bot.tweeter.ITweeter;
 
 import java.util.Arrays;
@@ -24,5 +25,9 @@ public interface IPostBehaviour {
 
     default IPostBehaviour retry(int amountOfTimes) {
         return new RetryingPostBehaviour(this, amountOfTimes);
+    }
+
+    default Weighted<? extends IPostBehaviour> weight(double weight) {
+        return new Weighted<>(this, weight);
     }
 }

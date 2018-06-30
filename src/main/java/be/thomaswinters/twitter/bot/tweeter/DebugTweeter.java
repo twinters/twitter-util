@@ -11,6 +11,7 @@ public class DebugTweeter implements ITweeter {
     public DebugTweeter(String debuggerName) {
         this.debuggerName = debuggerName;
     }
+
     public DebugTweeter() {
         this("DEBUG");
     }
@@ -18,25 +19,34 @@ public class DebugTweeter implements ITweeter {
 
     @Override
     public Status quoteRetweet(String status, Status toTweet) throws TwitterException {
-        System.out.println(">> "+debuggerName+" QUOTE RETWEET:\n" + status + "\nTO: " + toTweet.getText() + "\n");
+        print("QUOTE RETWEET TO: \"" + toTweet.getText() + "\"", status);
         return null;
     }
 
     @Override
     public Status tweet(String status) throws TwitterException {
-        System.out.println(">> "+debuggerName+" POST:\n" + status + "\n");
+        print("TWEET", status);
         return null;
     }
 
     @Override
     public Status reply(String replyText, Status toTweet) throws TwitterException {
-        System.out.println(">> "+debuggerName+" QUOTE REPLY:\n" + replyText + "\nTO: " + toTweet.getText() + "\n");
+        print("REPLY TO: \"" + toTweet.getText() + "\"", replyText);
         return null;
     }
 
     @Override
     public void follow(User user) throws TwitterException {
-        System.out.println(">> "+debuggerName+" FOLLOW:\n" + user.getScreenName() + "\n");
+        print("FOLLOW " + user.getScreenName());
+
+    }
+
+    private void print(String action, String result) {
+        System.out.println("\n>> " + debuggerName + " " + action + (result.length() > 0 ? "\n>> RESULT: " + result + "\n" : ""));
+    }
+
+    private void print(String action) {
+        print(action, "");
 
     }
 

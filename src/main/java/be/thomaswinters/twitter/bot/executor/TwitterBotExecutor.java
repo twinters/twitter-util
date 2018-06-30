@@ -5,6 +5,7 @@ import be.thomaswinters.twitter.bot.arguments.TwitterBotArguments;
 import be.thomaswinters.twitter.bot.tweeter.CompositeTweeter;
 import be.thomaswinters.twitter.bot.tweeter.DebugTweeter;
 import be.thomaswinters.twitter.bot.tweeter.ITweeter;
+import be.thomaswinters.twitter.exception.UncheckedTwitterException;
 import com.beust.jcommander.JCommander;
 import twitter4j.TwitterException;
 
@@ -47,7 +48,12 @@ public class TwitterBotExecutor {
     }
 
     private ITweeter createLoggingTweeter(ITweeter originalTweeter) {
-        return new CompositeTweeter(Arrays.asList(originalTweeter, new DebugTweeter("LOG")));
+        try {
+            return new CompositeTweeter(Arrays.asList(originalTweeter,
+                    new DebugTweeter("@"+originalTweeter.getTwitterConnection().getScreenName())));
+        } catch (TwitterException e) {
+            throw new UncheckedTwitterException(e);
+        }
     }
 
 

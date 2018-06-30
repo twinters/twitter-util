@@ -28,8 +28,7 @@ public class CompositeTweeter implements ITweeter {
                         throw new UncheckedTwitterException(e);
                     }
                 })
-                .filter(Objects::nonNull)
-                .findFirst().orElse(null);
+                .reduce(null, (e, f) -> e == null ? f : e);
     }
 
     @Override
@@ -43,8 +42,7 @@ public class CompositeTweeter implements ITweeter {
                         throw new UncheckedTwitterException(e);
                     }
                 })
-                .filter(Objects::nonNull)
-                .findFirst().orElse(null);
+                .reduce(null, (e, f) -> e == null ? f : e);
     }
 
     @Override
@@ -58,8 +56,7 @@ public class CompositeTweeter implements ITweeter {
                         throw new UncheckedTwitterException(e);
                     }
                 })
-                .filter(Objects::nonNull)
-                .findFirst().orElse(null);
+                .reduce(null, (e, f) -> e == null ? f : e);
     }
 
     @Override
@@ -76,6 +73,6 @@ public class CompositeTweeter implements ITweeter {
 
     @Override
     public Twitter getTwitterConnection() {
-        return tweeters.stream().map(e -> e.getTwitterConnection()).filter(Objects::nonNull).findFirst().orElse(null);
+        return tweeters.stream().map(ITweeter::getTwitterConnection).filter(Objects::nonNull).findFirst().orElse(null);
     }
 }

@@ -1,10 +1,11 @@
 package be.thomaswinters.twitter.bot;
 
-import be.thomaswinters.twitter.bot.behaviours.ITwitterBehaviour;
-import be.thomaswinters.twitter.bot.tweeter.Tweeter;
 import be.thomaswinters.twitter.bot.behaviours.IPostBehaviour;
 import be.thomaswinters.twitter.bot.behaviours.IReplyBehaviour;
+import be.thomaswinters.twitter.bot.behaviours.ITwitterBehaviour;
 import be.thomaswinters.twitter.bot.executor.TwitterBotExecutor;
+import be.thomaswinters.twitter.bot.tweeter.ITweeter;
+import be.thomaswinters.twitter.bot.tweeter.Tweeter;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
 import be.thomaswinters.twitter.tweetsfetcher.MentionTweetsFetcher;
@@ -58,6 +59,7 @@ public class TwitterBot {
     public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour) {
         this(twitterConnection, postBehaviour, replyBehaviour, MENTIONS_RETRIEVER.apply(twitterConnection));
     }
+
     public TwitterBot(Twitter twitterConnection, ITwitterBehaviour twitterBehaviour) {
         this(twitterConnection, twitterBehaviour, twitterBehaviour, MENTIONS_RETRIEVER.apply(twitterConnection));
     }
@@ -89,6 +91,10 @@ public class TwitterBot {
 
     //region Reply
     public void replyToAllUnrepliedMentions() {
+        replyToAllUnrepliedMentions(getTweeter());
+    }
+
+    public void replyToAllUnrepliedMentions(ITweeter tweeter) {
         long mostRecentRepliedToStatus = lastRepliedToSupplier.get();
 
         tweetsToAnswerRetriever
@@ -97,14 +103,18 @@ public class TwitterBot {
                 .sorted(Comparator.comparingLong(Status::getId))
                 .distinct()
                 // Reply to all mentions
-                .forEachOrdered(this::replyToStatus);
+                .forEachOrdered(e -> replyToStatus(e, tweeter));
     }
     //endregion
 
 
     //region abstract methods
     public void postNewTweet() {
-        postBehaviour.post(tweeter);
+        postNewTweet(getTweeter());
+    }
+
+    public void postNewTweet(ITweeter customTweeter) {
+        postBehaviour.post(customTweeter);
     }
 
     public void replyToStatus(long mentionTweet) {
@@ -112,6 +122,10 @@ public class TwitterBot {
     }
 
     public void replyToStatus(Status mentionTweet) {
+        replyToStatus(mentionTweet, getTweeter());
+    }
+
+    public void replyToStatus(Status mentionTweet, ITweeter tweeter) {
         replyBehaviour.reply(tweeter, mentionTweet);
     }
     //endregion

@@ -34,7 +34,7 @@ public class TwitterBotExecutor {
             bot.getTweeter().addFollowListener(twitterFollowPrinter);
         }
 
-        for (int i = 0; arguments.isInfinity() || i < arguments.getAmountOfTimes(); i++) {
+        for (int i = 0; arguments.isInfinity() || i < arguments.getPostTimes(); i++) {
             arguments.getMode().execute(bot, arguments);
         }
 

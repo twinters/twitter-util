@@ -21,11 +21,15 @@ public class TwitterBotArguments {
     @Parameter(names = "-mode", converter = TwitterBotModeConverter.class)
     protected ITwitterBotMode mode = new PostMode();
 
-    @Parameter(names = "-times")
-    protected int amountOfTimes = 1;
+    @Parameter(names = "-postTimes")
+    protected int postTimes = 1;
 
-    protected TemporalAmount timeBetweenReplyChecks = Duration.ofMinutes(0);
-    protected TemporalAmount minTimeBetweenPosts = Duration.ofMinutes(0);
+    @Parameter(names = "-replyWait", converter = TemporalAmountConverter.class)
+    protected TemporalAmount replyWait = Duration.ofMinutes(0);
+
+    @Parameter(names = "-duration", converter = TemporalAmountConverter.class)
+    protected TemporalAmount runDuration = Duration.ofMinutes(0);
+
     // Range of amount of posts to post
 
     public boolean isInfinity() {
@@ -40,8 +44,16 @@ public class TwitterBotArguments {
         return log;
     }
 
-    public int getAmountOfTimes() {
-        return amountOfTimes;
+    public int getPostTimes() {
+        return postTimes;
+    }
+
+    public TemporalAmount getReplyWait() {
+        return replyWait;
+    }
+
+    public TemporalAmount getRunDuration() {
+        return runDuration;
     }
 
     public ITwitterBotMode getMode() {

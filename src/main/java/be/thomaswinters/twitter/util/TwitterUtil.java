@@ -2,6 +2,7 @@ package be.thomaswinters.twitter.util;
 
 import be.thomaswinters.sentence.SentenceUtil;
 import be.thomaswinters.twitter.tweetsfetcher.UserTweetsFetcher;
+import com.twitter.twittertext.TwitterTextParser;
 import twitter4j.*;
 
 import java.util.Optional;
@@ -41,8 +42,17 @@ public class TwitterUtil {
 
 
     public static boolean hasValidLength(String text) {
-        return text.length() <= MAX_TWEET_LENGTH;
+        return TwitterTextParser.parseTweet(text).isValid;
     }
+
+    public static boolean hasValidQuoteRetweetLength(String text) {
+        return TwitterTextParser.parseTweet(text + " https://twitter.com/SomeUser/status/999999999999999999").isValid;
+    }
+
+    public static boolean hasValidReplyLength(String text) {
+        return TwitterTextParser.parseTweet("@SomeUser " + text).isValid;
+    }
+
 
     public static boolean isDirectReplyToCurrentUser(Twitter twitterConnection, Status mentionTweet) throws TwitterException {
         return isDirectReplyToUser(twitterConnection.getId(), twitterConnection.getScreenName(), mentionTweet);
@@ -116,7 +126,6 @@ public class TwitterUtil {
     }
 
 
-
     /**
      * Returns most recent tweet, excluding replies and retweets
      *
@@ -129,12 +138,11 @@ public class TwitterUtil {
                 .filter(
                         e -> !e.getText().startsWith("@")
                                 && !e.getText().startsWith("RT : "))
-                .filter(e->e.getInReplyToStatusId() <= 0L )
+                .filter(e -> e.getInReplyToStatusId() <= 0L)
                 .mapToLong(Status::getId)
                 .max()
                 .orElse(1L);
     }
-
 
 
     public static long getLastTweet(Twitter twitter) throws TwitterException {

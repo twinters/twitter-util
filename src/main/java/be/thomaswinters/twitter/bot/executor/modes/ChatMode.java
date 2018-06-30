@@ -4,7 +4,6 @@ import be.thomaswinters.chatbot.IChatBot;
 import be.thomaswinters.chatbot.ui.ChatbotGUI;
 import be.thomaswinters.twitter.bot.TwitterBot;
 import be.thomaswinters.twitter.bot.arguments.TwitterBotArguments;
-import be.thomaswinters.twitter.bot.behaviours.IPostBehaviour;
 import be.thomaswinters.twitter.bot.tweeter.ITweeter;
 import be.thomaswinters.twitter.util.IExtractableChatBot;
 import twitter4j.TwitterException;

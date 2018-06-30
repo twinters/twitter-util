@@ -9,8 +9,8 @@ import java.time.temporal.TemporalAmount;
 
 public class TwitterBotArguments {
 
-    @Parameter(names = "-infinity")
-    protected boolean infinity = false;
+//    @Parameter(names = "-infinity")
+//    protected boolean infinity = false;
 
     @Parameter(names = "-debug")
     protected boolean debug = false;
@@ -23,19 +23,22 @@ public class TwitterBotArguments {
 
     @Parameter(names = "-postTimes")
     protected int postTimes = 1;
+
     @Parameter(names = "-postMinWait", converter = TemporalAmountConverter.class)
     protected TemporalAmount postMinWait = Duration.ofMinutes(0);
+
     @Parameter(names = "-replyWait", converter = TemporalAmountConverter.class)
     protected TemporalAmount replyWait = Duration.ofMinutes(0);
+
     @Parameter(names = "-runDuration", converter = TemporalAmountConverter.class)
     protected TemporalAmount runDuration = Duration.ofMinutes(0);
 
 
     // Range of amount of posts to post
 
-    public boolean isInfinity() {
-        return infinity;
-    }
+//    public boolean isInfinity() {
+//        return infinity;
+//    }
 
     public boolean isDebug() {
         return debug;

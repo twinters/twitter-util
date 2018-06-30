@@ -28,9 +28,7 @@ public class TwitterBotExecutor {
 
     public void run(TwitterBotArguments arguments) throws TwitterException {
 
-        for (int i = 0; arguments.isInfinity() || i < arguments.getPostTimes(); i++) {
-            arguments.getMode().execute(bot, getTweeter(arguments), arguments);
-        }
+        arguments.getMode().execute(bot, getTweeter(arguments), arguments);
 
     }
 
@@ -50,7 +48,7 @@ public class TwitterBotExecutor {
     private ITweeter createLoggingTweeter(ITweeter originalTweeter) {
         try {
             return new CompositeTweeter(Arrays.asList(originalTweeter,
-                    new DebugTweeter("@"+originalTweeter.getTwitterConnection().getScreenName())));
+                    new DebugTweeter("@" + originalTweeter.getTwitterConnection().getScreenName())));
         } catch (TwitterException e) {
             throw new UncheckedTwitterException(e);
         }

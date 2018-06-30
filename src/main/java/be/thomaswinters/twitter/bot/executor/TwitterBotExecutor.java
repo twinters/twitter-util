@@ -2,12 +2,13 @@ package be.thomaswinters.twitter.bot.executor;
 
 import be.thomaswinters.twitter.bot.TwitterBot;
 import be.thomaswinters.twitter.bot.arguments.TwitterBotArguments;
-import be.thomaswinters.twitter.bot.loggers.TweetPrinter;
-import be.thomaswinters.twitter.bot.loggers.TweetReplyPrinter;
-import be.thomaswinters.twitter.bot.loggers.TwitterFollowPrinter;
+import be.thomaswinters.twitter.bot.tweeter.CompositeTweeter;
+import be.thomaswinters.twitter.bot.tweeter.DebugTweeter;
+import be.thomaswinters.twitter.bot.tweeter.ITweeter;
 import com.beust.jcommander.JCommander;
 import twitter4j.TwitterException;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class TwitterBotExecutor {
@@ -25,24 +26,28 @@ public class TwitterBotExecutor {
     }
 
     public void run(TwitterBotArguments arguments) throws TwitterException {
-        TweetPrinter tweetPrinter = new TweetPrinter();
-        TweetReplyPrinter tweetReplyPrinter = new TweetReplyPrinter();
-        TwitterFollowPrinter twitterFollowPrinter = new TwitterFollowPrinter(bot.getTwitterConnection().getScreenName());
-        if (arguments.isLogging()) {
-            bot.getTweeter().addPostListener(tweetPrinter);
-            bot.getTweeter().addReplyListener(tweetReplyPrinter);
-            bot.getTweeter().addFollowListener(twitterFollowPrinter);
-        }
 
         for (int i = 0; arguments.isInfinity() || i < arguments.getPostTimes(); i++) {
-            arguments.getMode().execute(bot, arguments);
+            arguments.getMode().execute(bot, getTweeter(arguments), arguments);
         }
 
-        if (arguments.isLogging()) {
-            bot.getTweeter().removePostListener(tweetPrinter);
-            bot.getTweeter().removeReplyListener(tweetReplyPrinter);
-            bot.getTweeter().removeFollowListener(twitterFollowPrinter);
+    }
+
+    private ITweeter getTweeter(TwitterBotArguments arguments) {
+        ITweeter tweeter;
+        if (arguments.isDebug()) {
+            tweeter = new DebugTweeter();
+        } else if (arguments.isLogging()) {
+            tweeter = createLoggingTweeter(bot.getTweeter());
+        } else {
+            tweeter = bot.getTweeter();
         }
+        return tweeter;
+
+    }
+
+    private ITweeter createLoggingTweeter(ITweeter originalTweeter) {
+        return new CompositeTweeter(Arrays.asList(originalTweeter, new DebugTweeter("LOG")));
     }
 
 

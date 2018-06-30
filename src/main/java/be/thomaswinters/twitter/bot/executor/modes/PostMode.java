@@ -27,19 +27,28 @@ public class PostMode implements ITwitterBotMode {
         for (LocalDateTime postMoment : postMoments) {
 
             // Sleep until next one
-            long sleepDuration =
-                    ChronoUnit.SECONDS.between(LocalDateTime.now(), postMoment);
+            long sleepDuration = ChronoUnit.SECONDS.between(LocalDateTime.now(), postMoment);
+            System.out.println("Sleeping for " + sleepDuration + " seconds until next tweet");
+            sleepSeconds(sleepDuration);
 
-            try {
-                System.out.println("Sleeping for " + sleepDuration + " seconds until next tweet");
-                TimeUnit.SECONDS.sleep(sleepDuration);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            // Post
             bot.postNewTweet(tweeter);
 
-
+            // Minimum sleep time
+            long minWaitSeconds = arguments.getPostMinimumWait().get(ChronoUnit.SECONDS);
+            sleepSeconds(minWaitSeconds);
         }
+    }
+
+    private void sleepSeconds(long amountOfSeconds) {
+        try {
+            if (amountOfSeconds > 0) {
+                TimeUnit.SECONDS.sleep(amountOfSeconds);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private List<LocalDateTime> createPostMoments(LocalDateTime start, TemporalAmount runDuration, int postTimes) {

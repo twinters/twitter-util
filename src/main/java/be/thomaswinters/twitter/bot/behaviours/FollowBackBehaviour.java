@@ -1,4 +1,4 @@
-package be.thomaswinters.twitter.bot;
+package be.thomaswinters.twitter.bot.behaviours;
 
 import be.thomaswinters.twitter.bot.behaviours.ITwitterBehaviour;
 import be.thomaswinters.twitter.bot.tweeter.ITweeter;
@@ -10,12 +10,12 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-public class AutomaticFollower implements ITwitterBehaviour {
+public class FollowBackBehaviour implements ITwitterBehaviour {
 
     private final FollowerChecker followerUtil;
     private final FollowersFetcher followersFetcher;
 
-    public AutomaticFollower(Twitter twitter) throws TwitterException {
+    public FollowBackBehaviour(Twitter twitter) throws TwitterException {
         this.followerUtil = new FollowerChecker(twitter);
         this.followersFetcher = new FollowersFetcher(twitter);
     }

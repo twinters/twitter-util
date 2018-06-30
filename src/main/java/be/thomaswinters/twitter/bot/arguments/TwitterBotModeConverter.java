@@ -1,5 +1,6 @@
 package be.thomaswinters.twitter.bot.arguments;
 
+import be.thomaswinters.twitter.bot.executor.modes.ChatMode;
 import be.thomaswinters.twitter.bot.executor.modes.ITwitterBotMode;
 import be.thomaswinters.twitter.bot.executor.modes.ReplyMode;
 import be.thomaswinters.twitter.bot.executor.modes.PostMode;
@@ -13,6 +14,8 @@ public class TwitterBotModeConverter implements IStringConverter<ITwitterBotMode
                 return new PostMode();
             case "reply":
                 return new ReplyMode();
+            case "chat":
+                return new ChatMode();
             default:
                 throw new IllegalArgumentException("Not a valid posting mode: " + value);
         }

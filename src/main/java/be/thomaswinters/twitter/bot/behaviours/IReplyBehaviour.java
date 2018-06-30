@@ -3,6 +3,8 @@ package be.thomaswinters.twitter.bot.behaviours;
 import be.thomaswinters.twitter.bot.tweeter.ITweeter;
 import twitter4j.Status;
 
+import java.util.Arrays;
+
 /**
  * Abstraction for a reply behaviour a Twitterbot can have:
  */
@@ -16,4 +18,8 @@ public interface IReplyBehaviour {
      * * This is especially important for behaviours used in a cascade or other composites
      */
     boolean reply(ITweeter tweeter, Status tweetToReply);
+
+    default IReplyBehaviour chain(IReplyBehaviour replyBehaviour) {
+        return new ReplyBehaviourChain(Arrays.asList(this, replyBehaviour));
+    }
 }

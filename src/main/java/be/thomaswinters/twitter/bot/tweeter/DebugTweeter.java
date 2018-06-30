@@ -19,25 +19,31 @@ public class DebugTweeter implements ITweeter {
 
     @Override
     public Status quoteRetweet(String status, Status toTweet) throws TwitterException {
-        print("QUOTE RETWEET TO: \"" + toTweet.getText() + "\"", status);
+        print("QUOTE RETWEETED TO: \"" + toTweet.getText() + "\"", status);
         return null;
     }
 
     @Override
     public Status tweet(String status) throws TwitterException {
-        print("TWEET", status);
+        print("TWEETED", status);
         return null;
     }
 
     @Override
     public Status reply(String replyText, Status toTweet) throws TwitterException {
-        print("REPLY TO: \"" + toTweet.getText() + "\"", replyText);
+        print("REPLIED TO: \"" + toTweet.getText() + "\"", replyText);
         return null;
     }
 
     @Override
     public void follow(User user) throws TwitterException {
-        print("FOLLOW " + user.getScreenName());
+        print("FOLLOWED " + user.getScreenName());
+
+    }
+
+    @Override
+    public void like(Status status) throws TwitterException {
+        print("LIKED " + status.getText());
 
     }
 

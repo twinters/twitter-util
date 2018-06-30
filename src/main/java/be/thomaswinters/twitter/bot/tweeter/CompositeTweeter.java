@@ -72,6 +72,18 @@ public class CompositeTweeter implements ITweeter {
     }
 
     @Override
+    public void like(Status tweet) throws TwitterException {
+        this.tweeters.forEach(t -> {
+            try {
+                t.like(tweet);
+            } catch (TwitterException e) {
+                throw new UncheckedTwitterException(e);
+            }
+        });
+
+    }
+
+    @Override
     public Twitter getTwitterConnection() {
         return tweeters.stream().map(ITweeter::getTwitterConnection).filter(Objects::nonNull).findFirst().orElse(null);
     }

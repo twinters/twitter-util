@@ -17,6 +17,7 @@ public class Tweeter implements ITweeter {
     private final Twitter twitterConnection;
 
     private final Collection<Consumer<User>> followListener = new ArrayList<>();
+    private final Collection<Consumer<Status>> likeListener = new ArrayList<>();
     private final Collection<Consumer<Status>> postListeners = new ArrayList<>();
     private final Collection<BiConsumer<Status, Status>> replyListeners = new ArrayList<>();
 
@@ -60,6 +61,12 @@ public class Tweeter implements ITweeter {
     }
 
     @Override
+    public void like(Status tweet) throws TwitterException {
+        twitterConnection.createFavorite(tweet.getId());
+        notifyNewLikeListeners(tweet);
+    }
+
+    @Override
     public Twitter getTwitterConnection() {
         return twitterConnection;
     }
@@ -100,6 +107,18 @@ public class Tweeter implements ITweeter {
 
     private void notifyNewFollowListeners(User user) {
         followListener.forEach(f -> f.accept(user));
+    }
+
+    public void addLikeListener(Consumer<Status> listener) {
+        this.likeListener.add(listener);
+    }
+
+    public void removeLikeListener(Consumer<Status> listener) {
+        this.likeListener.remove(listener);
+    }
+
+    private void notifyNewLikeListeners(Status status) {
+        likeListener.forEach(f -> f.accept(status));
     }
 
     //endregion

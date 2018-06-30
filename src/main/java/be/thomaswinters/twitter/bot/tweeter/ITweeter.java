@@ -14,6 +14,8 @@ public interface ITweeter {
     Status reply(String replyText, Status toTweet) throws TwitterException;
 
     void follow(User user) throws TwitterException;
+    void like(Status tweetToReply) throws TwitterException;
 
     Twitter getTwitterConnection();
+
 }

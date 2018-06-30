@@ -47,9 +47,9 @@ public class Tweeter implements ITweeter {
         }
         StatusUpdate replyPreparation = new StatusUpdate(fullReplyText);
         replyPreparation.inReplyToStatusId(toTweet.getId());
-        Status post = twitterConnection.updateStatus(replyPreparation);
-        notifyNewReplyListeners(post, toTweet);
-        return post;
+        Status reply = twitterConnection.updateStatus(replyPreparation);
+        notifyNewReplyListeners(reply, toTweet);
+        return reply;
     }
 
 

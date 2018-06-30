@@ -1,11 +1,11 @@
 package be.thomaswinters.twitter.bot.behaviours;
 
 import be.thomaswinters.chatbot.IChatBot;
-import be.thomaswinters.chatbot.data.IChatMessage;
 import be.thomaswinters.generator.generators.reacting.IReactingGenerator;
 import be.thomaswinters.twitter.bot.tweeter.ITweeter;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.util.IExtractableChatBot;
+import be.thomaswinters.twitter.util.TwitterUtil;
 import twitter4j.Status;
 import twitter4j.Twitter;
 
@@ -16,9 +16,17 @@ public class ReactingGeneratorBehaviour<E> implements IReplyBehaviour, IExtracta
     private final IReactingGenerator<String, E> textGenerator;
     private final BiFunction<Status, Twitter, E> mapper;
 
-    public ReactingGeneratorBehaviour(IReactingGenerator<String, E> textGenerator, BiFunction<Status, Twitter, E> mapper) {
-        this.textGenerator = textGenerator;
+    public ReactingGeneratorBehaviour(IReactingGenerator<String, E> textGenerator,
+                                      BiFunction<Status, Twitter, E> mapper,
+                                      int maxTrials) {
+        this.textGenerator = textGenerator
+                .filter(maxTrials, TwitterUtil::hasValidReplyLength);
         this.mapper = mapper;
+    }
+
+    public ReactingGeneratorBehaviour(IReactingGenerator<String, E> textGenerator,
+                                      BiFunction<Status, Twitter, E> mapper) {
+        this(textGenerator, mapper, 10);
     }
 
     @Override

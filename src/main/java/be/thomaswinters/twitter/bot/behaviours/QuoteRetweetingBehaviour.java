@@ -6,10 +6,10 @@ import be.thomaswinters.generator.selection.ISelector;
 import be.thomaswinters.twitter.bot.tweeter.ITweeter;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
+import be.thomaswinters.twitter.util.TwitterUtil;
 import twitter4j.Status;
 import twitter4j.Twitter;
 
-import java.time.Duration;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -22,15 +22,20 @@ public class QuoteRetweetingBehaviour<E> implements IPostBehaviour {
 
     public QuoteRetweetingBehaviour(IReactingGenerator<String, E> reacter,
                                     BiFunction<Status, Twitter, E> mapper,
-                                    IGenerator<Status> statusIGenerator) {
-        this.reacter = reacter;
+                                    IGenerator<Status> statusIGenerator,
+                                    int maxTrials) {
+        this.reacter = reacter
+                .filter(maxTrials, TwitterUtil::hasValidQuoteRetweetLength);
+        ;
         this.mapper = mapper;
         this.statusGenerator = statusIGenerator;
     }
 
-//    public QuoteRetweetingBehaviour(IReactingGenerator<String, Status> reacter, IGenerator<Status> statusGenerator) {
-//        this(reacter, (e, t) -> e, statusGenerator);
-//    }
+    public QuoteRetweetingBehaviour(IReactingGenerator<String, E> reacter,
+                                    BiFunction<Status, Twitter, E> mapper,
+                                    IGenerator<Status> statusIGenerator) {
+        this(reacter, mapper, statusIGenerator, 10);
+    }
 
     public QuoteRetweetingBehaviour(IReactingGenerator<String, E> replyBehaviour,
                                     BiFunction<Status, Twitter, E> mapper,

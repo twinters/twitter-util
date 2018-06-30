@@ -32,7 +32,11 @@ public class PostMode implements ITwitterBotMode {
             sleepSeconds(sleepDuration);
 
             // Post
-            bot.postNewTweet(tweeter);
+            try {
+                bot.postNewTweet(tweeter);
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
 
             // Minimum sleep time
             long minWaitSeconds = arguments.getPostMinimumWait().get(ChronoUnit.SECONDS);

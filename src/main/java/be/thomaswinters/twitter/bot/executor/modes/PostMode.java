@@ -29,7 +29,7 @@ public class PostMode implements ITwitterBotMode {
 
             // Sleep until next one
             long sleepDuration = ChronoUnit.SECONDS.between(LocalDateTime.now(), postMoment);
-            System.out.println("Sleeping for " + sleepDuration + " seconds until next tweet");
+            System.out.println("Sleeping for " + sleepDuration + " seconds until next post");
             sleepSeconds(sleepDuration);
 
             // Post

@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 public class ReplyMode implements ITwitterBotMode {
     @Override
     public void execute(TwitterBot bot, ITweeter tweeter, TwitterBotArguments arguments) {
-
         LocalDateTime start = LocalDateTime.now();
         LocalDateTime end = start.plus(arguments.getRunDuration());
+        System.out.println("Started replying mode until " + end);
 
         while (LocalDateTime.now().isBefore(end)) {
             LocalDateTime startOfRun = LocalDateTime.now();

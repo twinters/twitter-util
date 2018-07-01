@@ -24,6 +24,10 @@ public interface IReplyBehaviour {
         return new ReplyBehaviourChain(Arrays.asList(this, replyBehaviour));
     }
 
+    default IReplyBehaviour and(IReplyBehaviour replyBehaviour) {
+        return new ReplyBehaviourConjunction(Arrays.asList(this, replyBehaviour));
+    }
+
     default IReplyBehaviour retry(int amountOfTimes) {
         return new RetryingReplyBehaviour(this, amountOfTimes);
     }

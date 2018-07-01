@@ -22,6 +22,9 @@ public interface IPostBehaviour {
     default IPostBehaviour orElse(IPostBehaviour postBehaviour) {
         return new PostBehaviourChain(Arrays.asList(this, postBehaviour));
     }
+    default IPostBehaviour and(IPostBehaviour postBehaviour) {
+        return new PostBehaviourConjunction(Arrays.asList(this, postBehaviour));
+    }
 
     default IPostBehaviour retry(int amountOfTimes) {
         return new RetryingPostBehaviour(this, amountOfTimes);

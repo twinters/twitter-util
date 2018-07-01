@@ -6,13 +6,13 @@ import be.thomaswinters.twitter.bot.behaviours.ITwitterBehaviour;
 import be.thomaswinters.twitter.bot.executor.TwitterBotExecutor;
 import be.thomaswinters.twitter.bot.tweeter.ITweeter;
 import be.thomaswinters.twitter.bot.tweeter.Tweeter;
+import be.thomaswinters.twitter.bot.util.LastRepliedToSupplier;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.ITweetsFetcher;
 import be.thomaswinters.twitter.tweetsfetcher.MentionTweetsFetcher;
 import be.thomaswinters.twitter.util.TwitterUtil;
 import twitter4j.Status;
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 
 import java.util.Comparator;
 import java.util.function.Function;
@@ -53,7 +53,8 @@ public class TwitterBot {
     }
 
     public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour, ITweetsFetcher tweetsToAnswerRetrievers) {
-        this(twitterConnection, postBehaviour, replyBehaviour, tweetsToAnswerRetrievers, LAST_REPLIED_TO_SUPPLIER.apply(twitterConnection));
+        this(twitterConnection, postBehaviour, replyBehaviour, tweetsToAnswerRetrievers, new LastRepliedToSupplier(twitterConnection));
+        ((LastRepliedToSupplier) this.lastRepliedToSupplier).subscribeToTweeter(getTweeter());
     }
 
     public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour) {

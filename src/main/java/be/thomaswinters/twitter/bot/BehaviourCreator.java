@@ -26,23 +26,44 @@ public class BehaviourCreator {
     public static ITwitterBehaviour fromTextGenerator(IGenerator<String> generator) {
         return new TextGeneratorBehaviour(generator);
     }
+    public static ITwitterBehaviour fromTextGenerator(IGenerator<String> generator, int maxTrials) {
+        return new TextGeneratorBehaviour(generator, maxTrials);
+    }
 
     //region Replybehaviour from reactors
     public static IReplyBehaviour fromTextReactor(IReactingGenerator<String, String> generator) {
         return fromReactor(generator, STATUS_TO_TEXT);
     }
 
+    public static IReplyBehaviour fromTextReactor(IReactingGenerator<String, String> generator, int maxTrials) {
+        return fromReactor(generator, STATUS_TO_TEXT, maxTrials);
+    }
+
     public static IReplyBehaviour fromMessageReactor(IReactingGenerator<String, IChatMessage> generator) {
         return fromReactor(generator, STATUS_TO_MESSAGE);
+    }
+
+    public static IReplyBehaviour fromMessageReactor(IReactingGenerator<String, IChatMessage> generator, int maxTrials) {
+        return fromReactor(generator, STATUS_TO_MESSAGE, maxTrials);
     }
 
     public static IReplyBehaviour fromStatusReactor(IReactingGenerator<String, Status> generator) {
         return fromReactor(generator, STATUS_TO_STATUS);
     }
 
+    public static IReplyBehaviour fromStatusReactor(IReactingGenerator<String, Status> generator, int maxTrials) {
+        return fromReactor(generator, STATUS_TO_STATUS, maxTrials);
+    }
+
     public static <E> IReplyBehaviour fromReactor(IReactingGenerator<String, E> generator,
                                                   BiFunction<Status, Twitter, E> mapper) {
         return new ReactingGeneratorBehaviour<>(generator, mapper);
+    }
+
+    public static <E> IReplyBehaviour fromReactor(IReactingGenerator<String, E> generator,
+                                                  BiFunction<Status, Twitter, E> mapper,
+                                                  int maxTrials) {
+        return new ReactingGeneratorBehaviour<>(generator, mapper, maxTrials);
     }
     //endregion
 
@@ -146,6 +167,7 @@ public class BehaviourCreator {
     public static IReplyBehaviour conjunctionReply(List<IReplyBehaviour> behaviours) {
         return new ReplyBehaviourConjunction(behaviours);
     }
+
     //endregion
 
 }

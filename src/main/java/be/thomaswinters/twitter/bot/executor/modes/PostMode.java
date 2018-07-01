@@ -19,7 +19,7 @@ public class PostMode implements ITwitterBotMode {
 
         LocalDateTime start = LocalDateTime.now();
 
-        List<LocalDateTime> postMoments = createPostMoments(start,
+        List<LocalDateTime> postMoments = arguments.getPostTimeSelector().selectTimes(start,
                 arguments.getRunDuration(),
                 arguments.getPostTimes());
         System.out.println("Post moments: " + postMoments);
@@ -56,20 +56,4 @@ public class PostMode implements ITwitterBotMode {
 
     }
 
-    private List<LocalDateTime> createPostMoments(LocalDateTime start, TemporalAmount runDuration, int postTimes) {
-        long amountOfSeconds = runDuration.get(ChronoUnit.SECONDS);
-
-        return IntStream
-                .range(0,postTimes)
-                .mapToObj(i -> {
-                            if (amountOfSeconds > 0) {
-                                return start.plusSeconds(ThreadLocalRandom.current().nextLong(amountOfSeconds));
-                            } else {
-                                return start;
-                            }
-                        }
-                )
-                .sorted()
-                .collect(Collectors.toList());
-    }
 }

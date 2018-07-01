@@ -2,6 +2,8 @@ package be.thomaswinters.twitter.bot.arguments;
 
 import be.thomaswinters.twitter.bot.executor.modes.ITwitterBotMode;
 import be.thomaswinters.twitter.bot.executor.modes.PostMode;
+import be.thomaswinters.twitter.bot.executor.timeselection.ITimeSelector;
+import be.thomaswinters.twitter.bot.executor.timeselection.RandomTimeSelector;
 import com.beust.jcommander.Parameter;
 
 import java.time.Duration;
@@ -23,6 +25,9 @@ public class TwitterBotArguments {
 
     @Parameter(names = "-postTimes")
     protected int postTimes = 1;
+
+    @Parameter(names = "-postTimeSelector", converter = TimeSelectorConverter.class)
+    protected ITimeSelector postTimeSelector = new RandomTimeSelector();
 
     @Parameter(names = "-postMinWait", converter = TemporalAmountConverter.class)
     protected TemporalAmount postMinWait = Duration.ofMinutes(0);
@@ -55,6 +60,11 @@ public class TwitterBotArguments {
     public TemporalAmount getPostMinimumWait() {
         return postMinWait;
     }
+
+    public ITimeSelector getPostTimeSelector() {
+        return postTimeSelector;
+    }
+
 
     public TemporalAmount getReplyWait() {
         return replyWait;

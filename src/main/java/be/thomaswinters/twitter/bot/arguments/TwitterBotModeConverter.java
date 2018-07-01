@@ -9,11 +9,11 @@ import java.util.stream.Stream;
 public class TwitterBotModeConverter implements IStringConverter<ITwitterBotMode> {
     @Override
     public ITwitterBotMode convert(String value) {
-        if (!value.contains("&")) {
+        if (!value.contains(",")) {
             return parseMode(value);
         }
         return new CompositeMode(
-                Stream.of(value.split("&"))
+                Stream.of(value.split(","))
                         .map(this::parseMode)
                         .collect(Collectors.toList()));
     }

@@ -14,7 +14,10 @@ import be.thomaswinters.twitter.util.TwitterUtil;
 import twitter4j.Status;
 import twitter4j.Twitter;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -39,6 +42,9 @@ public class TwitterBot {
 
     private final Tweeter tweeter;
 
+
+    private final List<Consumer<Status>> inspectedTweetToAnswerListeners = new ArrayList<>();
+
     //region Constructor
     public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour, ITweetsFetcher tweetsToAnswerRetrievers, Supplier<Long> lastRepliedToSupplier) {
         this.twitterConnection = twitterConnection;
@@ -54,7 +60,7 @@ public class TwitterBot {
 
     public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour, ITweetsFetcher tweetsToAnswerRetrievers) {
         this(twitterConnection, postBehaviour, replyBehaviour, tweetsToAnswerRetrievers, new LastRepliedToSupplier(twitterConnection));
-        ((LastRepliedToSupplier) this.lastRepliedToSupplier).subscribeToTweeter(getTweeter());
+        ((LastRepliedToSupplier) this.lastRepliedToSupplier).subscribeToTweeter(this);
     }
 
     public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour) {
@@ -106,16 +112,17 @@ public class TwitterBot {
         postBehaviour.post(customTweeter);
     }
 
-    public void replyToStatus(long mentionTweet) {
-        replyToStatus(TwitterUnchecker.uncheck(getTwitterConnection()::showStatus, mentionTweet));
+    public void replyToStatus(long tweetToReplyTo) {
+        replyToStatus(TwitterUnchecker.uncheck(getTwitterConnection()::showStatus, tweetToReplyTo));
     }
 
-    public void replyToStatus(Status mentionTweet) {
-        replyToStatus(mentionTweet, getTweeter());
+    public void replyToStatus(Status tweetToReplyTo) {
+        replyToStatus(tweetToReplyTo, getTweeter());
     }
 
-    public void replyToStatus(Status mentionTweet, ITweeter tweeter) {
-        replyBehaviour.reply(tweeter, mentionTweet);
+    public void replyToStatus(Status tweetToReplyTo, ITweeter customTweeter) {
+        replyBehaviour.reply(customTweeter, tweetToReplyTo);
+        notifyInspectedTweetToAnswer(tweetToReplyTo);
     }
     //endregion
 
@@ -131,5 +138,20 @@ public class TwitterBot {
         return new TwitterBotExecutor(this);
     }
 
+    //region inspected listener
+
+    private void notifyInspectedTweetToAnswer(Status status) {
+        inspectedTweetToAnswerListeners.forEach(e -> e.accept(status));
+    }
+
+    public void addInspectedTweetToAnswerListener(Consumer<Status> listener) {
+        inspectedTweetToAnswerListeners.add(listener);
+    }
+
+    public boolean removeInspectedTweetToAnswerListener(Consumer<Status> listener) {
+        return inspectedTweetToAnswerListeners.remove(listener);
+    }
+
+    //endregion
 
 }

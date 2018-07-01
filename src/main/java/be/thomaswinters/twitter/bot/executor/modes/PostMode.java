@@ -59,7 +59,7 @@ public class PostMode implements ITwitterBotMode {
         long amountOfSeconds = runDuration.get(ChronoUnit.SECONDS);
 
         return IntStream
-                .range(1, postTimes)
+                .range(0,postTimes)
                 .mapToObj(i -> {
                             if (amountOfSeconds > 0) {
                                 return start.plusSeconds(ThreadLocalRandom.current().nextLong(amountOfSeconds));

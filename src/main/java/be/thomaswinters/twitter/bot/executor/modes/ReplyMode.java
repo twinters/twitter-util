@@ -26,7 +26,7 @@ public class ReplyMode implements ITwitterBotMode {
             }
 
             // Wait for a while
-            long waitForseconds = arguments.getPostMinimumWait().get(ChronoUnit.SECONDS)
+            long waitForseconds = arguments.getReplyWait().get(ChronoUnit.SECONDS)
                     - ChronoUnit.SECONDS.between(startOfRun, LocalDateTime.now());
             try {
                 TimeUnit.SECONDS.sleep(waitForseconds);

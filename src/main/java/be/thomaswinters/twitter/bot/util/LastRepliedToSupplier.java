@@ -1,11 +1,9 @@
 package be.thomaswinters.twitter.bot.util;
 
-import be.thomaswinters.twitter.bot.TwitterBot;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.util.TwitterUtil;
 import twitter4j.Status;
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 
 import java.util.function.Supplier;
 
@@ -32,9 +30,6 @@ public class LastRepliedToSupplier implements Supplier<Long> {
         }
     }
 
-    public void subscribeToTweeter(TwitterBot twitterBot) {
-        twitterBot.addInspectedTweetToAnswerListener(this::updateLastInspectedTweetToAnswer);
-    }
 
     @Override
     public Long get() {

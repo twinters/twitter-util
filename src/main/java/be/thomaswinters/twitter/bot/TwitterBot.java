@@ -60,7 +60,8 @@ public class TwitterBot {
 
     public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour, ITweetsFetcher tweetsToAnswerRetrievers) {
         this(twitterConnection, postBehaviour, replyBehaviour, tweetsToAnswerRetrievers, new LastRepliedToSupplier(twitterConnection));
-        ((LastRepliedToSupplier) this.lastRepliedToSupplier).subscribeToTweeter(this);
+        addInspectedTweetToAnswerListener(
+                ((LastRepliedToSupplier) this.lastRepliedToSupplier)::updateLastInspectedTweetToAnswer);
     }
 
     public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour) {

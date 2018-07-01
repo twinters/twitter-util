@@ -71,18 +71,6 @@ public class TwitterBot {
         return twitterConnection;
     }
 
-    protected Status quoteRetweet(String status, Status toTweet) throws TwitterException {
-        return tweeter.quoteRetweet(status, toTweet);
-    }
-
-    protected Status tweet(String status) throws TwitterException {
-        return tweeter.tweet(status);
-    }
-
-    protected Status reply(String replyText, Status toTweet) throws TwitterException {
-        return tweeter.reply(replyText, toTweet);
-    }
-
     public Tweeter getTweeter() {
         return tweeter;
     }

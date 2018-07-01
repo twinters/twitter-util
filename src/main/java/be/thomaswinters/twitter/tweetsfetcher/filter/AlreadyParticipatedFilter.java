@@ -5,6 +5,7 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 /**
@@ -43,12 +44,18 @@ public class AlreadyParticipatedFilter implements Predicate<Status> {
             } catch (TwitterException e) {
                 // Status removed
                 if (e.getErrorCode() == 144) {
-                    System.out.println("Problems with previous of " + current.getText());
                     return false;
                 }
                 // Not authorised to view status: blocked?
                 else if (e.getErrorCode() == 179) {
                     return true;
+                } else if (e.exceededRateLimitation()) {
+                    System.out.println("Exceeded Twitter limit: sleeping for 15 minutes!");
+                    try {
+                        TimeUnit.MINUTES.sleep(15);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
                 } else {
                     System.out.println(e.getMessage());
                     e.printStackTrace();

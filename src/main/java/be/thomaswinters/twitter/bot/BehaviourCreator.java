@@ -131,12 +131,20 @@ public class BehaviourCreator {
         return new PostBehaviourChain(behaviours);
     }
 
+    public static IPostBehaviour conjunctionPost(List<IPostBehaviour> behaviours) {
+        return new PostBehaviourConjunction(behaviours);
+    }
+
     public static IReplyBehaviour chainReply(IReplyBehaviour... behaviours) {
         return chainReply(Arrays.asList(behaviours));
     }
 
     public static IReplyBehaviour chainReply(List<IReplyBehaviour> behaviours) {
         return new ReplyBehaviourChain(behaviours);
+    }
+
+    public static IReplyBehaviour conjunctionReply(List<IReplyBehaviour> behaviours) {
+        return new ReplyBehaviourConjunction(behaviours);
     }
     //endregion
 

@@ -37,19 +37,20 @@ public class ReactingGeneratorBehaviour<E> implements IReplyBehaviour, IExtracta
                 .isPresent();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Optional<IChatBot> getChatBot() {
         return Optional.of(message -> textGenerator.generateRelated((E) message));
     }
-    /**
-     * TODO: Add this code somehow:
-     *
-     Optional<String> result = twitterChatBot.generateRelated(mentionTweet);
-     if (result.isPresent() && TwitterUtil.hasValidLength(result.get())) {
-     return result;
-     }
-     return Optional.empty();
-     */
+/**
+ * TODO: Add this code somehow:
+ * <p>
+ * Optional<String> result = twitterChatBot.generateRelated(mentionTweet);
+ * if (result.isPresent() && TwitterUtil.hasValidLength(result.get())) {
+ * return result;
+ * }
+ * return Optional.empty();
+ */
 
 
     /* TODO: Deze code somehow verwerken!

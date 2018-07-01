@@ -29,10 +29,12 @@ public class ReplyMode implements ITwitterBotMode {
             long waitForseconds = arguments.getReplyWait().get(ChronoUnit.SECONDS)
                     - ChronoUnit.SECONDS.between(startOfRun, LocalDateTime.now());
             try {
+                System.out.println("Sleeping for seconds after reply check: " + waitForseconds + " " + this);
                 TimeUnit.SECONDS.sleep(waitForseconds);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+
     }
 }

@@ -18,7 +18,7 @@ public class CompositeTweeter implements ITweeter {
     }
 
     @Override
-    public Status quoteRetweet(String status, Status toTweet) throws TwitterException {
+    public Status quoteRetweet(String status, Status toTweet) {
         return this.tweeters
                 .stream()
                 .map(t -> {
@@ -32,7 +32,7 @@ public class CompositeTweeter implements ITweeter {
     }
 
     @Override
-    public Status tweet(String status) throws TwitterException {
+    public Status tweet(String status) {
         return this.tweeters
                 .stream()
                 .map(t -> {
@@ -46,7 +46,7 @@ public class CompositeTweeter implements ITweeter {
     }
 
     @Override
-    public Status reply(String replyText, Status toTweet) throws TwitterException {
+    public Status reply(String replyText, Status toTweet) {
         return this.tweeters
                 .stream()
                 .map(t -> {
@@ -60,7 +60,7 @@ public class CompositeTweeter implements ITweeter {
     }
 
     @Override
-    public void follow(User user) throws TwitterException {
+    public void follow(User user) {
         this.tweeters.forEach(t -> {
             try {
                 t.follow(user);
@@ -72,7 +72,7 @@ public class CompositeTweeter implements ITweeter {
     }
 
     @Override
-    public void like(Status tweet) throws TwitterException {
+    public void like(Status tweet) {
         this.tweeters.forEach(t -> {
             try {
                 t.like(tweet);

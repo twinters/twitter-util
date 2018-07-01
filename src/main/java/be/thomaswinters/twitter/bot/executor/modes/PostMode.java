@@ -22,6 +22,7 @@ public class PostMode implements ITwitterBotMode {
         List<LocalDateTime> postMoments = createPostMoments(start,
                 arguments.getRunDuration(),
                 arguments.getPostTimes());
+        System.out.println("Post moments: " + postMoments);
 
 
         for (LocalDateTime postMoment : postMoments) {

@@ -55,6 +55,10 @@ public class BehaviourCreator {
         return new FollowBehaviour(twitter);
     }
 
+    public static IReplyBehaviour automaticLiker(Twitter twitter) throws TwitterException {
+        return new LikingBehaviour(twitter);
+    }
+
     //endregion
 
     //region QuoteRetweeter

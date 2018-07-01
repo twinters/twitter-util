@@ -52,8 +52,9 @@ public class BehaviourCreator {
     }
 
     public static ITwitterBehaviour automaticFollower(Twitter twitter) throws TwitterException {
-        return new FollowBackBehaviour(twitter);
+        return new FollowBehaviour(twitter);
     }
+
     //endregion
 
     //region QuoteRetweeter

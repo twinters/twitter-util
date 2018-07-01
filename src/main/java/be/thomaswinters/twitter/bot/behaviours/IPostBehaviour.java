@@ -19,7 +19,7 @@ public interface IPostBehaviour {
      */
     boolean post(ITweeter tweeter);
 
-    default IPostBehaviour chain(IPostBehaviour postBehaviour) {
+    default IPostBehaviour orElse(IPostBehaviour postBehaviour) {
         return new PostBehaviourChain(Arrays.asList(this, postBehaviour));
     }
 

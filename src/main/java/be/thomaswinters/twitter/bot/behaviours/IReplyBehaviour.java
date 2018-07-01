@@ -20,7 +20,7 @@ public interface IReplyBehaviour {
      */
     boolean reply(ITweeter tweeter, Status tweetToReply);
 
-    default IReplyBehaviour chain(IReplyBehaviour replyBehaviour) {
+    default IReplyBehaviour orElse(IReplyBehaviour replyBehaviour) {
         return new ReplyBehaviourChain(Arrays.asList(this, replyBehaviour));
     }
 

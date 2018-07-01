@@ -82,4 +82,8 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
             return true;
         });
     }
+
+    default ITweetsFetcher distinct() {
+        return input -> generateStream(input).distinct();
+    }
 }

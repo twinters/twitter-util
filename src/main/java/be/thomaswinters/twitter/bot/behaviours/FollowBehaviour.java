@@ -10,12 +10,12 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-public class FollowBackBehaviour implements ITwitterBehaviour {
+public class FollowBehaviour implements ITwitterBehaviour {
 
     private final FollowerChecker followerUtil;
     private final FollowersFetcher followersFetcher;
 
-    public FollowBackBehaviour(Twitter twitter) throws TwitterException {
+    public FollowBehaviour(Twitter twitter) throws TwitterException {
         this.followerUtil = new FollowerChecker(twitter);
         this.followersFetcher = new FollowersFetcher(twitter);
     }

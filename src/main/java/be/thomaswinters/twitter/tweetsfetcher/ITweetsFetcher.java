@@ -77,7 +77,7 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
     }
 
     default ITweetsFetcher peek(Consumer<Status> consumer) {
-        return filter(e-> {
+        return filter(e -> {
             consumer.accept(e);
             return true;
         });

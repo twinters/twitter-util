@@ -41,7 +41,11 @@ public class TwitterBot {
     private final List<Consumer<Status>> inspectedTweetToAnswerListeners = new ArrayList<>();
 
     //region Constructor
-    public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour, ITweetsFetcher tweetsToAnswerRetrievers, Supplier<Long> lastRepliedToSupplier) {
+    public TwitterBot(Twitter twitterConnection,
+                      IPostBehaviour postBehaviour,
+                      IReplyBehaviour replyBehaviour,
+                      ITweetsFetcher tweetsToAnswerRetrievers,
+                      Supplier<Long> lastRepliedToSupplier) {
         this.twitterConnection = twitterConnection;
 
         this.postBehaviour = postBehaviour;
@@ -53,17 +57,23 @@ public class TwitterBot {
         this.tweeter = new Tweeter(twitterConnection);
     }
 
-    public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour, ITweetsFetcher tweetsToAnswerRetrievers) {
+    public TwitterBot(Twitter twitterConnection,
+                      IPostBehaviour postBehaviour,
+                      IReplyBehaviour replyBehaviour,
+                      ITweetsFetcher tweetsToAnswerRetrievers) {
         this(twitterConnection, postBehaviour, replyBehaviour, tweetsToAnswerRetrievers, new LastRepliedToSupplier(twitterConnection));
         addInspectedTweetToAnswerListener(
                 ((LastRepliedToSupplier) this.lastRepliedToSupplier)::updateLastInspectedTweetToAnswer);
     }
 
-    public TwitterBot(Twitter twitterConnection, IPostBehaviour postBehaviour, IReplyBehaviour replyBehaviour) {
+    public TwitterBot(Twitter twitterConnection,
+                      IPostBehaviour postBehaviour,
+                      IReplyBehaviour replyBehaviour) {
         this(twitterConnection, postBehaviour, replyBehaviour, MENTIONS_RETRIEVER.apply(twitterConnection));
     }
 
-    public TwitterBot(Twitter twitterConnection, ITwitterBehaviour twitterBehaviour) {
+    public TwitterBot(Twitter twitterConnection,
+                      ITwitterBehaviour twitterBehaviour) {
         this(twitterConnection, twitterBehaviour, twitterBehaviour, MENTIONS_RETRIEVER.apply(twitterConnection));
     }
 

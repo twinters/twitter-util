@@ -15,7 +15,7 @@ public class ReplyMode implements ITwitterBotMode {
         LocalDateTime end = start.plus(arguments.getRunDuration());
         System.out.println("Started replying mode until " + end);
 
-        while (LocalDateTime.now().isBefore(end)) {
+        do {
             LocalDateTime startOfRun = LocalDateTime.now();
 
             // Reply to all
@@ -34,7 +34,7 @@ public class ReplyMode implements ITwitterBotMode {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        } while (LocalDateTime.now().isBefore(end));
 
     }
 }

@@ -66,6 +66,10 @@ public class AlreadyParticipatedFilter implements Predicate<Status> {
             if (hasTweeted(current)) {
                 return true;
             }
+            // Check if it is a retweet of a tweet from this user
+            if (current.getQuotedStatus().getUser().getScreenName().equals(screenName)) {
+                return true;
+            }
             numberChecked += 1;
         }
         return false;

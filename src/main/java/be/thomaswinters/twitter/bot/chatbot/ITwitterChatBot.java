@@ -9,7 +9,7 @@ public interface ITwitterChatBot extends IReactingGenerator<String,Status> {
     Optional<String> generateReply(Status tweet);
 
     @Override
-    default Optional<String> generateRelated(Status input) {
+    default Optional<String> generate(Status input) {
         return generateReply(input);
     }
 }

@@ -2,7 +2,6 @@ package be.thomaswinters.twitter.tweetsfetcher;
 
 import be.thomaswinters.generator.streamgenerator.reacting.IReactingStreamGenerator;
 import be.thomaswinters.sentence.SentenceUtil;
-import be.thomaswinters.twitter.bot.tweeter.ITweeter;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.tweetsfetcher.filter.FilteredTweetsFetcher;
 import be.thomaswinters.twitter.tweetsfetcher.filter.RandomFilter;
@@ -11,7 +10,9 @@ import twitter4j.Status;
 import twitter4j.Twitter;
 
 import java.time.temporal.TemporalAmount;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -33,10 +34,15 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
         return retrieve(1L);
     }
 
-    default ITweetsFetcher combineWith(ITweetsFetcher... fetchers) {
+
+    default ITweetsFetcher combineWith(Collection<? extends IReactingStreamGenerator<Status, Long>> fetchers) {
         return new TweetsFetcherCombiner(
-                Stream.concat(Stream.of(this), Stream.of(fetchers))
+                Stream.concat(Stream.of(this), fetchers.stream())
                         .collect(Collectors.toList()));
+    }
+
+    default ITweetsFetcher combineWith(IReactingStreamGenerator<Status, Long> fetchers) {
+        return combineWith(Collections.singletonList(fetchers));
     }
 
     @Override
@@ -46,8 +52,8 @@ public interface ITweetsFetcher extends IReactingStreamGenerator<Status, Long> {
     }
 
     @Override
-    default ITweetsFetcher filterUsingInput(BiPredicate<Long,Status> filter) {
-        return sinceId -> retrieve(sinceId).filter(e->filter.test(sinceId, e));
+    default ITweetsFetcher filterUsingInput(BiPredicate<Long, Status> filter) {
+        return sinceId -> retrieve(sinceId).filter(e -> filter.test(sinceId, e));
     }
 
     default ITweetsFetcher filterOutOwnTweets(Twitter twitter) {

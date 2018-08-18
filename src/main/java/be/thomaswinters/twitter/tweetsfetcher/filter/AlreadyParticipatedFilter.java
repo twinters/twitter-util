@@ -68,7 +68,10 @@ public class AlreadyParticipatedFilter implements Predicate<Status> {
             }
             // Check if it is a retweet of a tweet from this user
             if (current.getQuotedStatus() != null
-                    && current.getQuotedStatus().getUser().getScreenName().equals(screenName)) {
+                    && current.getQuotedStatus().getUser().getScreenName().toLowerCase().equals(screenName.toLowerCase())) {
+                return true;
+            }
+            if (current.getText().toLowerCase().matches(".*twitter.com/"+screenName.toLowerCase()+"/status/*")) {
                 return true;
             }
             numberChecked += 1;

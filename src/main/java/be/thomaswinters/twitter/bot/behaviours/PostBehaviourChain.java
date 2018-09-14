@@ -5,6 +5,9 @@ import be.thomaswinters.twitter.bot.tweeter.ITweeter;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Keeps trying postbehaviours until one returns a value
+ */
 public class PostBehaviourChain implements IPostBehaviour {
     private final List<IPostBehaviour> behaviours;
 

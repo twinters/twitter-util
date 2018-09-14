@@ -2,6 +2,7 @@ package be.thomaswinters.twitter.bot.behaviours;
 
 import be.thomaswinters.generator.selection.Weighted;
 import be.thomaswinters.twitter.bot.tweeter.ITweeter;
+import twitter4j.TwitterException;
 
 import java.util.Arrays;
 

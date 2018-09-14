@@ -34,7 +34,7 @@ public class AlreadyParticipatedFilter implements Predicate<Status> {
 
     public boolean hasParticipatedInConversation(Status status) {
         Status current = status;
-        if (hasTweeted(status)) {
+        if (hasParticipatedIn(status)) {
             return true;
         }
         int numberChecked = 1;
@@ -63,21 +63,28 @@ public class AlreadyParticipatedFilter implements Predicate<Status> {
                 }
             }
             assert current != null;
-            if (hasTweeted(current)) {
-                return true;
-            }
-            // Check if it is a retweet of a tweet from this user
-            if (current.getQuotedStatus() != null
-                    && current.getQuotedStatus().getUser().getScreenName().toLowerCase().equals(screenName.toLowerCase())) {
-                return true;
-            }
-            if (current.getText().toLowerCase().matches(".*twitter.com/"+screenName.toLowerCase()+"/status/*")) {
+            if (hasParticipatedIn(current)) {
                 return true;
             }
             numberChecked += 1;
         }
         return false;
 
+    }
+
+    public boolean hasParticipatedIn(Status tweet) {
+        if (hasTweeted(tweet)) {
+            return true;
+        }
+        // Check if it is a retweet of a tweet from this user
+        if (tweet.getQuotedStatus() != null
+                && tweet.getQuotedStatus().getUser().getScreenName().toLowerCase().equals(screenName.toLowerCase())) {
+            return true;
+        }
+        if (tweet.getText().toLowerCase().matches(".*twitter\\.com/" + screenName.toLowerCase() + "/status/.*")) {
+            return true;
+        }
+        return false;
     }
 
     /**

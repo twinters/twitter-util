@@ -20,6 +20,7 @@ dependencies {
     compile project(':text-util')
     compile project(':chatbot-util')
 
-    compile 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    testCompile 'org.mockito:mockito-all:1.10.19'
 }
 

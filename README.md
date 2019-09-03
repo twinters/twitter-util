@@ -23,3 +23,4 @@ Several different Twitterbots have been implemented using this framework, such a
 - AlbertoBot ([Twitter](https://twitter.com/AlbertBot), [code](https://github.com/twinters/alberto-bot))
 - OctaafBot ([Twitter](https://twitter.com/OctaafBot), [code](https://github.com/twinters/octaaf-bot))
 - JeannineBot ([Twitter](https://twitter.com/JeannineBot), [code](https://github.com/twinters/jeannine-bot))
+- MopjesBot ([Twitter](https://twitter.com/MopjesBot))

@@ -16,10 +16,10 @@ In order for this code to work, you will need to install [Gradle](https://gradle
 ## Examples
 
 Several different Twitterbots have been implemented using this framework, such as
-- TorfsBot ([Twitter](https://twitter.com/TorfsBot), [code](https://github.com/twinters/torfs-bot)
-- SamsonBot ([Twitter](https://twitter.com/SamsonRobot), [code](https://github.com/twinters/samson-bot)
-- GertBot ([Twitter](https://twitter.com/Gert_Bot), [code](https://github.com/twinters/gert-bot)
-- BurgemeesterBot ([Twitter](https://twitter.com/BurgemeesterBot), [code](https://github.com/twinters/burgemeester-bot)
-- AlbertoBot ([Twitter](https://twitter.com/AlbertBot), [code](https://github.com/twinters/alberto-bot)
-- OctaafBot ([Twitter](https://twitter.com/OctaafBot), [code](https://github.com/twinters/octaaf-bot)
-- JeannineBot ([Twitter](https://twitter.com/JeannineBot), [code](https://github.com/twinters/jeannine-bot)
+- TorfsBot ([Twitter](https://twitter.com/TorfsBot), [code](https://github.com/twinters/torfs-bot))
+- SamsonBot ([Twitter](https://twitter.com/SamsonRobot), [code](https://github.com/twinters/samson-bot))
+- GertBot ([Twitter](https://twitter.com/Gert_Bot), [code](https://github.com/twinters/samson-bot))
+- BurgemeesterBot ([Twitter](https://twitter.com/BurgemeesterBot), [code](https://github.com/twinters/burgemeester-bot))
+- AlbertoBot ([Twitter](https://twitter.com/AlbertBot), [code](https://github.com/twinters/alberto-bot))
+- OctaafBot ([Twitter](https://twitter.com/OctaafBot), [code](https://github.com/twinters/octaaf-bot))
+- JeannineBot ([Twitter](https://twitter.com/JeannineBot), [code](https://github.com/twinters/jeannine-bot))

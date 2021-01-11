@@ -1,7 +1,11 @@
 package be.thomaswinters.twitter.util.paging;
 
 import be.thomaswinters.twitter.exception.UncheckedTwitterException;
-import twitter4j.*;
+import org.apache.commons.lang3.ArrayUtils;
+import twitter4j.IDs;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +17,8 @@ public class CursoringUserFetcher {
     private final Twitter twitter;
     private final Function<Long, IDs> fetcher;
 
+    private final int LOOKUP_SIZE = 50;
+
     public CursoringUserFetcher(Twitter twitter, Function<Long, IDs> fetcher) {
         this.twitter = twitter;
         this.fetcher = fetcher;
@@ -20,9 +26,29 @@ public class CursoringUserFetcher {
 
     public Stream<User> getUsers() {
         Cursorer cursorer = new Cursorer();
-        return Stream.generate(cursorer)
+        Stream<List<User>> userStream = Stream.generate(cursorer);
+
+
+        return userStream
                 .takeWhile(list -> list.size() > 0)
                 .flatMap(List::stream);
+    }
+
+    private List<User> lookup(Twitter twitter, IDs ids) throws TwitterException {
+        List<User> result = new ArrayList<>();
+
+        Long[] longObjects = ArrayUtils.toObject(ids.getIDs());
+        List<Long> longList = java.util.Arrays.asList(longObjects);
+
+        int from = 0;
+        while (from <= longList.size()) {
+            List<Long> sublist = longList.subList(from, Math.min(longList.size(), from + LOOKUP_SIZE));
+            long[] primitiveSubList = sublist.stream().mapToLong(i -> i).toArray();
+            result.addAll(twitter.lookupUsers(primitiveSubList));
+            from += LOOKUP_SIZE;
+        }
+
+        return result;
     }
 
     private class Cursorer implements Supplier<List<User>> {
@@ -36,15 +62,16 @@ public class CursoringUserFetcher {
                 return new ArrayList<>();
             }
             ids = fetcher.apply(cursor);
+            List<User> followers = new ArrayList<User>();
             try {
-                ResponseList<User> followers = twitter.lookupUsers(ids.getIDs());
-                done = !ids.hasNext();
-                cursor = ids.getNextCursor();
-                return followers;
+                followers = lookup(twitter, ids);
             } catch (TwitterException e) {
                 e.printStackTrace();
                 throw new UncheckedTwitterException(e);
             }
+            done = !ids.hasNext();
+            cursor = ids.getNextCursor();
+            return followers;
         }
 
     }

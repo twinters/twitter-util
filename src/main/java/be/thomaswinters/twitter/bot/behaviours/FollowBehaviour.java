@@ -28,7 +28,7 @@ public class FollowBehaviour implements ITwitterBehaviour {
             List<User> toFollow = followersFetcher.fetchUsers()
                     .takeWhile(user -> !followerUtil.isFollowing(user))
                     .collect(Collectors.toList());
-            
+
             // Reverse so we follow oldest new followers first
             Collections.reverse(toFollow);
 

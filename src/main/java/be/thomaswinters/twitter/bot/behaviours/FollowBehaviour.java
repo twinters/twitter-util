@@ -29,7 +29,7 @@ public class FollowBehaviour implements ITwitterBehaviour {
                 .takeWhile(user -> !followerUtil.isFollowing(user))
                 .collect(Collectors.toList());
         // Reverse so we follow oldest new followers first
-        Collections.reverse(toFollow)
+        Collections.reverse(toFollow);
         for (User user : toFollow) {
             try {
                 tweeter.follow(user);

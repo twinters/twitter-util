@@ -1,6 +1,5 @@
 package be.thomaswinters.twitter.bot.behaviours;
 
-import be.thomaswinters.twitter.bot.behaviours.ITwitterBehaviour;
 import be.thomaswinters.twitter.bot.tweeter.ITweeter;
 import be.thomaswinters.twitter.exception.TwitterUnchecker;
 import be.thomaswinters.twitter.exception.UncheckedTwitterException;
@@ -9,6 +8,11 @@ import be.thomaswinters.twitter.util.analysis.FollowerChecker;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.User;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FollowBehaviour implements ITwitterBehaviour {
 
@@ -21,9 +25,18 @@ public class FollowBehaviour implements ITwitterBehaviour {
     }
 
     public void followNewFollowersBack(ITweeter tweeter) {
-        followersFetcher.fetchUsers()
+        List<User> toFollow = followersFetcher.fetchUsers()
                 .takeWhile(user -> !followerUtil.isFollowing(user))
-                .forEach(user -> TwitterUnchecker.uncheckConsumer(tweeter::follow, user));
+                .collect(Collectors.toList());
+        // Reverse so we follow oldest new followers first
+        Collections.reverse(toFollow)
+        for (User user : toFollow) {
+            try {
+                tweeter.follow(user);
+            } catch (TwitterException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
